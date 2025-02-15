@@ -650,3 +650,12 @@ function getCategoryHeader(){
 
     return $data;
 }
+
+function generateUniqueSKU()
+{
+    do {
+        $sku = random_int(10000000, 99999999); // Generates an 8-digit number
+    } while (Product::where('sku', $sku)->exists());
+
+    return $sku;
+}
