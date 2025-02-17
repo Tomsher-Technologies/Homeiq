@@ -143,9 +143,9 @@
                         <div class="card-body">
 
                             <div class="form-group row">
-                                <label class="col-md-3 col-from-label">{{ trans('messages.sku') }} <span class="text-danger">*</span></label>
+                                <label class="col-md-3 col-from-label">{{ trans('messages.sku') }} </label>
                                 <div class="col-md-6">
-                                    <input type="text" placeholder="{{ trans('messages.sku') }}" name="sku" class="form-control" required>
+                                    <input type="text" placeholder="{{ trans('messages.sku') }}" name="sku" class="form-control">
                                 </div>
                             </div>
 

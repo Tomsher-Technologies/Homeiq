@@ -22,6 +22,8 @@ use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\BusinessSettingsController;
 use App\Http\Controllers\Admin\HomeSliderController;
 use App\Http\Controllers\Admin\PartnersController;
+use App\Http\Controllers\Admin\ServiceController;
+
 
 Route::group(['middleware' => ['guest']], function () {
     Route::get('login', [AuthController::class, 'showLoginForm'])->name('admin.login');
@@ -100,19 +102,6 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/categories/edit/{id}', [CategoryController::class, 'edit'])->name('categories.edit');
     Route::post('/categories/status', [CategoryController::class, 'updateStatus'])->name('categories.status');
 
-    // Attributes
-    Route::resource('attributes', AttributeController::class);
-    Route::get('/attributes/edit/{id}', [AttributeController::class, 'edit'])->name('attributes.edit');
-    Route::get('/attributes/destroy/{id}', [AttributeController::class, 'destroy'])->name('attributes.destroy');
-    Route::post('/attributes/status', [AttributeController::class, 'updateAttributeStatus'])->name('attributes.status');
-    Route::post('/attribute_value/status', [AttributeController::class, 'updateAttributeValueStatus'])->name('attribute_value.status');
-
-    //Attribute Value
-    Route::post('/store-attribute-value', [AttributeController::class, 'store_attribute_value'])->name('store-attribute-value');
-    Route::get('/edit-attribute-value/{id}', [AttributeController::class, 'edit_attribute_value'])->name('edit-attribute-value');
-    Route::post('/update-attribute-value/{id}', [AttributeController::class, 'update_attribute_value'])->name('update-attribute-value');
-    Route::get('/destroy-attribute-value/{id}', [AttributeController::class, 'destroy_attribute_value'])->name('destroy-attribute-value');
-
     Route::get('/products/all', [ProductController::class, 'all_products'])->name('products.all');
     Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
     Route::post('/products/store/', [ProductController::class, 'store'])->name('products.store');
@@ -159,4 +148,12 @@ Route::group(['middleware' => ['auth']], function () {
     // Route::get('/pages', [WebsiteController::class, 'index'])->name('website.pages');
 
     Route::post('/business-settings/update', [BusinessSettingsController::class, 'update'])->name('business_settings.update');
+
+    Route::get('/service/all', [ServiceController::class, 'index'])->name('service.index');
+    Route::get('/service/create', [ServiceController::class, 'create'])->name('service.create');
+    Route::post('/service/store/', [ServiceController::class, 'store'])->name('service.store');
+    Route::get('/service/edit/{id}', [ServiceController::class, 'edit'])->name('service.edit');
+    Route::post('/service/update/{id}', [ServiceController::class, 'update'])->name('service.update');
+    Route::post('/service/status', [ServiceController::class, 'updateStatus'])->name('service.status');
+    Route::get('/service/delete/{id}', [ServiceController::class, 'destroy'])->name('service.delete');
 });

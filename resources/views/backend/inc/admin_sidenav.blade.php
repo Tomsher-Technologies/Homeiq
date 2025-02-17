@@ -42,7 +42,7 @@
                                     </a>
                                 </li>
                                 <li class="aiz-side-nav-item">
-                                    <a href="{{ route('products.all') }}" class="aiz-side-nav-link {{ areActiveRoutes(['products.all','products.admin.edit']) }}">
+                                    <a href="{{ route('products.all') }}" class="aiz-side-nav-link {{ areActiveRoutes(['products.all','products.edit']) }}">
                                         <span class="aiz-side-nav-text">{{  trans('messages.all_Products') }}</span>
                                     </a>
                                 </li>
@@ -62,17 +62,6 @@
                                     <a href="{{ route('brands.index') }}"
                                         class="aiz-side-nav-link {{ areActiveRoutes(['brands.index', 'brands.create', 'brands.edit']) }}">
                                         <span class="aiz-side-nav-text">{{  trans('messages.brand') }}</span>
-                                    </a>
-                                </li>
-                            @endcanany
-
-                            
-
-                            @canany(['manage_attributes'])
-                                <li class="aiz-side-nav-item">
-                                    <a href="{{ route('attributes.index') }}"
-                                        class="aiz-side-nav-link {{ areActiveRoutes(['attributes.index', 'attributes.create', 'attributes.edit','edit-attribute-value', 'attributes.show']) }}">
-                                        <span class="aiz-side-nav-text">{{  trans('messages.attribute') }}</span>
                                     </a>
                                 </li>
                             @endcanany
@@ -121,6 +110,59 @@
                 </li>
                 @endcanany
 
+                @canany(['manage_services'])
+                    <li class="aiz-side-nav-item">
+                        <a href="#" class="aiz-side-nav-link">
+                            <i class="las la-money-bill aiz-side-nav-icon"></i>
+                            <span class="aiz-side-nav-text">Services</span>
+                            <span class="aiz-side-nav-arrow"></span>
+                        </a>
+                        <!--Submenu-->
+                        <ul class="aiz-side-nav-list level-2">
+
+                            <li class="aiz-side-nav-item">
+                                <a class="aiz-side-nav-link" href="{{ route('service.create') }}">
+                                    <span class="aiz-side-nav-text">Add New Service</span>
+                                </a>
+                            </li>
+
+                            <li class="aiz-side-nav-item">
+                                <a href="{{ route('service.index') }}"
+                                    class="aiz-side-nav-link {{ areActiveRoutes(['service.index', 'service.edit']) }}">
+                                    <span class="aiz-side-nav-text">All Services</span>
+                                </a>
+                            </li>
+                           
+                        </ul>
+                    </li>
+                @endcanany
+
+                @canany(['manage_faq'])
+                    <li class="aiz-side-nav-item">
+                        <a href="#" class="aiz-side-nav-link">
+                            <i class="las la-question aiz-side-nav-icon"></i>
+                            <span class="aiz-side-nav-text">FAQ</span>
+                            <span class="aiz-side-nav-arrow"></span>
+                        </a>
+                        <!--Submenu-->
+                        <ul class="aiz-side-nav-list level-2">
+
+                            <li class="aiz-side-nav-item">
+                                <a class="aiz-side-nav-link" href="{{ route('service.create') }}">
+                                    <span class="aiz-side-nav-text">Add New FAQ Category</span>
+                                </a>
+                            </li>
+
+                            <li class="aiz-side-nav-item">
+                                <a href="{{ route('service.index') }}"
+                                    class="aiz-side-nav-link {{ areActiveRoutes(['service.index', 'service.edit']) }}">
+                                    <span class="aiz-side-nav-text">All FAQ Categories</span>
+                                </a>
+                            </li>
+                           
+                        </ul>
+                    </li>
+                @endcanany
 
                 @canany(['upload_files'])
                     <li class="aiz-side-nav-item">

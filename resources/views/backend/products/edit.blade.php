@@ -15,7 +15,7 @@
                     @csrf
                     <div class="card">
                         <div class="card-body p-0">
-                            <ul class="nav nav-tabs nav-fill border-light">
+                            {{-- <ul class="nav nav-tabs nav-fill border-light">
                                 @foreach (\App\Models\Language::all() as $key => $language)
                                     <li class="nav-item">
                                         <a class="nav-link text-reset @if ($language->code == $lang) active @else bg-soft-dark border-light border-left-0 @endif py-3"
@@ -26,7 +26,7 @@
                                         </a>
                                     </li>
                                 @endforeach
-                            </ul>
+                            </ul> --}}
                             <div class=" p-4">
                                 <div class="form-group row ">
                                     <label class="col-lg-3 col-from-label">{{ trans('messages.product').' '.trans('messages.name') }} <span class="text-danger">*</span>
@@ -70,24 +70,7 @@
                                         </select>
                                     </div>
                                 </div>
-                            
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 col-from-label">{{ trans('messages.unit') }}</label>
-                                    <div class="col-md-8">
-                                        <input type="text" class="form-control" name="unit"
-                                            placeholder="{{ trans('messages.unit_details') }}" value="{{ $product->getTranslation('unit',$lang) }}" required>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row @if ($lang != 'en') d-none @endif">
-                                    <label class="col-lg-3 col-from-label">{{ trans('messages.minimum_purchase_qty') }}</label>
-                                    <div class="col-lg-8">
-                                        <input type="number" lang="en" class="form-control" name="min_qty"
-                                            value="{{ $product->min_qty <= 1 ? 1 : $product->min_qty }}" min="1"
-                                            required>
-                                    </div>
-                                </div>
+                    
 
                                 <div class="form-group row">
                                     <label class="col-md-3 col-from-label">{{ trans('messages.tags') }}</label>
@@ -109,12 +92,6 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group row @if ($lang != 'en') d-none @endif">
-                                    <label class="col-md-3 col-from-label">{{ trans('messages.vat') }} (%) </label>
-                                    <div class="col-md-6">
-                                        <input type="number" lang="en" min="0" value="0" step="0.01" placeholder="VAT" name="vat" class="form-control"  value="{{ $product->vat }}">
-                                    </div>
-                                </div> 
                             </div>
                         </div>
                     </div>
@@ -242,214 +219,40 @@
                         </div>
                     </div>
 
-                    <div class="card product-repeater  @if ($lang != 'en') d-none @endif">
+                    <div class="card @if ($lang != 'en') d-none @endif">
                         <div class="card-header">
                             <h5 class="mb-0 h6">{{ trans('messages.product').' '.trans('messages.details') }}</h5>
                         </div>
                         <div class="card-body">
+                            <div class="form-group row">
+                                <label class="col-md-3 col-from-label">{{ trans('messages.sku') }} </label>
+                                <div class="col-md-6">
+                                    <input type="text" placeholder="{{ trans('messages.sku') }}" name="sku" class="form-control"  value="{{ $product->stocks[0]->sku ?? $product->sku }}">
+                                </div>
+                            </div>
 
                             <div class="form-group row">
-                                <label class="col-md-3 col-from-label">{{ trans('messages.product').' '.trans('messages.type') }} <span class="text-danger">*</span></label>
+                                <label class="col-md-3 col-from-label">{{ trans('messages.quantity') }} <span  class="text-danger">*</span></label>
                                 <div class="col-md-6">
-                                    <select class="form-control aiz-selectpicker" name="product_type" id="product_type" required>
-                                        <option @if($product->product_type == '0') selected @endif @if($product->product_type == '1') disabled @endif value="single">{{ trans('messages.single') }}</option>
-                                        <option  @if($product->product_type == '1') selected @endif value="variant">{{ trans('messages.variants') }}</option>
-                                    </select>
+                                    <input type="number" lang="en" min="0"  step="0.01" placeholder="{{ trans('messages.quantity') }}" name="current_stock" class="form-control" required
+                                    value="{{ $product->stocks[0]->qty ?? 0 }}">
                                 </div>
                             </div>
 
-                            <div class="form-group row" id="attributes">
-                                <label class="col-md-3 col-from-label">{{ trans('messages.attributes') }} <span class="text-danger">*</span></label>
+                            <div class="form-group row">
+                                <label class="col-md-3 col-from-label">{{ trans('messages.price') }} <span class="text-danger">*</span></label>
                                 <div class="col-md-6">
-                                    @php   
-                                        // $attributes = \App\Models\Attribute::where('is_active',1)->orderBy('name','asc')->pluck('name','id')->toArray();
-
-                                        $attributes = \App\Models\Attribute::where('is_active', 1)
-                                                    ->orderBy('name', 'asc')
-                                                    ->get()
-                                                    ->mapWithKeys(function ($attribute) {
-                                                        // Use getTranslation to fetch the translated name for the current locale
-                                                        return [$attribute->id => $attribute->getTranslation('name', app()->getLocale())];
-                                                    })
-                                                    ->toArray();
-                                        $attrsProd = json_decode($product->attributes);
-                                    @endphp
-                                    
-                                    <select class="form-control aiz-selectpicker" name="main_attributes[]" multiple id="main_attributes"  data-live-search="true">
-                                        
-                                        @foreach ($attributes as $attrKey => $attrN)
-                                        
-                                            @php 
-                                                $selected = '';
-                                                if(!empty($attrsProd) && in_array($attrKey, $attrsProd)){
-                                                    $selected = 'selected';
-                                                }
-                                            @endphp
-                                            <option {{ $selected }}  value="{{ $attrKey }}">{{ $attrN }}
-                                            </option>
-                                        @endforeach
-                                    </select>
+                                    <input type="number" lang="en" min="0" value="{{ $product->stocks[0]->price ?? 0 }}" step="0.01" placeholder="{{ trans('messages.price') }}" name="price" class="form-control" required>
                                 </div>
                             </div>
 
-                            @foreach($product->stocks as $key => $stocks)
-                                @php
-
-                                // echo '<pre>';
-                                // print_r($stocks);
-                                // die;
-                                    $varients_sku = $stocks->sku;
-                                    $varients_current_stock = $stocks->qty;
-                                    $varients_price = $stocks->price;
-                                @endphp
-                                    <div id="old_product{{$key}}" data-item>
-                                        <div >
-                                            <div class="form-group row">
-                                                <div class="col-md-12">
-                                                    <h6 class="pro_variant_name" id="pro_variant_name">{{ trans('messages.product').' '.trans('messages.variant') }} {{ $key+1 }}</h6>
-                                                </div>
-                                            </div>
-                                        
-                                            <div class="form-group row">
-                                                <label class="col-md-3 col-from-label">{{ trans('messages.sku') }} <span class="text-danger">*</span></label>
-                                                <div class="col-md-6">
-                                                    <input type="hidden" name="oldproduct[{{$key}}][stock_id]" class="form-control" value="{{ $stocks->id }}">
-                                                    <input type="text" placeholder="{{ trans('messages.sku') }}" name="oldproduct[{{$key}}][sku]" class="form-control" required value="{{ $varients_sku }}">
-                                                </div>
-                                            </div>
-
-                                            <div class="form-group row  imageVariant">
-                                                <label class="col-md-3 col-form-label" for="signinSrEmail">{{ trans('messages.product').' '.trans('messages.variant').' '.trans('messages.image') }}<small>({{ trans('messages.1000*1000') }})</small></label>
-                                                <div class="col-md-8">
-                                                    <input type="file" name="oldproduct[{{$key}}][variant_images]" class="form-control variant_images" accept="image/*" >
-
-                                                    @if ($stocks->image)
-                                                        <div class="file-preview box sm">
-                                                            <div
-                                                                class="d-flex justify-content-between align-items-center mt-2 file-preview-item">
-                                                                <div
-                                                                    class="align-items-center align-self-stretch d-flex justify-content-center thumb">
-                                                                    <img src="{{ $stocks->image($stocks->image) }}"
-                                                                        class="img-fit">
-                                                                </div>
-                                                                <div class="remove">
-                                                                    <button class="btn btn-link remove-variant" type="button" data-id="{{$stocks->id}}" data-path="{{$stocks->image}}">
-                                                                        <i class="la la-close"></i>
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    @endif
-                                                </div>
-                                            </div>
-
-                                            <div class="old_product_attributes{{$key}} old_product_attribute" >
-                                                @if(!empty($attrsProd))
-                                                    @foreach($attrsProd as $ii => $aprod)
-
-                                                        @php
-                                                            $prodAttrValue = get_product_attrValue($aprod,$stocks->id);
-                                                            $attrValues = get_attribute_values($aprod, $prodAttrValue);
-                                                        @endphp
-                                                        <div class="form-group row attr{{$aprod}}" >
-                                                            <div class="col-md-3">
-                                                                <input type="text" class="form-control" name="oldproduct[{{$key}}][choice_{{$aprod}}]" value="{{ ($attributes[$aprod] ?? '') }}" placeholder="Choice Title" readonly>
-                                                            </div>
-                                                            <div class="col-md-8">
-                                                                <select required class="form-control aiz-selectpicker attribute_choice" data-live-search="true" name="oldproduct[{{$key}}][choice_options_{{$aprod}}]">
-                                                                    {!! $attrValues !!}
-                                                                </select>
-                                                            </div>
-                                                        </div>
-                                                    @endforeach
-                                                @endif
-                                                
-                                            </div>
-
-                                            <div class="form-group row">
-                                                <label class="col-md-3 col-from-label">{{ trans('messages.quantity') }} <span  class="text-danger">*</span></label>
-                                                <div class="col-md-6">
-                                                    <input type="number" lang="en" min="0"  step="0.01" placeholder="{{ trans('messages.quantity') }}" name="oldproduct[{{$key}}][current_stock]" class="form-control" required
-                                                    value="{{ $varients_current_stock }}">
-                                                </div>
-                                            </div>
-
-                                            <div class="form-group row">
-                                                <label class="col-md-3 col-from-label">{{ trans('messages.price') }} <span class="text-danger">*</span></label>
-                                                <div class="col-md-6">
-                                                    <input type="number" lang="en" min="0" value="{{ $stocks->price }}" step="0.01" placeholder="{{ trans('messages.price') }}" name="oldproduct[{{$key}}][price]" class="form-control" required>
-                                                </div>
-                                            </div>
-
-                                            <div class="form-group row @if($product->product_type == '0') d-none @endif">
-                                                <label class="col-md-3 col-from-label">{{ trans('messages.active').' '.trans('messages.status') }} <span class="text-danger">*</span></label>
-                                                <div class="col-md-6">
-                                                    <select class="form-control" name="oldproduct[{{$key}}][status]" id="status" data-live-search="true" required>
-                                                        <option value="">{{ trans('messages.select').' '.trans('messages.status') }}</option>
-                                                        <option @if($stocks->status == "1") selected @endif value="1">{{ trans('messages.active') }}</option>
-                                                        <option @if($stocks->status == "0") selected @endif value="0">{{ trans('messages.inactive') }}</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                            @endforeach
-
-
-                            <div data-repeater-list="products">
-                                <div data-repeater-item data-new-item>
-                                    <div class="form-group row">
-                                        <div class="col-md-12">
-                                            <h6 class="pro_variant_name" id="pro_variant_name">{{ trans('messages.product').' '.trans('messages.variant') }} 1</h6>
-                                        </div>
-                                    </div>
-                                
-                                    <div class="form-group row">
-                                        <label class="col-md-3 col-from-label">{{ trans('messages.sku') }} <span class="text-danger">*</span></label>
-                                        <div class="col-md-6">
-                                            <input type="text" placeholder="{{ trans('messages.sku') }}" name="sku" class="form-control" required>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row imageVariant">
-                                        <label class="col-md-3 col-form-label" for="signinSrEmail">{{ trans('messages.product').' '.trans('messages.variant').' '.trans('messages.image') }} <small>({{ trans('messages.1000*1000') }})</small></label>
-                                        <div class="col-md-8">
-                                            <input type="file" name="variant_images" class="form-control variant_images"
-                                                accept="image/*" required>
-                                        </div>
-                                    </div>
-
-                                    <div class="product_attributes" >
-                                        
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <label class="col-md-3 col-from-label">{{ trans('messages.quantity') }} <span  class="text-danger">*</span></label>
-                                        <div class="col-md-6">
-                                            <input type="number" lang="en" min="0" value="0" step="0.01" placeholder="{{ trans('messages.quantity') }}" name="current_stock" class="form-control" required>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <label class="col-md-3 col-from-label">{{ trans('messages.price') }} <span class="text-danger">*</span></label>
-                                        <div class="col-md-6">
-                                            <input type="number" lang="en" min="0" value="0" step="0.01" placeholder="{{ trans('messages.price') }}" name="price" class="form-control" required>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <div class="col-md-12 text-right">
-                                            <input data-repeater-delete type="button" class="btn btn-danger action-btn" value="{{ trans('messages.delete') }}" />
-                                        </div>
-                                    </div>  
-   
+                            <div class="form-group row @if ($lang != 'en') d-none @endif">
+                                <label class="col-md-3 col-from-label">{{ trans('messages.vat') }} (%)</label>
+                                <div class="col-md-6">
+                                    <input type="number" lang="en" min="0" step="0.01" placeholder="VAT" name="vat" class="form-control"  value="{{ $product->vat }}">
                                 </div>
-                            </div>
-                            <div class="form-group row add_variant" >
-                                <div class="col-md-12">
-                                    <input data-repeater-create type="button" class="btn btn-success action-btn" value="{{ trans('messages.add').' '.trans('messages.product').' '.trans('messages.variant') }} " />
-                                </div>
-                            </div>
+                            </div> 
+
                         </div>
                     </div>
 
@@ -461,7 +264,7 @@
                             <div class="form-group row">
                                 <label class="col-md-3 col-from-label">{{trans('messages.description') }}</label>
                                 <div class="col-md-8">
-                                    <textarea class="aiz-text-editor" name="description">{{ $product->getTranslation('description',$lang) }}</textarea>
+                                    <textarea class="aiz-text-editor"  data-min-height="300" name="description">{{ $product->getTranslation('description',$lang) }}</textarea>
                                 </div>
                             </div>
                         </div>
@@ -476,23 +279,22 @@
                                 <div data-repeater-item>
                                     <input type="hidden" name="tab_id">
                                     <div class="form-group row">
-                                        <label class="col-md-3 col-from-label">{{ trans('messages.heading') }}</label>
-                                        <div class="col-md-8">
+                                        <label class="col-md-12 col-from-label">{{ trans('messages.heading') }}</label>
+                                        <div class="col-md-12">
                                             <input type="text" class="form-control" name="tab_heading">
                                         </div>
                                         
                                     </div>
                                     <div class="form-group row">
-                                        <label class="col-md-3 col-from-label">{{ trans('messages.description') }}</label>
-                                        <div class="col-md-8">
+                                        <label class="col-md-12 col-from-label">{{ trans('messages.description') }}</label>
+                                        <div class="col-md-12">
                                             <textarea class="text-area" name="tab_description"></textarea>
                                         </div>
                                         
                                     </div>
                                     <div class="form-group row">
-                                        <div class="col-md-9">
-                                        </div>  
-                                        <div class="col-md-3 ">
+                                          
+                                        <div class="col-md-12 text-right">
                                             <input data-repeater-delete type="button" class="btn btn-danger action-btn"
                                             value="{{ trans('messages.delete') }}" />
                                         </div>
@@ -664,10 +466,7 @@
 @endsection
 @section('styles')
 <style>
-    .pro_variant_name{
-        text-decoration: underline;
-        text-underline-position: under;
-    }
+  
 </style>
 @endsection
 
@@ -677,30 +476,7 @@
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <script>
-        $('.deleteOld').on('click', function(){
-            var deleteId = $(this).data('id');
-            $('#old_product'+deleteId).remove();
-        });
 
-        $('.remove-variant').on('click', function() {
-            thumbnail = $(this)
-            $.ajax({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                type: "POST",
-                url: '{{ route('products.delete_varient_image') }}',
-                data: {
-                    url: $(thumbnail).data('path'),
-                    id: $(thumbnail).data('id')
-                },
-                success: function(data) {
-                    $(thumbnail).closest('.file-preview-item').remove();
-                }
-            });
-
-        });
-        
         $('.remove-thumbnail').on('click', function() {
             thumbnail = $(this)
             $.ajax({
@@ -744,14 +520,10 @@
             $tabs[$key]['tab_heading'] = $tab->heading;
             $tabs[$key]['tab_description'] = $tab->content;
         }
-        $productStockCount = count($product->stocks);
     @endphp
-
-    
 
     <script>
        
-        $('.add_variant,#attributes,.pro_variant_name').hide();
         let buttons = [
                     ["font", ["bold", "underline", "italic", "clear"]],
                     ["para", ["ul", "ol", "paragraph"]],
@@ -778,99 +550,6 @@
                 }
             }
         });
-
-        var product_repeater = $('.product-repeater').repeater({
-                            initEmpty: true,
-                            isFirstItemUndeletable: true,
-                            show: function() {
-                                $(this).slideDown();
-
-                                var repeaterItems = $("div[data-new-item]");
-                                var repeatCount = repeaterItems.length;
-
-                                var oldCount = $("div[data-item]").length;
-                            //    alert('oldCount == '+oldCount);
-                                var newCount = parseInt(repeatCount) + parseInt(oldCount);
-                                // alert('repeatCount == '+repeatCount);
-                                // alert('newCount == '+newCount);
-                                var count = parseInt(repeatCount) - 1;
-
-                                $('[name="products['+count+'][sku]"]').parent().parent().parent().find('#pro_variant_name').attr("id","pro_variant_name"+count);
-
-                                $('#pro_variant_name'+count).html('Product Variant '+newCount);
-                                $('.pro_variant_name').show();
-                                $('.imageVariant').show();
-                                // $('.variant_images').addAttr('required');
-                                // $('.variant_images').prop('required', true);
-                                $.each($("#main_attributes option:selected"), function() {
-                                    var i = $(this).val();
-                                    var name = $(this).text();
-                                    $.ajax({
-                                        headers: {
-                                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                                        },
-                                        type:"POST",
-                                        url:'{{ route('products.add-attributes') }}',
-                                        data:{
-                                        attribute_id: i
-                                        },
-                                        success: function(data) {
-                                            var obj = JSON.parse(data);
-                                            $('[name="products['+count+'][variant_images]"]').parent().parent().parent().find(".product_attributes").first().append('\
-                                                <div class="form-group row">\
-                                                    <div class="col-md-3">\
-                                                        <input type="text" class="form-control" name="products['+count+'][choice_'+ i +']" value="'+name+'" placeholder="Choice Title" readonly>\
-                                                    </div>\
-                                                    <div class="col-md-8">\
-                                                        <select class="form-control aiz-selectpicker attribute_choice" data-live-search="true" name="products['+count+'][choice_options_'+ i +']">\
-                                                            '+obj+'\
-                                                        </select>\
-                                                    </div>\
-                                                </div>');
-                                            AIZ.plugins.bootstrapSelect('refresh');
-                                        }
-                                    });
-                                });
-
-                        
-                                
-                                $(this).find('.note-editor').remove();
-                                note = $(this).find('.description-text-area').summernote({
-                                    toolbar: buttons,
-                                    height: 200,
-                                    callbacks: {
-                                        onImageUpload: function(data) {
-                                            data.pop();
-                                        },
-                                        onPaste: function(e) {
-                                            if (format) {
-                                                var bufferText = ((e.originalEvent || e).clipboardData || window
-                                                    .clipboardData).getData('Text');
-                                                e.preventDefault();
-                                                document.execCommand('insertText', false, bufferText);
-                                            }
-                                        }
-                                    }
-                                });
-                            },
-                            hide: function(deleteElement) {
-                                if (confirm('Are you sure you want to delete this element?')) {
-                                    $(this).slideUp(deleteElement);
-                                }
-                            },
-                        });
-
-        
-        var productType = '{{ $product->product_type }}';
-       
-        if(productType == '1'){
-            $('.add_variant,#attributes,.pro_variant_name,.imageVariant').show();
-            $('#main_attributes').prop('required', true);
-            // $('.variant_images').prop('required', true);
-        }else{
-            $('.imageVariant').hide();
-        }
-
 
         var repeater = $('.repeater').repeater({
             initEmpty: true,
@@ -914,111 +593,13 @@
 
         repeater.setList({!! json_encode($tabs) !!});
 
-
-        $(document).on('change','#product_type',function(){
-            if($(this).val() == 'variant'){
-                $('.add_variant,#attributes,.pro_variant_name,.imageVariant').show();
-                $('#main_attributes').prop('required', true);
-                // $('.variant_images').prop('required', true);
-            }else{ 
-                $('.add_variant,#attributes,.pro_variant_name,.imageVariant').hide();
-                $('div[data-new-item]').remove();
-                $('.variant_images').removeAttr('required');
-                $('#main_attributes').removeAttr("required");
-                $('.product_attributes,.old_product_attribute').html('');
-                $('#main_attributes').selectpicker('deselectAll');
-            }
-            AIZ.plugins.bootstrapSelect('refresh');
-        });
-
-        // $('#main_attributes').on('change', function() {
-        //     alert($(this).val());
-        //     // $('.product_attributes').html(null);
-        //     // $.each($("#main_attributes option:selected"), function() {
-        //     //     add_more_customer_choice_option($(this).val(), $(this).text());
-        //     // });
-
-        // });
-
-        $("#main_attributes").on("changed.bs.select", function(e, clickedIndex, newValue, oldValue) {
-            var sel = $(this).find('option').eq(clickedIndex).val();
-            console.log(sel+" "+newValue);
-
-            var text = $(this).find('option').eq(clickedIndex).text();
-            // console.log(e);
-            // console.log('clickedIndex   ========  '+clickedIndex);
-            // console.log('Value   ======= '+sel);
-            // console.log('Text    ======== '+text);
-            if(newValue == true){
-                add_more_customer_choice_option(sel, text);
-            }else{
-                $('.attr'+sel).remove();
-            }
-        });
-
-        function add_more_customer_choice_option(i, name){
-            $.ajax({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                type:"POST",
-                url:'{{ route('products.add-attributes') }}',
-                data:{
-                attribute_id: i
-                },
-                success: function(data) {
-                    var obj = JSON.parse(data);
-
-                    var productStockCount = {{ $productStockCount }};
-                    if(productStockCount != 0){
-                        for(j=0; j<productStockCount; j++){
-                            $('.old_product_attributes'+j).append('\
-                                <div class="form-group row attr'+i+'" >\
-                                    <div class="col-md-3">\
-                                        <input type="text" class="form-control" name="oldproduct['+j+'][choice_'+i+']" value="'+name+'" placeholder="Choice Title" readonly>\
-                                    </div>\
-                                    <div class="col-md-8">\
-                                        <select required class="form-control aiz-selectpicker attribute_choice" data-live-search="true" name="oldproduct['+j+'][choice_options_'+i+']">\
-                                            '+obj+'\
-                                        </select>\
-                                    </div>\
-                                </div>');
-                        }
-                    }
-                   
-                   // var stockCount = $product->stocks
-                    $('.product_attributes').append('\
-                        <div class="form-group row attr'+i+'">\
-                            <div class="col-md-3">\
-                                <input type="text" class="form-control" name="choice_'+ i +'" value="'+name+'" placeholder="Choice Title" readonly>\
-                            </div>\
-                            <div class="col-md-8">\
-                                <select class="form-control aiz-selectpicker attribute_choice" data-live-search="true" name="choice_options_'+ i +'">\
-                                    '+obj+'\
-                                </select>\
-                            </div>\
-                        </div>');
-                    AIZ.plugins.bootstrapSelect('refresh');
-                }
-            });
-        }
-
     </script>
 
     <script type="text/javascript">
-        
-      
-        function delete_variant(em) {
-            $(em).closest('.variant').remove();
-        }
-
      
-
         AIZ.plugins.tagify();
 
         $(document).ready(function() {
-            
-
             $('.remove-files').on('click', function() {
                 $(this).parents(".col-md-4").remove();
             });
