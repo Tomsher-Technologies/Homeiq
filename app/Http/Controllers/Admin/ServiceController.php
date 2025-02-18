@@ -129,8 +129,8 @@ class ServiceController extends Controller
         if ($request->lang == env("DEFAULT_LANGUAGE",'en')) {
             $service->name      = $request->name;
             $service->status    = $request->status;
-            $service->slug          = $slug;
-            $service->image         = $request->image;
+            $service->slug      = $slug;
+            $service->image     = $request->image;
             $service->save();
         }
 
@@ -158,8 +158,6 @@ class ServiceController extends Controller
      */
     public function destroy($id)
     {
-        $service = Service::findOrFail($id);
-       
         Service::destroy($id);
 
         flash(trans('messages.service').trans('messages.deleted_msg'))->success();

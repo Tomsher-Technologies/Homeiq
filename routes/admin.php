@@ -23,6 +23,9 @@ use App\Http\Controllers\Admin\BusinessSettingsController;
 use App\Http\Controllers\Admin\HomeSliderController;
 use App\Http\Controllers\Admin\PartnersController;
 use App\Http\Controllers\Admin\ServiceController;
+use App\Http\Controllers\Admin\FaqCategoryController;
+use App\Http\Controllers\Admin\FaqController;
+use App\Http\Controllers\Admin\BlogController;
 
 
 Route::group(['middleware' => ['guest']], function () {
@@ -149,6 +152,8 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::post('/business-settings/update', [BusinessSettingsController::class, 'update'])->name('business_settings.update');
 
+    // Manage services
+
     Route::get('/service/all', [ServiceController::class, 'index'])->name('service.index');
     Route::get('/service/create', [ServiceController::class, 'create'])->name('service.create');
     Route::post('/service/store/', [ServiceController::class, 'store'])->name('service.store');
@@ -156,4 +161,27 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/service/update/{id}', [ServiceController::class, 'update'])->name('service.update');
     Route::post('/service/status', [ServiceController::class, 'updateStatus'])->name('service.status');
     Route::get('/service/delete/{id}', [ServiceController::class, 'destroy'])->name('service.delete');
+
+
+    //Manage faq categories
+    Route::get('/faq_categories/all', [FaqCategoryController::class, 'index'])->name('faq_categories.index');
+    Route::get('/faq_categories/create', [FaqCategoryController::class, 'create'])->name('faq_categories.create');
+    Route::post('/faq_categories/store/', [FaqCategoryController::class, 'store'])->name('faq_categories.store');
+    Route::get('/faq_categories/edit/{id}', [FaqCategoryController::class, 'edit'])->name('faq_categories.edit');
+    Route::post('/faq_categories/update/{id}', [FaqCategoryController::class, 'update'])->name('faq_categories.update');
+    Route::post('/faq_categories/status', [FaqCategoryController::class, 'updateStatus'])->name('faq_categories.status');
+    Route::get('/faq_categories/delete/{id}', [FaqCategoryController::class, 'destroy'])->name('faq_categories.delete');
+
+    Route::get('/faqs/edit/{id}', [FaqCategoryController::class, 'getAllCategoryFaqs'])->name('faqs.edit');
+    Route::post('/faqs/update', [FaqCategoryController::class, 'updateFaq'])->name('faqs.update');
+
+    // Manage Blogs
+    
+    Route::get('/blogs/all', [BlogController::class, 'index'])->name('blog.index');
+    Route::get('/blog/create', [BlogController::class, 'create'])->name('blog.create');
+    Route::post('/blog/store/', [BlogController::class, 'store'])->name('blog.store');
+    Route::get('/blog/edit/{id}', [BlogController::class, 'edit'])->name('blog.edit');
+    Route::post('/blog/update/{id}', [BlogController::class, 'update'])->name('blog.update');
+    Route::post('/blog/status', [BlogController::class, 'updateStatus'])->name('blog.status');
+    Route::get('/blog/delete/{id}', [BlogController::class, 'destroy'])->name('blog.delete');
 });

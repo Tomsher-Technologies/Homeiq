@@ -148,18 +148,45 @@
                         <ul class="aiz-side-nav-list level-2">
 
                             <li class="aiz-side-nav-item">
-                                <a class="aiz-side-nav-link" href="{{ route('service.create') }}">
+                                <a class="aiz-side-nav-link" href="{{ route('faq_categories.create') }}">
                                     <span class="aiz-side-nav-text">Add New FAQ Category</span>
                                 </a>
                             </li>
 
                             <li class="aiz-side-nav-item">
-                                <a href="{{ route('service.index') }}"
-                                    class="aiz-side-nav-link {{ areActiveRoutes(['service.index', 'service.edit']) }}">
+                                <a href="{{ route('faq_categories.index') }}"
+                                    class="aiz-side-nav-link {{ areActiveRoutes(['faq_categories.index', 'faq_categories.edit','faqs.edit']) }}">
                                     <span class="aiz-side-nav-text">All FAQ Categories</span>
                                 </a>
                             </li>
                            
+                        </ul>
+                    </li>
+                @endcanany
+
+                @canany(['manage_blogs'])
+                    <li class="aiz-side-nav-item">
+                        <a href="#" class="aiz-side-nav-link">
+                            <i class="las la-question aiz-side-nav-icon"></i>
+                            <span class="aiz-side-nav-text">Blogs</span>
+                            <span class="aiz-side-nav-arrow"></span>
+                        </a>
+                        <!--Submenu-->
+                        <ul class="aiz-side-nav-list level-2">
+
+                            <li class="aiz-side-nav-item">
+                                <a class="aiz-side-nav-link" href="{{ route('blog.create') }}">
+                                    <span class="aiz-side-nav-text">Add New Blog</span>
+                                </a>
+                            </li>
+
+                            <li class="aiz-side-nav-item">
+                                <a href="{{ route('blog.index') }}"
+                                    class="aiz-side-nav-link {{ areActiveRoutes(['blog.index', 'blog.edit']) }}">
+                                    <span class="aiz-side-nav-text">All Blogs</span>
+                                </a>
+                            </li>
+                        
                         </ul>
                     </li>
                 @endcanany

@@ -9,7 +9,7 @@ class FaqCategory extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name','is_active','sort_order'];
+    protected $fillable = ['name','slug','is_active','sort_order'];
 
     public function faqs()
     {

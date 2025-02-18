@@ -9,9 +9,9 @@ class Faq extends Model
 {
     use HasFactory;
     
-    protected $fillable = ['category_id', 'question', 'answer','is_active','sort_order'];
+    protected $fillable = ['faq_category_id', 'question', 'answer','is_active','sort_order'];
 
-    public function category()
+    public function faq_category()
     {
         return $this->belongsTo(FaqCategory::class);
     }
