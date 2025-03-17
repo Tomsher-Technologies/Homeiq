@@ -167,7 +167,7 @@
                 @canany(['manage_blogs'])
                     <li class="aiz-side-nav-item">
                         <a href="#" class="aiz-side-nav-link">
-                            <i class="las la-question aiz-side-nav-icon"></i>
+                            <i class="las la-newspaper aiz-side-nav-icon"></i>
                             <span class="aiz-side-nav-text">Blogs</span>
                             <span class="aiz-side-nav-arrow"></span>
                         </a>
@@ -279,7 +279,7 @@
                                 <span class="aiz-side-nav-text">Appearance</span>
                             </a>
                         </li> --}}
-                        <li class="aiz-side-nav-item">
+                        {{-- <li class="aiz-side-nav-item">
                             <a href="{{ route('home-slider.index') }}"
                                 class="aiz-side-nav-link {{ areActiveRoutes(['home-slider.index', 'home-slider.create', 'home-slider.edit']) }}">
                                 <span class="aiz-side-nav-text">Home Page Sliders</span>
@@ -297,7 +297,7 @@
                                 class="aiz-side-nav-link {{ areActiveRoutes(['partners.index', 'partners.create', 'partners.edit']) }}">
                                 <span class="aiz-side-nav-text">Partners</span>
                             </a>
-                        </li>
+                        </li> --}}
                     </ul>
                 </li>
                 

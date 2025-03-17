@@ -16,6 +16,7 @@
             @csrf
             <input type="hidden" name="_method" value="PATCH">
             <input type="hidden" name="type" value="{{ $page->type }}">
+            <input  type="hidden" name='lang' value="{{$lang}}">
 
             <div class="card-header px-0">
                 <h6 class="fw-600 mb-0">Page Content</h6>
@@ -23,11 +24,18 @@
             <div class="card-body px-0">
         
                 <div class="form-group row">
-                    <label class="col-sm-2 col-from-label" for="name">{{ translate('Title') }} <span
+                    <label class="col-sm-2 col-from-label" for="name">Title<span
                             class="text-danger">*</span> </label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" placeholder="{{ translate('Title') }}" name="title"
-                            value="{{ $page->title }}" required>
+                        <input type="text" class="form-control" placeholder="Enter.." name="title" value="{{ $page->getTranslation('title', $lang) }}" required>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-sm-2 col-from-label" for="name">Subtitle<span
+                            class="text-danger">*</span> </label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" placeholder="Enter.." name="sub_title" value="{{ $page->getTranslation('sub_title', $lang) }}" required>
                     </div>
                 </div>
                 
@@ -38,74 +46,54 @@
             </div>
             <div class="card-body px-0">
                 <div class="form-group row">
-                    <label class="col-sm-2 col-from-label" for="name">{{ translate('Meta Title') }}</label>
+                    <label class="col-sm-2 col-from-label" for="name">Meta Title</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" placeholder="{{ translate('Title') }}" name="meta_title"
-                            value="{{ $page->meta_title }}">
+                        <input type="text" class="form-control" placeholder="Enter.." name="meta_title"
+                            value="{{ $page->getTranslation('meta_title', $lang) }}">
                     </div>
                 </div>
 
                 <div class="form-group row">
-                    <label class="col-sm-2 col-from-label" for="name">{{ translate('Meta Description') }}</label>
+                    <label class="col-sm-2 col-from-label" for="name">Meta Description</label>
                     <div class="col-sm-10">
-                        <textarea class="resize-off form-control" placeholder="{{ translate('Description') }}" name="meta_description">{!! $page->meta_description !!}</textarea>
+                        <textarea class="resize-off form-control" placeholder="Enter.." name="meta_description" rows="6">{!! $page->getTranslation('meta_description', $lang) !!}</textarea>
                     </div>
                 </div>
 
                 <div class="form-group row">
-                    <label class="col-sm-2 col-from-label" for="name">{{ translate('Keywords') }}</label>
+                    <label class="col-sm-2 col-from-label" for="name">Keywords</label>
                     <div class="col-sm-10">
-                        <textarea class="resize-off form-control" placeholder="{{ translate('Keyword, Keyword') }}" name="keywords">{!! $page->keywords !!}</textarea>
+                        <textarea class="resize-off form-control" placeholder="Enter.." name="keywords" rows="3">{!! $page->getTranslation('keywords', $lang) !!}</textarea>
                         <small class="text-muted">Separate with coma</small>
                     </div>
                 </div>
 
-
                 <div class="form-group row">
-                    <label class="col-sm-2 col-from-label" for="name">{{ translate('OG Title') }}</label>
+                    <label class="col-sm-2 col-from-label" for="name">OG Title</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" placeholder="{{ translate('OG Title') }}"
-                            name="og_title" value="{{ $page->og_title }}">
+                        <input type="text" class="form-control" placeholder="Enter.." name="og_title" value="{{ $page->getTranslation('og_title', $lang) }}">
                     </div>
                 </div>
 
                 <div class="form-group row">
-                    <label class="col-sm-2 col-from-label" for="name">{{ translate('OG Description') }}</label>
+                    <label class="col-sm-2 col-from-label" for="name">OG Description</label>
                     <div class="col-sm-10">
-                        <textarea class="resize-off form-control" placeholder="{{ translate('OG Description') }}" name="og_description">{!! $page->og_description !!}</textarea>
+                        <textarea class="resize-off form-control" placeholder="Enter.." name="og_description"  rows="6">{!! $page->getTranslation('og_description', $lang) !!}</textarea>
                     </div>
                 </div>
 
 
                 <div class="form-group row">
-                    <label class="col-sm-2 col-from-label" for="name">{{ translate('Twitter Title') }}</label>
+                    <label class="col-sm-2 col-from-label" for="name">Twitter Title</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" placeholder="{{ translate('Twitter Title') }}"
-                            name="twitter_title" value="{{ $page->twitter_title }}">
+                        <input type="text" class="form-control" placeholder="Enter.." name="twitter_title" value="{{ $page->getTranslation('twitter_title', $lang) }}">
                     </div>
                 </div>
 
                 <div class="form-group row">
-                    <label class="col-sm-2 col-from-label" for="name">{{ translate('Twitter Description') }}</label>
+                    <label class="col-sm-2 col-from-label" for="name">Twitter Description</label>
                     <div class="col-sm-10">
-                        <textarea class="resize-off form-control" placeholder="{{ translate('Twitter Description') }}"
-                            name="twitter_description">{!! $page->twitter_description !!}</textarea>
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label class="col-sm-2 col-from-label" for="name">{{ translate('Meta Image') }}</label>
-                    <div class="col-sm-10">
-                        <div class="input-group " data-toggle="aizuploader" data-type="image">
-                            <div class="input-group-prepend">
-                                <div class="input-group-text bg-soft-secondary font-weight-medium">Browse</div>
-                            </div>
-                            <div class="form-control file-amount">Choose File</div>
-                            <input type="hidden" name="meta_image" class="selected-files"
-                                value="{{ $page->meta_image }}">
-                        </div>
-                        <div class="file-preview">
-                        </div>
+                        <textarea class="resize-off form-control" placeholder="Enter.." name="twitter_description" rows="6">{!! $page->getTranslation('twitter_description', $lang) !!}</textarea>
                     </div>
                 </div>
 

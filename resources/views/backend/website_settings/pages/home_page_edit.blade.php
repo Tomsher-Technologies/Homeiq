@@ -584,6 +584,7 @@
         
                         <div class="text-right">
                             <button type="submit" class="btn btn-info">Update</button>
+                            <a href="{{ route('website.pages') }}" class="btn btn-cancel">Cancel</a>
                         </div>
                     </div>
                 </form>

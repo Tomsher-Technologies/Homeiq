@@ -460,7 +460,7 @@ class ProductController extends Controller
 
         if ($request->hasFile('thumbnail_image')) {
             if ($product->thumbnail_img) {
-                if (Storage::exists($product->thumbnail_img)) {
+                if (Storage::disk('public')->exists(str_replace('storage/', '', $product->thumbnail_img))) {
                     $info = pathinfo($product->thumbnail_img);
                     $file_name = basename($product->thumbnail_img, '.' . $info['extension']);
                     $ext = $info['extension'];
@@ -468,11 +468,11 @@ class ProductController extends Controller
                     $sizes = config('app.img_sizes');
                     foreach ($sizes as $size) {
                         $path = $info['dirname'] . '/' . $file_name . '_' . $size . 'px.' . $ext;
-                        if (Storage::exists($path)) {
-                            Storage::delete($path);
+                        if (Storage::disk('public')->exists(str_replace('storage/', '', $path))) {
+                            Storage::disk('public')->delete(str_replace('storage/', '', $path));
                         }
                     }
-                    Storage::delete($product->thumbnail_img);
+                    Storage::disk('public')->delete(str_replace('storage/', '', $product->thumbnail_img));
                 }
             }
             $gallery = $this->downloadAndResizeImage('main_product',$request->file('thumbnail_image'), $product->sku, true);
