@@ -17,7 +17,7 @@
                     <div class="swiper-slide flex flex-col items-center group">
                         <!-- Image Wrapper with Hover Border -->
                         <div class="relative rounded-full p-[5px] bg-transparent transition-all duration-300 border-[3px] border-gray-300 group-hover:border-[#41B6E8]">
-                            <img src="{{ asset('images/categories/' . $category['image']) }}" 
+                            <img src="{{ uploaded_asset($category['image']) }}" 
                                  class="w-[100px] h-[100px] rounded-full object-cover transition-transform duration-300 group-hover:scale-105" 
                                  alt="{{ $category['name'] }}">
                         </div>

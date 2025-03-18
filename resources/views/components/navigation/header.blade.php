@@ -35,37 +35,6 @@
             </svg> -->
         </a>
 
-        <!-- <div x-show="open"
-             x-transition:enter="transition ease-out duration-200"
-             x-transition:enter-start="opacity-0 translate-y-2 scale-95"
-             x-transition:enter-end="opacity-100 translate-y-0 scale-100"
-             x-transition:leave="transition ease-in duration-150"
-             x-transition:leave-start="opacity-100 translate-y-0 scale-100"
-             x-transition:leave-end="opacity-0 translate-y-2 scale-95"
-             class="absolute bg-white shadow-xl mt-4 py-6 px-8 rounded-lg w-[1000px] left-1/2 -translate-x-1/2 z-50">
-            <div class="container mx-auto">
-                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-4">
-                    @foreach ($categories as $category)
-                        <div class="col-span-1">
-                            <h3 class="text-lg font-semibold text-gray-800 mb-3">{{ $category['name'] }}</h3>
-                            @foreach ($category['products'] as $product)
-                                @if (isset($product['id']))
-                                    <a href="{{ route('products.show', $product['id']) }}" class="block hover:bg-gray-100 p-2 rounded-lg">
-                                        <div class="flex items-center space-x-3">
-                                            <img src="{{ asset('images/' . $product['image']) }}" alt="{{ $product['title'] }}" class="w-12 h-12 object-cover rounded-lg">
-                                            <div>
-                                                <h4 class="text-sm font-semibold text-gray-800">{{ $product['title'] }}</h4>
-                                                <p class="text-xs text-gray-600">{{ $product['description'] }}</p>
-                                            </div>
-                                        </div>
-                                    </a>
-                                @endif
-                            @endforeach
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-        </div> -->
     </div>
 
 

@@ -29,16 +29,18 @@ Route::get('/', [FrontendController::class, 'home'])->name('home');
 Route::get('/services', [FrontendController::class, 'index'])->name('services.index');
 Route::get('/services/{id}', [FrontendController::class, 'show'])->name('services.show');
 
+Route::get('/blogs/', [FrontendController::class, 'about'])->name('blog');
+Route::get('/blog', [FrontendController::class, 'about'])->name('blog.details');
 
 
-Route::get('/about', [FrontendController::class, 'about'])->name('about_us');
+Route::get('/about', [FrontendController::class, 'about'])->name('about-us');
 Route::get('/terms', [FrontendController::class, 'terms'])->name('terms');
 Route::get('/privacy', [FrontendController::class, 'privacy'])->name('privacy');
 Route::get('/contact', [FrontendController::class, 'contact'])->name('contact');
 Route::post('/contact-us', [FrontendController::class, 'submitContactForm'])->name('contact.submit');
 
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
-Route::get('/product-detail', [ProductController::class, 'productDetails'])->name('product-detail');
+Route::get('/product-detail', [ProductController::class, 'productDetails'])->name('products.show');
 Route::post('/recently-viewed', [CommonController::class, 'addRecentlyViewed']);
 Route::get('/recently-viewed', [CommonController::class, 'getRecentlyViewed']);
 Route::get('related-products', [ProductController::class, 'relatedProducts'])->name('related.products');

@@ -19,7 +19,7 @@
                     
                     <!-- Service Image -->
                     <div class="relative w-full h-48">
-                        <img src="{{ asset('images/services/' . $service['image']) }}" 
+                        <img src="{{ uploaded_asset($service['image']) }}" 
                              alt="{{ $service['title'] }}" 
                              class="w-full h-full object-cover rounded-lg transition duration-300 group-hover:scale-105">
                     </div>

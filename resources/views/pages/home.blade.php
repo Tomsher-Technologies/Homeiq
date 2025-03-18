@@ -32,7 +32,7 @@
 
     {{-- ✅ Blog Section --}}
     @if(isset($blogs) && count($blogs) > 0)
-        {{-- <x-blogList :blogs="$blogs" /> --}}
+        <x-blogList :blogs="$blogs" />
     @endif
 
     {{-- ✅ JavaScript --}}

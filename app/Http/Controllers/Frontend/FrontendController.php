@@ -150,7 +150,7 @@ class FrontendController extends Controller
 
         // return view('frontend.home',compact('page','data','lang'));
 
-        return view('frontend.pages.home', [
+        return view('pages.home', [
             'products' => $data['home_products'],
             'services' => $data['home_services'],
             'categories' => $data['home_categories'],
