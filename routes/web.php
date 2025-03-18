@@ -24,6 +24,13 @@ use App\Http\Controllers\Frontend\ForgotPasswordController;
 */
 
 Route::get('/', [FrontendController::class, 'home'])->name('home');
+
+
+Route::get('/services', [FrontendController::class, 'index'])->name('services.index');
+Route::get('/services/{id}', [FrontendController::class, 'show'])->name('services.show');
+
+
+
 Route::get('/about', [FrontendController::class, 'about'])->name('about_us');
 Route::get('/terms', [FrontendController::class, 'terms'])->name('terms');
 Route::get('/privacy', [FrontendController::class, 'privacy'])->name('privacy');

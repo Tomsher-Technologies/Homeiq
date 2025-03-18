@@ -8,14 +8,14 @@ use App\Models\Category;
 use App\Models\Page;
 use App\Models\PageTranslations;
 use App\Models\PageSeos;
-use App\Models\Banner;
 use App\Models\Brand;
 use App\Models\HomeSlider;
-use App\Models\Occasion;
-use App\Models\Partners;
+use App\Models\Service;
 use App\Models\BusinessSetting;
 use App\Models\Subscriber;
 use App\Models\Contacts;
+use App\Models\Testimonials;
+use App\Models\Blog;
 use App\Mail\ContactEnquiry;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
@@ -90,6 +90,7 @@ class FrontendController extends Controller
 
         SEOTools::jsonLd()->addImage(URL::to(asset('assets/img/favicon.svg')));
     }
+
     public function home()
     {
         $page = Page::where('type','home')->first();
@@ -108,12 +109,12 @@ class FrontendController extends Controller
         $this->loadSEO($seo);
 
         $data['slider'] = Cache::rememberForever('homeSlider', function () {
-            $sliders = HomeSlider::where('status',1)->orderBy('sort_order')->get();
+            $sliders = HomeSlider::where('status',1)->orderBy('sort_order','asc')->get();
             return $sliders;
         });
 
-        $data['discover_categories'] = Cache::rememberForever('discover_categories', function () {
-            $categories = get_setting('discover_categories');
+        $data['home_categories'] = Cache::rememberForever('home_categories', function () {
+            $categories = get_setting('home_categories');
             if ($categories) {
                 $details = Category::whereIn('id', json_decode($categories))->where('is_active', 1)
                     ->get();
@@ -121,79 +122,43 @@ class FrontendController extends Controller
             }
         });
 
-       
-
-        $home_banners = BusinessSetting::whereIn('type', array('home_mid_section_banner','home_center_banner', 'home_mid_banner'))->get()->keyBy('type');
-        
-        $banners = [];
-        $all_banners = Banner::where('status', 1);
-        if(!empty($home_banners)){
-            foreach($home_banners as $key => $hb){
-                $bannerid = json_decode($hb->value);
-                
-                $bannerData = [];
-                if(!empty($bannerid)){
-                    $bannerData = Banner::where('status', 1)->whereIn('id', $bannerid)->get();
-                }
-                
-                if(!empty($bannerData)){
-                    foreach($bannerData as $bData){
-                        
-                        $banners[$key][] = array(
-                            'type' => $bData->link_type ?? '',
-                            'link' => $bData->link_type == 'external' ? $bData->link : $bData->getBannerLink(),
-                            'type_id' => $bData->link_ref_id,
-                            'image' => ($bData->getTranslation('image', $lang)) ? uploaded_asset($bData->getTranslation('image', $lang)) : '',
-                            'mob_image' => ($bData->getTranslation('mobile_image', $lang)) ? uploaded_asset($bData->getTranslation('mobile_image', $lang)) : '',
-                            'title' => $bData->getTranslation('title', $lang),
-                            'sub_title' => $bData->getTranslation('sub_title', $lang),
-                            'btn_text' => $bData->getTranslation('btn_text', $lang) 
-                        );
-                        
-                    }
-                }else{
-                    $banners[$key] = array();
-                }
-            }
-        }
-       
-       
-        $data['banners'] = $banners;
-
-        $data['new_arrival_products'] = Cache::remember('new_arrival_products', 3600, function () {
-            $product_ids = get_setting('new_arrival_products');
+        $data['home_products'] = Cache::remember('home_products', 3600, function () {
+            $product_ids = get_setting('home_products');
             if ($product_ids) {
                 $products =  Product::where('published', 1)->whereIn('id', json_decode($product_ids))->with('brand')->get();
                 return $products;
             }
         });
 
-        $data['home_occasions'] = [];
-
-        $data['special_products'] = Cache::remember('special_products', 3600, function () {
-            $product_ids = get_setting('special_products');
-            if ($product_ids) {
-                $products =  Product::where('published', 1)->whereIn('id', json_decode($product_ids))->with('brand')->get();
-                return $products;
+        $data['home_services'] = Cache::remember('home_services', 3600, function () {
+            $service_ids = get_setting('home_services');
+            if ($service_ids) {
+                $services =  Service::where('status', 1)->whereIn('id', json_decode($service_ids))->get();
+                return $services;
             }
         });
 
-        $data['shop_by_brands'] = Cache::rememberForever('shop_by_brands', function () {
-            $details = Brand::where('is_active', 1)->get();
+        $data['testimonials'] = Cache::rememberForever('home_testimonials', function () {
+            $testimonials = Testimonials::where('status', 1)->orderBy('sort_order', 'asc')->get();
+            return $testimonials;
+        });
+
+        $data['blogs'] = Cache::rememberForever('home_blogs', function () {
+            $details = Blog::where('status', 1)->orderBy('blog_date', 'desc')->limit(3)->get();
             return $details;
         });
 
-        $data['partners'] = Cache::rememberForever('partners', function () {
-            $details = Partners::where('status', 1)->get();
-            return $details;
-        });
+        // return view('frontend.home',compact('page','data','lang'));
 
-        // echo '<pre>';
-        // print_r($data);
-        // die;
-
-
-        return view('frontend.home',compact('page','data','lang'));
+        return view('frontend.pages.home', [
+            'products' => $data['home_products'],
+            'services' => $data['home_services'],
+            'categories' => $data['home_categories'],
+            'testimonials' => $data['testimonials'],
+            'blogs' => $data['blogs'], 
+            'page' => $page,
+            'lang' => $lang
+        ]);
     }
 
     public function about()
