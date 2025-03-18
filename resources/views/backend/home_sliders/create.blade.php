@@ -81,7 +81,7 @@
                                     <option {{ old('link_type') == 'category' ? 'selected' : '' }} value="category">Category
                                     </option>
                                     <option {{ old('link_type') == 'brand' ? 'selected' : '' }} value="brand">Brand</option>
-                                    <option {{ old('link_type') == 'occasion' ? 'selected' : '' }} value="occasion">Occasion</option>
+                                    <option {{ old('link_type') == 'service' ? 'selected' : '' }} value="service">Service</option>
                                 </select>
                                 @error('link_type')
                                     <div class="alert alert-danger">{{ $message }}</div>
@@ -126,6 +126,7 @@
                             <button type="submit" class="btn btn-primary">
                                 Save
                             </button>
+                            <a href="{{ route('home-slider.index') }}" class="btn btn-cancel">{{trans('messages.cancel')}}</a>
                         </div>
                     </form>
                 </div>

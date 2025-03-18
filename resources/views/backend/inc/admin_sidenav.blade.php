@@ -279,20 +279,25 @@
                                 <span class="aiz-side-nav-text">Appearance</span>
                             </a>
                         </li> --}}
-                        {{-- <li class="aiz-side-nav-item">
-                            <a href="{{ route('home-slider.index') }}"
-                                class="aiz-side-nav-link {{ areActiveRoutes(['home-slider.index', 'home-slider.create', 'home-slider.edit']) }}">
-                                <span class="aiz-side-nav-text">Home Page Sliders</span>
-                            </a>
-                        </li>
                         <li class="aiz-side-nav-item">
-                            <a href="{{ route('banners.index') }}"
-                                class="aiz-side-nav-link {{ areActiveRoutes(['banners.index', 'banners.create', 'banners.edit']) }}">
-                                <span class="aiz-side-nav-text">Banners</span>
+                            <a href="{{ route('home-slider.index') }}" class="aiz-side-nav-link {{ areActiveRoutes(['home-slider.index', 'home-slider.create', 'home-slider.edit']) }}">
+                                <span class="aiz-side-nav-text">Home Page Sliders</span>
                             </a>
                         </li>
 
                         <li class="aiz-side-nav-item">
+                            <a href="{{ route('testimonials.index') }}" class="aiz-side-nav-link">
+                                <span class="aiz-side-nav-text">Testimonials</span>
+                            </a>
+                        </li>
+                        {{-- <li class="aiz-side-nav-item">
+                            <a href="{{ route('banners.index') }}"
+                                class="aiz-side-nav-link {{ areActiveRoutes(['banners.index', 'banners.create', 'banners.edit']) }}">
+                                <span class="aiz-side-nav-text">Banners</span>
+                            </a>
+                        </li> --}}
+
+                        {{-- <li class="aiz-side-nav-item">
                             <a href="{{ route('partners.index') }}"
                                 class="aiz-side-nav-link {{ areActiveRoutes(['partners.index', 'partners.create', 'partners.edit']) }}">
                                 <span class="aiz-side-nav-text">Partners</span>

@@ -24,21 +24,23 @@
                         <table class="table aiz-table mb-0">
                             <thead>
                                 <tr>
-                                    <th data-breakpoints="lg">Name</th>
-                                    <th data-breakpoints="lg">Link Type</th>
-                                    <th data-breakpoints="lg">Image</th>
-                                    <th data-breakpoints="lg">Sort Order</th>
-                                    <th data-breakpoints="lg">Status</th>
-                                    <th>Options</th>
+                                    <th class="text-center">#</th>
+                                    <th>Name</th>
+                                    <th class="text-center">Link Type</th>
+                                    <th>Image</th>
+                                    <th class="text-center">Sort Order</th>
+                                    <th class="text-center">Status</th>
+                                    <th class="text-center">Options</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($sliders as $key => $slider)
                                     <tr>
+                                        <td class="text-center">{{ $key + 1 + ($sliders->currentPage() - 1) * $sliders->perPage() }}</td>
                                         <td>
                                             {{ $slider->name }}
                                         </td>
-                                        <td>
+                                        <td class="text-center">
                                             {{ ucfirst($slider->link_type) }}
                                         </td>
                                         <td>
@@ -51,18 +53,18 @@
                                                 @endif
                                             </div>
                                         </td>
-                                        <td>
+                                        <td class="text-center">
                                             {{ $slider->sort_order }}
                                         </td>
 
-                                        <td>
+                                        <td class="text-center">
                                             <label class="aiz-switch aiz-switch-success mb-0">
                                                 <input onchange="update_published(this)" value="{{ $slider->id }}"
                                                     type="checkbox" {{ $slider->status == 1 ? 'checked' : '' }}>
                                                 <span class="slider round"></span>
                                             </label>
                                         </td>
-                                        <td class="text-right">
+                                        <td class="text-center">
                                             <a class="btn btn-soft-primary btn-icon btn-circle"
                                                 href="{{ route('home-slider.edit', $slider) }}" title="Edit">
                                                 <i class="las la-edit"></i>
@@ -78,7 +80,7 @@
                             </tbody>
                         </table>
                         <div class="aiz-pagination">
-                            {{ $sliders->links() }}
+                            {{ $sliders->appends(request()->input())->links() }}
                         </div>
                     </div>
                 </form>

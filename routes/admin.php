@@ -26,6 +26,7 @@ use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\FaqCategoryController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\BlogController;
+use App\Http\Controllers\Admin\TestimonialController;
 
 
 Route::group(['middleware' => ['guest']], function () {
@@ -76,6 +77,12 @@ Route::group(['middleware' => ['auth']], function () {
 
         // Partners
         Route::resource('partners', PartnersController::class)->except('show');
+
+        // Manage testimonials
+        Route::resource('testimonials', TestimonialController::class)->except('show');
+        Route::get('/testimonials/delete/{id}', [TestimonialController::class, 'destroy'])->name('testimonials.delete');
+        Route::post('/testimonials/update-status', [TestimonialController::class, 'updateStatus'])->name('testimonials.update-status');
+        
     });
 
     // Brands

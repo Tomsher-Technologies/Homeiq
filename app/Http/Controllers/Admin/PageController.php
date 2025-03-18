@@ -14,6 +14,7 @@ use App\Models\BusinessSetting;
 use App\Models\Banner;
 use App\Models\Product;
 use App\Models\Contacts;
+use App\Models\Service;
 use Storage;
 use File;
 
@@ -100,18 +101,14 @@ class PageController extends Controller
         if($page != null){
             $page_id = $page->id;
           if ($id == 'home') {
-            $banners = Banner::where('status', 1)->get();
-            $current_banners = BusinessSetting::whereIn('type', array('home_banner','home_mid_section_banner','home_center_banner', 'home_mid_banner', 'home_large_banner'))->get()->keyBy('type');
-            // echo '<pre>';
-            // print_r($current_banners);
-            // die;
+            
             $categories = Category::where('parent_id', 0)->where('is_active',1)->with('childrenCategories')->get();
 
             $products = Product::select('id', 'name')->where('published',1)->get();
             $brands = Brand::where('is_active',1)->orderBy('name', 'asc')->get();
-            $occasions = [];
-
-            return view('backend.website_settings.pages.home_page_edit', compact('page', 'banners', 'current_banners', 'categories', 'brands', 'products','occasions','lang','page_id'));
+            $services = Service::where('status',1)->orderBy('name', 'asc')->get();
+            
+            return view('backend.website_settings.pages.home_page_edit', compact('page', 'services', 'categories', 'brands', 'products', 'lang','page_id'));
             
           }
           else if ($id == 'find_us' || $id == 'news' || $id == 'faq') {

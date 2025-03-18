@@ -523,33 +523,34 @@ class ProductController extends Controller
                 ]);
             }
         }
+        $product_stock                  = ProductStock::where('product_id', $product->id)->first();
+        if(!empty($product_stock[0])){
+            $product_stock->product_id      = $product->id;
+            $product_stock->sku             = $skuMain;
+            $product_stock->qty             = $request->current_stock;
 
-        $product_stock                  = ProductStock::find($product->id);
-        $product_stock->product_id      = $product->id;
-        $product_stock->sku             = $skuMain;
-        $product_stock->qty             = $request->current_stock;
+            $price  = 0;
+            $offertag       = '';
+            $productOrgPrice = $request->price;
+            $discountPrice = $productOrgPrice;
 
-        $price  = 0;
-        $offertag       = '';
-        $productOrgPrice = $request->price;
-        $discountPrice = $productOrgPrice;
-
-        $discount_applicable = false;
-        if (strtotime(date('d-m-Y H:i:s')) >= $product->discount_start_date && strtotime(date('d-m-Y H:i:s')) <= $product->discount_end_date) {
-            if ($product->discount_type == 'percent') {
-                $discountPrice  = $productOrgPrice - (($productOrgPrice * $product->discount) / 100);
-                $offertag       = $product->discount . '% OFF';
-            } elseif ($product->discount_type == 'amount') {
-                $discountPrice  = $productOrgPrice - $product->discount;
-                $offertag       = 'AED '.$product->discount.' OFF';
+            $discount_applicable = false;
+            if (strtotime(date('d-m-Y H:i:s')) >= $product->discount_start_date && strtotime(date('d-m-Y H:i:s')) <= $product->discount_end_date) {
+                if ($product->discount_type == 'percent') {
+                    $discountPrice  = $productOrgPrice - (($productOrgPrice * $product->discount) / 100);
+                    $offertag       = $product->discount . '% OFF';
+                } elseif ($product->discount_type == 'amount') {
+                    $discountPrice  = $productOrgPrice - $product->discount;
+                    $offertag       = 'AED '.$product->discount.' OFF';
+                }
             }
+
+            $product_stock->price       = $productOrgPrice;
+            $product_stock->offer_price = $discountPrice;
+            $product_stock->offer_tag   = $offertag;
+            $product_stock->save();
         }
-
-        $product_stock->price       = $productOrgPrice;
-        $product_stock->offer_price = $discountPrice;
-        $product_stock->offer_tag   = $offertag;
-        $product_stock->save();
-
+        
         flash(trans('messages.product').' '.trans('messages.updated_msg'))->success();
         
         Artisan::call('view:clear');
