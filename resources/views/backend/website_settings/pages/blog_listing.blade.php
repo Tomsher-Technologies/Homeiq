@@ -28,6 +28,7 @@
                             class="text-danger">*</span> </label>
                     <div class="col-sm-10">
                         <input type="text" class="form-control" placeholder="Enter.." name="title" value="{{ $page->getTranslation('title', $lang) }}" required>
+                        <span style="font-size:12px;color: #00b3ff !important;">To highlight specific words, enclose them in square brackets [ ]</span>
                     </div>
                 </div>
 

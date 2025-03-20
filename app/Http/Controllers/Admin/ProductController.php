@@ -524,7 +524,8 @@ class ProductController extends Controller
             }
         }
         $product_stock                  = ProductStock::where('product_id', $product->id)->first();
-        if(!empty($product_stock[0])){
+     
+        if(!empty($product_stock)){
             $product_stock->product_id      = $product->id;
             $product_stock->sku             = $skuMain;
             $product_stock->qty             = $request->current_stock;

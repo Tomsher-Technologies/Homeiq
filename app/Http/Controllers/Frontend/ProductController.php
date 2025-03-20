@@ -3,21 +3,16 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Frontend\FrontendController;
 use App\Models\Product;
 use App\Models\ProductStock;
 use App\Models\Category;
 use App\Models\Page;
 use App\Models\PageTranslations;
 use App\Models\PageSeos;
-use App\Models\Banner;
 use App\Models\Brand;
 use App\Models\HomeSlider;
-use App\Models\Occasion;
-use App\Models\Partners;
 use App\Models\BusinessSetting;
-use App\Models\Attribute;
-use App\Models\AttributeValue;
-use App\Models\ProductAttributes;
 use App\Models\Review;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
@@ -41,20 +36,21 @@ use Carbon\Carbon;
 
 class ProductController extends Controller
 {
+    private $frontController;
+
+    function __construct(FrontendController $frontController)
+    {
+        $this->frontController = $frontController;
+    }
 
     public function index(Request $request)
     {
-        $price = $request->price;
+        $price = $request->price_range;
         $min_price = $max_price = 0;
         if($price != null){
-            preg_match_all('/\d+/', $price, $matches);
-            if(isset($matches[0][0])){
-                $min_price = $matches[0][0];
-            }
-            if(isset($matches[0][1])){
-                $max_price = $matches[0][1];
-            }
-           
+            $range = explode('-', $price);
+            $min_price = $range[0];
+            $max_price = $range[1];
         }
        
         $lang = getActiveLanguage();
@@ -65,6 +61,7 @@ class ProductController extends Controller
         $occasion = $request->has('occasion') ? $request->occasion  : false;
         $sort_by = $request->has('sort_by') ? $request->sort_by : null;
 
+        // DB::enableQueryLog();
         $product_query  = Product::wherePublished(1);
         $categoryData = null;
         if ($category) {
@@ -91,23 +88,14 @@ class ProductController extends Controller
             // print_r($childIds);
             // die;
             $product_query->whereIn('category_id', $childIds);
-          
         }
         
         if ($brand) {
             $brand_ids = Brand::whereHas('brand_translations', function ($query) use ($brand) {
-                                    $query->whereIn('slug', $brand);
+                                    $query->where('slug', $brand);
                                 })->where('is_active', 1)->pluck('id')->toArray();
 
             $product_query->whereIn('brand_id', $brand_ids);
-        }
-
-        if ($occasion) {
-            $occasion_ids = Occasion::whereHas('occasion_translations', function ($query) use ($occasion) {
-                                    $query->whereIn('slug', $occasion);
-                                })->where('is_active', 1)->pluck('id')->toArray();
-
-            $product_query->whereIn('occasion_id', $occasion_ids);
         }
 
         if ($sort_by) {
@@ -125,11 +113,41 @@ class ProductController extends Controller
                     $product_query->orderBy('name', 'desc');
                     break;
                 case 'price_high':
-                    $product_query->select('*', DB::raw("(SELECT MAX(price) from product_stocks WHERE product_id = products.id) as sort_price"));
+                    $product_query->select('*', DB::raw("
+                                        (CASE 
+                                            WHEN discount > 0 
+                                                AND (discount_start_date IS NULL OR discount_start_date <= NOW()) 
+                                                AND (discount_end_date IS NULL OR discount_end_date >= NOW()) 
+                                            THEN 
+                                                CASE 
+                                                    WHEN discount_type = 'percentage' 
+                                                        THEN (SELECT MAX(price) FROM product_stocks WHERE product_id = products.id) - ((SELECT MAX(price) FROM product_stocks WHERE product_id = products.id) * discount / 100)
+                                                    WHEN discount_type = 'amount' 
+                                                        THEN (SELECT MAX(price) FROM product_stocks WHERE product_id = products.id) - discount
+                                                    ELSE (SELECT MAX(price) FROM product_stocks WHERE product_id = products.id)
+                                                END
+                                            ELSE (SELECT MAX(price) FROM product_stocks WHERE product_id = products.id)
+                                        END) as sort_price
+                                    "));
                     $product_query->orderBy('sort_price', 'desc');
                     break;
                 case 'price_low':
-                    $product_query->select('*', DB::raw("(SELECT MIN(price) from product_stocks WHERE product_id = products.id) as sort_price"));
+                    $product_query->select('*', DB::raw("
+                                            (CASE 
+                                                WHEN discount > 0 
+                                                    AND (discount_start_date IS NULL OR discount_start_date <= NOW()) 
+                                                    AND (discount_end_date IS NULL OR discount_end_date >= NOW()) 
+                                                THEN 
+                                                    CASE 
+                                                        WHEN discount_type = 'percentage' 
+                                                            THEN (SELECT MAX(price) FROM product_stocks WHERE product_id = products.id) - ((SELECT MAX(price) FROM product_stocks WHERE product_id = products.id) * discount / 100)
+                                                        WHEN discount_type = 'amount' 
+                                                            THEN (SELECT MAX(price) FROM product_stocks WHERE product_id = products.id) - discount
+                                                        ELSE (SELECT MAX(price) FROM product_stocks WHERE product_id = products.id)
+                                                    END
+                                                ELSE (SELECT MAX(price) FROM product_stocks WHERE product_id = products.id)
+                                            END) as sort_price
+                                        "));
                     $product_query->orderBy('sort_price', 'asc');
                     break;
                 default:
@@ -162,9 +180,10 @@ class ProductController extends Controller
             $product_query->where('discount_start_date', '<=', $today) // Offer starts on or before today
             ->where('discount_end_date', '>=', $today);
         }
-        $products = $product_query->paginate(20)->appends($request->query());
-
-
+        $products = $product_query->paginate(2)->appends($request->query());
+        // $products = $product_query->get();
+        // dd(DB::getQueryLog());
+        
         $categories = Cache::rememberForever('categories', function () {
             $details = Category::where('parent_id',0)->where('is_active', 1)->orderBy('name','asc')->get();
             return $details;
@@ -175,9 +194,171 @@ class ProductController extends Controller
             return $details;
         });
 
-        $occasions = [];
+        $page = Page::where('type','product_list')->first();
+        $seo = [
+            'title'                 => $page->getTranslation('title', $lang),
+            'meta_title'            => $page->getTranslation('meta_title', $lang),
+            'meta_description'      => $page->getTranslation('meta_description', $lang),
+            'keywords'              => $page->getTranslation('keywords', $lang),
+            'og_title'              => $page->getTranslation('og_title', $lang),
+            'og_description'        => $page->getTranslation('og_description', $lang),
+            'twitter_title'         => $page->getTranslation('twitter_title', $lang),
+            'twitter_description'   => $page->getTranslation('twitter_description', $lang),
+        ];
+        
+        $this->frontController->loadSEO($seo);
+        return view('pages.products-listing',compact('page','limit','products','offset','min_price','max_price','category','brand','occasion','sort_by','lang','categories','brands','categoryData','price'));
+    }
 
-        return view('frontend.products',compact('limit','products','offset','min_price','max_price','category','brand','occasion','sort_by','lang','categories','brands','occasions','categoryData','price'));
+    public function loadMoreProducts(Request $request){
+        if ($request->ajax()) {
+            $lang = getActiveLanguage();
+            
+            $price = $request->price_range;
+            $min_price = $max_price = 0;
+            if($price != null){
+                $range = explode('-', $price);
+                $min_price = $range[0];
+                $max_price = $range[1];
+            }
+
+            $limit = $request->has('limit') ? $request->limit : 10;
+            $offset = $request->has('offset') ? $request->offset : 0;
+            $category = $request->has('category') ? $request->category  : false;
+            $brand = $request->has('brand') ? $request->brand  : false;
+            $sort_by = $request->has('sort_by') ? $request->sort_by : null;
+
+            $product_query  = Product::wherePublished(1);
+            $categoryData = null;
+            if ($category) {
+                $categoryData = Category::whereHas('category_translations', function ($query) use ($category) {
+                                            $query->where('slug', $category);
+                                        })->where('is_active',1)->first();
+
+                $childIds = [];
+                $category_ids = Category::whereHas('category_translations', function ($query) use ($category) {
+                                            $query->where('slug', $category);
+                                        })->where('is_active',1)->pluck('id')->toArray();
+
+                $childIds[] = $category_ids;
+                if(!empty($category_ids)){
+                    foreach($category_ids as $cId){
+                        $childIds[] = getChildCategoryIds($cId);
+                    }
+                }
+
+                if(!empty($childIds)){
+                    $childIds = array_merge(...$childIds);
+                    $childIds = array_unique($childIds);
+                }
+                // print_r($childIds);
+                // die;
+                $product_query->whereIn('category_id', $childIds);
+            }
+            
+            if ($brand) {
+                $brand_ids = Brand::whereHas('brand_translations', function ($query) use ($brand) {
+                                        $query->where('slug', $brand);
+                                    })->where('is_active', 1)->pluck('id')->toArray();
+
+                $product_query->whereIn('brand_id', $brand_ids);
+            }
+
+            if ($sort_by) {
+                switch ($sort_by) {
+                    case 'latest':
+                        $product_query->latest();
+                        break;
+                    case 'oldest':
+                        $product_query->oldest();
+                        break;
+                    case 'name_asc':
+                        $product_query->orderBy('name', 'asc');
+                        break;
+                    case 'name_desc':
+                        $product_query->orderBy('name', 'desc');
+                    break;
+                    case 'price_high':
+                        $product_query->select('*', DB::raw("
+                                            (CASE 
+                                                WHEN discount > 0 
+                                                    AND (discount_start_date IS NULL OR discount_start_date <= NOW()) 
+                                                    AND (discount_end_date IS NULL OR discount_end_date >= NOW()) 
+                                                THEN 
+                                                    CASE 
+                                                        WHEN discount_type = 'percentage' 
+                                                            THEN (SELECT MAX(price) FROM product_stocks WHERE product_id = products.id) - ((SELECT MAX(price) FROM product_stocks WHERE product_id = products.id) * discount / 100)
+                                                        WHEN discount_type = 'amount' 
+                                                            THEN (SELECT MAX(price) FROM product_stocks WHERE product_id = products.id) - discount
+                                                        ELSE (SELECT MAX(price) FROM product_stocks WHERE product_id = products.id)
+                                                    END
+                                                ELSE (SELECT MAX(price) FROM product_stocks WHERE product_id = products.id)
+                                            END) as sort_price
+                                        "));
+                        $product_query->orderBy('sort_price', 'desc');
+                    break;
+                    case 'price_low':
+                        $product_query->select('*', DB::raw("
+                                                (CASE 
+                                                    WHEN discount > 0 
+                                                        AND (discount_start_date IS NULL OR discount_start_date <= NOW()) 
+                                                        AND (discount_end_date IS NULL OR discount_end_date >= NOW()) 
+                                                    THEN 
+                                                        CASE 
+                                                            WHEN discount_type = 'percentage' 
+                                                                THEN (SELECT MAX(price) FROM product_stocks WHERE product_id = products.id) - ((SELECT MAX(price) FROM product_stocks WHERE product_id = products.id) * discount / 100)
+                                                            WHEN discount_type = 'amount' 
+                                                                THEN (SELECT MAX(price) FROM product_stocks WHERE product_id = products.id) - discount
+                                                            ELSE (SELECT MAX(price) FROM product_stocks WHERE product_id = products.id)
+                                                        END
+                                                    ELSE (SELECT MAX(price) FROM product_stocks WHERE product_id = products.id)
+                                                END) as sort_price
+                                            "));
+                        $product_query->orderBy('sort_price', 'asc');
+                    break;
+                    default:
+                        # code...
+                        break;
+                }
+            }
+
+            if ($request->search) {
+                $sort_search = $request->search;
+                $products = $product_query->where(function ($query) use($sort_search) {
+                    $query->orWhereHas('stocks', function ($q) use ($sort_search) {
+                        $q->where('sku', 'like', '%' . $sort_search . '%');
+                    })->orWhereHas('product_translations', function ($q) use ($sort_search) {
+                        $q->where('tags', 'like', '%' . $sort_search . '%')->orWhere('name', 'like', '%' . $sort_search . '%');
+                    });
+
+                });
+                // SearchUtility::store($sort_search, $request);
+            }
+
+            if($max_price != 0 && $min_price != 0){
+                $product_query->whereHas('stocks', function ($query) use ($min_price, $max_price) {
+                    $query->whereBetween('price', [$min_price, $max_price]);
+                });
+            }
+
+            $products = $product_query->paginate(2)->appends($request->query());
+           
+            // Check if services exist and render the partial view
+            if ($products->isEmpty()) {
+                return response()->json(['html' => '', 'hasMore' => false]);
+            }
+    
+            // Render the partial view and return it with a flag indicating if more pages are available
+            $html = view('pages.product_card', ['products' => $products, 'lang' => $lang])->render();
+    
+            return response()->json([
+                'html' => $html,
+                'hasMore' => $products->hasMorePages(),
+            ]);
+        }
+    
+        // Return a fallback if the request is not via AJAX
+        return response()->json(['error' => 'Invalid request'], 400);
     }
 
     public function productDetails(Request $request){

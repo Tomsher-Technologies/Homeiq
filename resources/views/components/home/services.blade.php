@@ -4,11 +4,15 @@
     <div class="container mx-auto px-6 lg:px-12">
         <!-- Section Title -->
         <h2 class="text-3xl md:text-4xl font-normal text-center relative z-10">
-            Expert <span class="text-[#41B6E8] font-semibold">Installation</span> for a Smarter Home
+            @php
+                $text = $page->getTranslation('heading3',$lang)    ; // Get this from DB
+                $formattedText = preg_replace('/\[(.*?)\]/', '<span class="text-primary font-semibold">$1</span>', $text);
+            @endphp
+
+            {!! $formattedText !!}
         </h2>
         <p class="text-gray-600 mt-4 text-center relative z-10">
-            Our professionals ensure a seamless setup for your smart home devices. <br>
-            Enjoy secure and hassle-free installation tailored to your needs.
+            {{ $page->getTranslation('heading4',$lang) }}
         </p>
 
         <!-- Services Grid -->
@@ -16,40 +20,40 @@
             @forelse($services as $service)
                 <!-- Service Card -->
                 <div class="group p-6 bg-white rounded-2xl shadow-md transition duration-300 border border-gray-200 hover:shadow-lg hover:border-primary relative overflow-hidden">
-                    
-                    <!-- Service Image -->
-                    <div class="relative w-full h-48">
-                        <img src="{{ uploaded_asset($service['image']) }}" 
-                             alt="{{ $service['title'] }}" 
-                             class="w-full h-full object-cover rounded-lg transition duration-300 group-hover:scale-105">
-                    </div>
-                    
-                    <!-- Service Info -->
-                    <div class="mt-4 relative z-10">
-                        <h3 class="text-lg font-semibold text-black group-hover:text-primary transition duration-300">
-                            {{ $service['title'] }}
-                        </h3>
-                    </div>
-                    
-                    <p class="mt-3 text-sm text-gray-700 relative z-10">
-                        {{ Str::limit($service['description'], 120, '...') }}
-                    </p>
+                    <a href="{{ route('services.show', ['slug' => $service->slug]) }}">
+                        <!-- Service Image -->
+                        <div class="relative w-full h-48">
+                            <img src="{{ uploaded_asset($service['image']) }}" 
+                                alt="{{ $service->getTranslation('name', $lang) }}" 
+                                class="w-full h-full object-cover rounded-lg transition duration-300 group-hover:scale-105">
+                        </div>
+                        
+                        <!-- Service Info -->
+                        <div class="mt-4 relative z-10">
+                            <h3 class="text-lg font-semibold text-black group-hover:text-primary transition duration-300">
+                                {{ $service->getTranslation('name', $lang) }}
+                            </h3>
+                        </div>
+                        
+                        <p class="mt-3 text-sm text-gray-700 relative z-10">
+                            {{ Str::limit($service->getTranslation('short_description', $lang), 200, '...') }}
+                        </p>
+                    </a>
                     
                     <!-- Service Price & Buttons -->
                     <div class="flex justify-between items-center mt-5 relative z-10">
-                        <span class="text-[#41B6E8] py-2 px-4 rounded-full font-semibold text-sm shadow-sm bg-gray-100">
-                            AED {{ number_format($service['price'], 2) }}
-                        </span>
+                       
+                        @if ($service->price != 0 && $service->price != NULL)
+                            <span class="text-[#41B6E8] py-2 px-4 rounded-full font-semibold text-sm shadow-sm bg-gray-100">
+                                {{ env('DEFAULT_CURRENCY') }} {{ number_format($service->price, 2) }}
+                            </span>
+                        @endif
 
                         <div class="flex items-center space-x-2">
-                            <a href="{{ route('services.show', ['id' => $service['id']]) }}"
+                            <a href="{{ route('services.show', ['slug' => $service->slug]) }}"
                                class="px-4 py-2 text-sm font-medium text-gray-600 border border-gray-600 rounded-full transition duration-300 hover:bg-gray-800 hover:text-white">
                                 Learn More
                             </a>
-
-                            <button class="w-8 h-8 rounded-full bg-gray-800 text-white flex items-center justify-center hover:bg-[#41B6E8] transition duration-300">
-                                +
-                            </button>
                         </div>
                     </div>
                     

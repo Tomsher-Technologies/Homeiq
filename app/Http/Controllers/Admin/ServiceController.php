@@ -27,7 +27,7 @@ class ServiceController extends Controller
     public function index(Request $request)
     {
         $sort_search = null;
-        $services = Service::orderBy('name', 'asc');
+        $services = Service::orderBy('id', 'desc');
         if ($request->has('search')) {
             $sort_search = $request->search;
             $services = $services->where('name', 'like', '%' . $sort_search . '%');
@@ -69,6 +69,7 @@ class ServiceController extends Controller
         $service                = new Service;
         $service->name          = $request->name ?? NULL;
         $service->slug          = $slug;
+        $service->price         = $request->price;
         $service->image         = $request->image;
         $service->status        = $request->status;
         $service->save();
@@ -130,6 +131,7 @@ class ServiceController extends Controller
             $service->name      = $request->name;
             $service->status    = $request->status;
             $service->slug      = $slug;
+            $service->price         = $request->price;
             $service->image     = $request->image;
             $service->save();
         }

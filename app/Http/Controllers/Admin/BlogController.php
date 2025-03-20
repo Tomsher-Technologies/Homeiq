@@ -25,7 +25,7 @@ class BlogController extends Controller
     public function index(Request $request)
     {
         $sort_search = null;
-        $blogs = Blog::orderBy('name', 'asc');
+        $blogs = Blog::orderBy('blog_date', 'desc');
         if ($request->has('search')) {
             $sort_search = $request->search;
             $blogs = $blogs->where('name', 'like', '%' . $sort_search . '%');
@@ -66,13 +66,20 @@ class BlogController extends Controller
         $slug_suffix        = $same_slug_count ? '-' . $same_slug_count + 1 : '';
         $slug              .= $slug_suffix;
 
-        $blog               = new Blog;
-        $blog->name         = $request->name ?? NULL;
-        $blog->slug         = $slug;
-        $blog->image        = $request->image;
-        $blog->description  = $request->description ?? NULL;
-        $blog->blog_date    = $request->blog_date ?? date('Y-m-d');
-        $blog->status       = $request->status;
+        $blog                       = new Blog;
+        $blog->name                 = $request->name ?? NULL;
+        $blog->slug                 = $slug;
+        $blog->image                = $request->image;
+        $blog->description          = $request->description ?? NULL;
+        $blog->blog_date            = $request->blog_date ?? date('Y-m-d');
+        $blog->status               = $request->status;
+        $blog->meta_title           = $request->meta_title;
+        $blog->meta_description     = $request->meta_description;
+        $blog->og_title             = $request->og_title;
+        $blog->og_description       = $request->og_description;
+        $blog->twitter_title        = $request->twitter_title;
+        $blog->twitter_description  = $request->twitter_description;
+        $blog->keywords             = $request->meta_keywords;
         $blog->save();
 
         flash('Blog '.trans('messages.created_msg'))->success();
@@ -87,8 +94,9 @@ class BlogController extends Controller
      */
     public function edit(Request $request, $id)
     {
+        $lang = getActiveLanguage();
         $blog  = Blog::findOrFail($id);
-        return view('backend.blogs.edit', compact('blog'));
+        return view('backend.blogs.edit', compact('blog','lang'));
     }
 
     /**
@@ -117,12 +125,19 @@ class BlogController extends Controller
             $slug .= $slug_suffix;
         }
 
-        $blog->name         = $request->name;
-        $blog->status       = $request->status;
-        $blog->slug         = $slug;
-        $blog->image        = $request->image;
-        $blog->blog_date    = $request->blog_date ?? date('Y-m-d');
-        $blog->description  = $request->description;
+        $blog->name                 = $request->name;
+        $blog->status               = $request->status;
+        $blog->slug                 = $slug;
+        $blog->image                = $request->image;
+        $blog->blog_date            = $request->blog_date ?? date('Y-m-d');
+        $blog->description          = $request->description;
+        $blog->meta_title           = $request->meta_title;
+        $blog->meta_description     = $request->meta_description;
+        $blog->og_title             = $request->og_title;
+        $blog->og_description       = $request->og_description;
+        $blog->twitter_title        = $request->twitter_title;
+        $blog->twitter_description  = $request->twitter_description;
+        $blog->keywords             = $request->meta_keywords;
         $blog->save();
         
         flash(trans('messages.blog').trans('messages.updated_msg'))->success();

@@ -477,7 +477,7 @@ function getActiveLanguage()
 }
 
 function getProductOfferPrice($product){
-
+    
     $data["original_price"] = $product->min_price ;
     $discountPrice = $product->min_price ;
     

@@ -4,32 +4,12 @@
         <div class="swiper hero-swiper relative w-full h-[300px] md:h-[400px] lg:h-[500px] overflow-hidden rounded-md shadow-lg">
             <div class="swiper-wrapper">
                 <!-- Slide 1 -->
-                <div class="swiper-slide flex justify-center items-center h-full">
-                    <img src="{{ asset('images/slider-1.jpg') }}" 
-                         data-src="{{ asset('images/slider-1.jpg') }}" 
-                         class="swiper-lazy w-full h-full object-cover rounded-lg" 
-                         alt="Smart Camera"
-                         loading="lazy">
-                    <div class="swiper-lazy-preloader"></div>
-                </div>
-                <!-- Slide 2 -->
-                <div class="swiper-slide flex justify-center items-center h-full">
-                    <img src="{{ asset('images/slider-2.jpg') }}" 
-                         data-src="{{ asset('images/slider-2.jpg') }}" 
-                         class="swiper-lazy w-full h-full object-cover rounded-lg" 
-                         alt="Smart Doorbell"
-                         loading="lazy">
-                    <div class="swiper-lazy-preloader"></div>
-                </div>
-                <!-- Slide 3 -->
-                <!-- <div class="swiper-slide flex justify-center items-center h-full">
-                    <img src="{{ asset('images/slider-3.jpeg') }}" 
-                         data-src="{{ asset('images/slider-3.jpeg') }}" 
-                         class="swiper-lazy w-full h-full object-cover rounded-lg" 
-                         alt="Smart Thermostat"
-                         loading="lazy">
-                    <div class="swiper-lazy-preloader"></div>
-                </div> -->
+                @foreach($slider as $sd)
+                    <div class="swiper-slide flex justify-center items-center h-full">
+                        <img src="{{ uploaded_asset($sd->image) }}"  data-src="{{ uploaded_asset($sd->image) }}"  class="swiper-lazy w-full h-full object-cover rounded-lg"  alt="Smart Camera" loading="lazy">
+                        <div class="swiper-lazy-preloader"></div>
+                    </div>
+                @endforeach
             </div>
 
             <!-- Pagination -->

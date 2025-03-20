@@ -38,6 +38,7 @@
                             <tr>
                                 <th>#</th>
                                 <th>{{ trans('messages.name') }}</th>
+                                <th>{{ trans('messages.price') }}</th>
                                 <th>{{ trans('messages.image') }}</th>
                                 <th class="text-center">{{ trans('messages.status') }}</th>
                                 <th class="text-center">{{ trans('messages.options') }}</th>
@@ -48,6 +49,7 @@
                                 <tr>
                                     <td>{{ $key + 1 + ($services->currentPage() - 1) * $services->perPage() }}</td>
                                     <td>{{ $service->getTranslation('name') }}</td>
+                                    <td>{{ $service->price  }}</td>
                                     <td>
                                         <img src="{{ uploaded_asset($service->image) }}" alt="{{ trans('messages.service') }}" class="h-50px">
                                     </td>

@@ -15,6 +15,7 @@ use App\Models\Banner;
 use App\Models\Product;
 use App\Models\Contacts;
 use App\Models\Service;
+use App\Models\Subscriber;
 use Storage;
 use File;
 
@@ -257,5 +258,19 @@ class PageController extends Controller
         } else {
             return 0;
         }
+    }
+
+    public function subscribers()
+    {
+        $subscribers = Subscriber::orderBy('created_at', 'desc')->paginate(15);
+        return view('backend.subscribers', compact('subscribers'));
+    }
+
+    
+    public function subscribersDestroy($id)
+    {
+        Subscriber::destroy($id);
+        flash(trans('messages.subscriber').' '.trans('messages.deleted_msg'))->success();
+        return redirect()->route('subscribers.index');
     }
 }

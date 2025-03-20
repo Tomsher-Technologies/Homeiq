@@ -53,16 +53,18 @@ class FrontendController extends Controller
         OpenGraph::setDescription($model['og_description']);
         OpenGraph::setUrl(URL::full());
         OpenGraph::addProperty('locale', 'en_US');
+        OpenGraph::addProperty('type', $model['og_type'] ?? 'website');
+        OpenGraph::addImage($model['og_image'] ?? URL::to(asset('assets/img/logo.svg')));
         
         JsonLd::setTitle($model['meta_title']);
         JsonLd::setDescription($model['meta_description']);
         JsonLd::setType('Page');
 
         TwitterCard::setTitle($model['twitter_title']);
-        TwitterCard::setSite("@aldourigroup");
+        TwitterCard::setSite("@homeiq");
         TwitterCard::setDescription($model['twitter_description']);
 
-        SEOTools::jsonLd()->addImage(URL::to(asset('assets/img/favicon.svg')));
+        SEOTools::jsonLd()->addImage(URL::to(asset('assets/img/favicon.ico')));
     }
 
     public function loadDynamicSEO($model)
@@ -85,10 +87,10 @@ class FrontendController extends Controller
         JsonLd::setType('Page');
 
         TwitterCard::setTitle($model->twitter_title);
-        TwitterCard::setSite("@aldourigroup");
+        TwitterCard::setSite("@homeiq");
         TwitterCard::setDescription($model->twitter_description);
 
-        SEOTools::jsonLd()->addImage(URL::to(asset('assets/img/favicon.svg')));
+        SEOTools::jsonLd()->addImage(URL::to(asset('assets/img/favicon.ico')));
     }
 
     public function home()
@@ -151,6 +153,7 @@ class FrontendController extends Controller
         // return view('frontend.home',compact('page','data','lang'));
 
         return view('pages.home', [
+            'slider' => $data['slider'],
             'products' => $data['home_products'],
             'services' => $data['home_services'],
             'categories' => $data['home_categories'],
@@ -177,7 +180,139 @@ class FrontendController extends Controller
         ];
         
         $this->loadSEO($seo);
-        return view('frontend.about',compact('page','lang'));
+        return view('pages.about-us',compact('page','lang'));
+    }
+
+    public function services(){
+        $page = Page::where('type','service_list')->first();
+        $lang = getActiveLanguage();
+        $seo = [
+            'title'                 => $page->getTranslation('title', $lang),
+            'meta_title'            => $page->getTranslation('meta_title', $lang),
+            'meta_description'      => $page->getTranslation('meta_description', $lang),
+            'keywords'              => $page->getTranslation('keywords', $lang),
+            'og_title'              => $page->getTranslation('og_title', $lang),
+            'og_description'        => $page->getTranslation('og_description', $lang),
+            'twitter_title'         => $page->getTranslation('twitter_title', $lang),
+            'twitter_description'   => $page->getTranslation('twitter_description', $lang),
+        ];
+        
+        $this->loadSEO($seo);
+        $services =  Service::where('status', 1)->orderBy('name','ASC')->paginate(6);
+
+        return view('pages.services',compact('page','lang','services'));
+    }
+
+    public function loadMoreService(Request $request)
+    {
+        if ($request->ajax()) {
+            // Get paginated results for the next page
+            $services = Service::where('status', 1)
+                                ->orderBy('name', 'ASC')
+                                ->paginate(6, ['*'], 'page', $request->page);
+    
+            // Check if services exist and render the partial view
+            if ($services->isEmpty()) {
+                return response()->json(['html' => '', 'hasMore' => false]);
+            }
+    
+            // Render the partial view and return it with a flag indicating if more pages are available
+            $html = view('pages.service_card', compact('services'))->render();
+    
+            return response()->json([
+                'html' => $html,
+                'hasMore' => $services->hasMorePages(),
+            ]);
+        }
+    
+        // Return a fallback if the request is not via AJAX
+        return response()->json(['error' => 'Invalid request'], 400);
+    }
+
+    public function showService($slug){
+        $lang = getActiveLanguage();
+        $services =  Service::where('status', 1)->where('slug', $slug)->first();
+
+        return view('pages.service-details', ['service' => $services, 'lang' => $lang]);
+    }
+
+    public function blogs(){
+        $page = Page::where('type','blogs')->first();
+        $lang = getActiveLanguage();
+        $seo = [
+            'title'                 => $page->getTranslation('title', $lang),
+            'meta_title'            => $page->getTranslation('meta_title', $lang),
+            'meta_description'      => $page->getTranslation('meta_description', $lang),
+            'keywords'              => $page->getTranslation('keywords', $lang),
+            'og_title'              => $page->getTranslation('og_title', $lang),
+            'og_description'        => $page->getTranslation('og_description', $lang),
+            'twitter_title'         => $page->getTranslation('twitter_title', $lang),
+            'twitter_description'   => $page->getTranslation('twitter_description', $lang),
+        ];
+        
+        $this->loadSEO($seo);
+        $blogs =  Blog::where('status', 1)->orderBy('blog_date','DESC')->paginate(6);
+
+        return view('pages.blog',compact('page','lang','blogs'));
+    }
+
+    public function loadMoreBlogs(Request $request)
+    {
+        if ($request->ajax()) {
+            // Get paginated results for the next page
+            $blogs = Blog::where('status', 1)
+                                ->orderBy('blog_date','DESC')
+                                ->paginate(6, ['*'], 'page', $request->page);
+    
+            // Check if services exist and render the partial view
+            if ($blogs->isEmpty()) {
+                return response()->json(['html' => '', 'hasMore' => false]);
+            }
+    
+            // Render the partial view and return it with a flag indicating if more pages are available
+            $html = view('pages.blog_card', compact('blogs'))->render();
+    
+            return response()->json([
+                'html' => $html,
+                'hasMore' => $blogs->hasMorePages(),
+            ]);
+        }
+    
+        // Return a fallback if the request is not via AJAX
+        return response()->json(['error' => 'Invalid request'], 400);
+    }
+
+    public function showBlog($slug){
+        $lang = getActiveLanguage();
+        $blogs =  Blog::where('status', 1)->where('slug', $slug)->first();
+
+        $seo = [
+            'title'                 => $blogs->name,
+            'meta_title'            => $blogs->meta_title,
+            'meta_description'      => $blogs->meta_description,
+            'keywords'              => $blogs->keywords,
+            'og_title'              => $blogs->og_title,
+            'og_description'        => $blogs->og_description,
+            'og_type'               => 'article',
+            'og_image'              => uploaded_asset(($blogs->image)),
+            'twitter_title'         => $blogs->twitter_title,
+            'twitter_description'   => $blogs->twitter_description,
+        ];
+        
+        $this->loadSEO($seo);
+        $recentBlogs = Blog::where('id', '!=', $blogs->id)
+                                    ->orderBy('blog_date', 'desc')
+                                    ->take(2)
+                                    ->get();
+        $previous = Blog::where('id', '<', $blogs->id)
+                        ->orderBy('blog_date', 'desc')
+                        ->first();
+                            
+        // Get Next Blog (Newer)
+        $next = Blog::where('id', '>', $blogs->id)
+                        ->orderBy('blog_date', 'asc')
+                        ->first();
+        return view('pages.blog-details', ['blog' => $blogs, 'lang' => $lang, 'recentBlogs' => $recentBlogs, 'previousBlog' => $previous, 'nextBlog' => $next]);
     }
 
     public function terms()
@@ -235,23 +370,22 @@ class FrontendController extends Controller
         ];
         
         $this->loadSEO($seo);
-        return view('frontend.contact_us', compact('page','lang'));
+        return view('pages.contact', compact('page','lang'));
     }
 
     public function submitContactForm(Request $request)
     {
         // Validate input
-        $validated = $request->validate([
-            'firstName' => 'required|string|max:255',
-            'lastName' => 'required|string|max:255',
+        $request->validate([
+            'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
-            'phone' => 'nullable|string|max:20',
-            'subject' => 'required|string',
-            'message' => 'required|string|max:5000',
+            'phone' => 'required|regex:/^[0-9\-\+\s\(\)]{10,15}$/',
+            'subject' => 'required|string|max:255',
+            'message' => 'required|string',
         ]);
 
         $con                = new Contacts;
-        $con->name          = $request->firstName.' '.$request->lastName;
+        $con->name          = $request->name;
         $con->email         = $request->email;
         $con->phone         = $request->phone;
         $con->subject       = $request->subject;
@@ -261,30 +395,20 @@ class FrontendController extends Controller
         // Send an email (optional)
         Mail::to(env('MAIL_ADMIN'))->queue(new ContactEnquiry($con));
 
-        session()->flash('message', trans('messages.contact_success_msg'));
-        session()->flash('alert-type', 'success');
-
-        return redirect()->back();
-    }
-
-    public function changeLanguage(Request $request)
-    {
-       
-        Session::put('locale', $request->locale);
-        App::setLocale($request->locale);
+        return back()->with('success', 'Your message has been sent successfully!');
     }
 
     public function subscribe(Request $request)
     {
         $request->validate([
-            'email' => 'required|email|unique:subscribers,email',
+            'newsletter_email' => 'required|email|unique:subscribers,email',
         ],[
-            'email.required' => trans('messages.enter_email'),
-            'email.email' => trans('messages.enter_valid_email'),
-            'email.unique' => trans('messages.email_already_subscribed'),
+            'newsletter_email.required' => trans('messages.enter_email'),
+            'newsletter_email.email' => trans('messages.enter_valid_email'),
+            'newsletter_email.unique' => trans('messages.email_already_subscribed'),
         ]);
 
-        Subscriber::create(['email' => $request->email]);
+        Subscriber::create(['email' => $request->newsletter_email]);
 
         return response()->json(['success' => trans('messages.newsletter_success')]);
     }

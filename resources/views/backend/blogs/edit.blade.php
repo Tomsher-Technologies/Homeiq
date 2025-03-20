@@ -48,6 +48,15 @@
                             @enderror
                         </div>
                     </div>
+                    <div class="form-group row">
+                        <label class="col-md-3 col-form-label">Blog Date</label>
+                        <div class="col-md-9">
+                            <input type="text" placeholder="YYYY-MM-DD" id="blog_date" name="blog_date" class="form-control " value="{{ old('blog_date',$blog->blog_date ) }}" autocomplete="off">
+                            @error('blog_date')
+                                <div class="alert alert-danger mt-1">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
 
                     <div class="form-group row">
                         <label class="col-md-3 col-form-label" for="signinSrEmail">{{ trans('messages.image') }}</label>
@@ -107,7 +116,7 @@
                         <label class="col-md-3 col-form-label" for="name">{{trans('messages.meta_keywords')}}</label>
                         <div class="col-md-9">
                             <input type="text" class="form-control" name="meta_keywords"
-                                placeholder="{{trans('messages.meta_keywords')}}" value="{{ old('meta_keywords', $blog->meta_keywords) }}">
+                                placeholder="{{trans('messages.meta_keywords')}}" value="{{ old('meta_keywords', $blog->keywords) }}">
                         </div>
                     </div>
 
@@ -153,8 +162,17 @@
 @endsection
 
 @section('script')
-
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script>
+         $(document).ready(function() {
+                $("#blog_date").datepicker({
+                    dateFormat: "yy-mm-dd",
+                    changeMonth: true,
+                    changeYear: true
+                });
+            });
     function title_update(e) {
         var title = e.value;
         $.ajax({

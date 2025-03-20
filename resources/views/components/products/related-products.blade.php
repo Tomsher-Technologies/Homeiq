@@ -7,7 +7,7 @@
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         @foreach ($relatedProducts as $product)
             <div class="relative group cursor-pointer bg-transparent transition duration-300 overflow-hidden rounded-lg">
-                <a href="{{ route('products.show', $product['id']) }}" class="block">
+                <a href="{{ route('products.show',['slug' => $product->slug]) }}" class="block">
                     <div class="overflow-hidden rounded-lg">
                         <img src="{{ asset('images/products/' . ($product['images'][0] ?? 'default-product.jpg')) }}" 
                              alt="{{ $product['name'] }}" 

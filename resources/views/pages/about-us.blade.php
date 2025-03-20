@@ -5,9 +5,9 @@
 @section('content')
 <div class="bg-gray-100 py-16">
     <div class="container mx-auto px-6 text-center">
-        <h1 class="text-4xl font-bold text-gray-800">About HOME IQ</h1>
+        <h1 class="text-4xl font-bold text-gray-800">{{ $page->getTranslation('title', $lang) }}</h1>
         <p class="text-gray-600 mt-4 max-w-3xl mx-auto">
-            HOME_IQ is dedicated to revolutionizing smart home solutions, offering cutting-edge products to enhance comfort, security, and energy efficiency.
+            {{ $page->getTranslation('sub_title', $lang) }}
         </p>
     </div>
 </div>
@@ -15,18 +15,13 @@
 <div class="container mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
     <!-- Image Section -->
     <div>
-        <img src="{{ asset('images/about-us.jpg') }}" alt="About HOME IQ" class="rounded-lg shadow-lg">
+        <img src="{{ asset($page->image) }}" alt="About HOME IQ" class="rounded-lg shadow-lg">
     </div>
 
     <!-- Text Section -->
     <div>
-        <h2 class="text-3xl font-bold text-gray-800 mb-4">Who We Are</h2>
-        <p class="text-gray-600">
-            At HOME IQ, we are passionate about integrating technology with everyday living. Our smart home solutions provide seamless automation, ensuring your home is more secure, energy-efficient, and convenient.
-        </p>
-        <p class="text-gray-600 mt-4">
-            From intelligent climate control to advanced security systems, our products are designed to enhance your lifestyle.
-        </p>
+        <h2 class="text-3xl font-bold text-gray-800 mb-4">{{ $page->getTranslation('heading1', $lang) }}</h2>
+        {!! $page->getTranslation('content', $lang) !!}
     </div>
 </div>
 
@@ -35,17 +30,17 @@
     <div class="container mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
         <!-- Mission -->
         <div>
-            <h3 class="text-3xl font-bold mb-4">Our Mission</h3>
+            <h3 class="text-3xl font-bold mb-4">{{ $page->getTranslation('heading2', $lang) }}</h3>
             <p class="text-lg">
-                Our mission is to create a smarter, safer, and more sustainable world through innovative home automation technology.
+                {!! $page->getTranslation('content1', $lang) !!}
             </p>
         </div>
 
         <!-- Vision -->
         <div>
-            <h3 class="text-3xl font-bold mb-4">Our Vision</h3>
+            <h3 class="text-3xl font-bold mb-4">{{ $page->getTranslation('heading3', $lang) }}</h3>
             <p class="text-lg">
-                We envision a future where smart living is accessible to everyone, making homes more efficient, connected, and intelligent.
+                {!! $page->getTranslation('content2', $lang) !!}
             </p>
         </div>
     </div>
@@ -53,27 +48,27 @@
 
 <!-- Why Choose Us Section -->
 <div class="container mx-auto px-6 py-16 text-center">
-    <h2 class="text-3xl font-bold text-gray-800">Why Choose HOME IQ?</h2>
+    <h2 class="text-3xl font-bold text-gray-800">{{ $page->getTranslation('heading4', $lang) }}</h2>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8">
         <!-- Feature 1 -->
         <div class="bg-white shadow-md rounded-lg p-6">
-            <img src="{{ asset('images/icons/energy-saving.png') }}" alt="Innovation" class="h-16 mx-auto mb-4">
-            <h3 class="text-xl font-semibold text-gray-800">Innovative Technology</h3>
-            <p class="text-gray-600 mt-2">We bring the latest smart home innovations to make your life easier and more efficient.</p>
+            <img src="{{ uploaded_asset($page->image1) }}" alt="{{$page->getTranslation('heading5', $lang)}}" class="h-16 mx-auto mb-4">
+            <h3 class="text-xl font-semibold text-gray-800">{{$page->getTranslation('heading5', $lang)}}</h3>
+            <p class="text-gray-600 mt-2">{!! $page->getTranslation('content3', $lang) !!}</p>
         </div>
 
         <!-- Feature 2 -->
         <div class="bg-white shadow-md rounded-lg p-6">
-            <img src="{{ asset('images/icons/energy-saving.png') }}" alt="Security" class="h-16 mx-auto mb-4">
-            <h3 class="text-xl font-semibold text-gray-800">Enhanced Security</h3>
-            <p class="text-gray-600 mt-2">Protect your home with our advanced security solutions, giving you peace of mind.</p>
+            <img src="{{ uploaded_asset($page->image2) }}" alt="{{$page->getTranslation('heading6', $lang)}}" class="h-16 mx-auto mb-4">
+            <h3 class="text-xl font-semibold text-gray-800">{{$page->getTranslation('heading6', $lang)}}</h3>
+            <p class="text-gray-600 mt-2">{!! $page->getTranslation('content4', $lang) !!}</p>
         </div>
 
         <!-- Feature 3 -->
         <div class="bg-white shadow-md rounded-lg p-6">
-            <img src="{{ asset('images/icons/energy-saving.png') }}" alt="Sustainability" class="h-16 mx-auto mb-4">
-            <h3 class="text-xl font-semibold text-gray-800">Sustainability</h3>
-            <p class="text-gray-600 mt-2">Our energy-efficient products help reduce your carbon footprint and save on utility bills.</p>
+            <img src="{{ uploaded_asset($page->image3) }}" alt="{{$page->getTranslation('heading7', $lang)}}" class="h-16 mx-auto mb-4">
+            <h3 class="text-xl font-semibold text-gray-800">{{$page->getTranslation('heading7', $lang)}}</h3>
+            <p class="text-gray-600 mt-2">{!! $page->getTranslation('content5', $lang) !!}</p>
         </div>
     </div>
 </div>

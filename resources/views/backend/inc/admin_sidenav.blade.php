@@ -65,6 +65,14 @@
                                     </a>
                                 </li>
                             @endcanany
+
+                            @canany(['manage_products'])
+                                <li class="aiz-side-nav-item">
+                                    <a href="{{ route('product_bulk_upload.index') }}" class="aiz-side-nav-link">
+                                        <span class="aiz-side-nav-text">Bulk Import</span>
+                                    </a>
+                                </li>
+                            @endcanany
                            
                             @canany(['product_reviews'])
                                 <li class="aiz-side-nav-item">
@@ -197,6 +205,16 @@
                             class="aiz-side-nav-link {{ areActiveRoutes(['uploaded-files.create']) }}">
                             <i class="las la-folder-open aiz-side-nav-icon"></i>
                             <span class="aiz-side-nav-text">{{ trans('messages.uploaded_files') }}</span>
+                        </a>
+                    </li>
+                @endcanany
+
+                @canany(['newsletter_subscribers'])
+                    <li class="aiz-side-nav-item">
+                        <a href="{{ route('subscribers.index') }}"
+                            class="aiz-side-nav-link {{ areActiveRoutes(['subscribers.index']) }}">
+                            <i class=" las la-newspaper aiz-side-nav-icon"></i>
+                            <span class="aiz-side-nav-text">Newsletter Subscribers</span>
                         </a>
                     </li>
                 @endcanany

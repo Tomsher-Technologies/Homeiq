@@ -5,25 +5,59 @@
 @section('content')
 <div class="container mx-auto py-12 px-6 lg:px-12">
     <div class="max-w-3xl mx-auto bg-white p-8 rounded-lg shadow-md border">
-        <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">Get in Touch</h1>
-        <p class="text-gray-600 text-center mb-6">Have questions? We'd love to hear from you. Fill out the form below.</p>
+        <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">
+            {{ $page->getTranslation('title',$lang) }}
+        </h1>
+        <p class="text-gray-600 text-center mb-6">
+            {{$page->getTranslation('sub_title',$lang)}}
+        </p>
 
+        @if(session('success'))
+            <div class="p-4 mb-4 text-green-700 bg-green-100 rounded">
+                {{ session('success') }}
+            </div>
+        @endif
         <!-- Contact Form -->
         <form action="{{ route('contact.submit') }}" method="POST" class="space-y-5">
             @csrf
             <div>
                 <label class="block text-gray-700 font-medium mb-2">Full Name</label>
-                <input type="text" name="name" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary outline-none" required>
+                <input type="text" name="name" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary outline-none" value="{{ old('name') }}">
+                @error('name')
+                    <div class="text-red-600">{{ $message }}</div>
+                @enderror
             </div>
 
             <div>
                 <label class="block text-gray-700 font-medium mb-2">Email Address</label>
-                <input type="email" name="email" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary outline-none" required>
+                <input type="email" name="email" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary outline-none" value="{{ old('email') }}">
+                @error('email')
+                    <div class="text-red-600">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div>
+                <label class="block text-gray-700 font-medium mb-2">Phone Number</label>
+                <input type="tel" name="phone" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary outline-none" value="{{ old('phone') }}">
+                @error('phone')
+                    <div class="text-red-600">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div>
+                <label class="block text-gray-700 font-medium mb-2">Subject</label>
+                <input type="text" name="subject" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary outline-none" value="{{ old('subject') }}">
+                @error('subject')
+                    <div class="text-red-600">{{ $message }}</div>
+                @enderror
             </div>
 
             <div>
                 <label class="block text-gray-700 font-medium mb-2">Message</label>
-                <textarea name="message" rows="5" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary outline-none" required></textarea>
+                <textarea name="message" rows="5" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary outline-none">{{ old('message') }}</textarea>
+                @error('message')
+                    <div class="text-red-600">{{ $message }}</div>
+                @enderror
             </div>
 
             <button type="submit" class="w-full bg-primary text-white px-6 py-3 rounded-lg text-lg font-medium hover:bg-secondary transition-all">
@@ -33,10 +67,10 @@
 
         <!-- Contact Information -->
         <div class="mt-8 text-center">
-            <p class="text-gray-700">Or reach out to us directly:</p>
-            <p class="text-gray-600 mt-2"><strong>Email:</strong> support@homeiq.com</p>
-            <p class="text-gray-600"><strong>Phone:</strong> +1 234 567 890</p>
-            <p class="text-gray-600"><strong>Address:</strong> 123 Main Street, City, Country</p>
+            <p class="text-gray-700">{{ $page->getTranslation('heading2',$lang) }}</p>
+            <p class="text-gray-600 mt-2"><strong>Email:</strong> {{ $page->getTranslation('heading4',$lang) }}</p>
+            <p class="text-gray-600"><strong>Phone:</strong> {{ $page->getTranslation('heading3',$lang) }}</p>
+            <p class="text-gray-600"><strong>Address:</strong> {{ $page->getTranslation('content',$lang) }}</p>
         </div>
     </div>
 </div>

@@ -1,13 +1,18 @@
-@props(['products'])
+@props(['products', 'page','lang'])
 
 <section id="products-section" class="py-10 bg-white">
     <x-wrapper>
         <h2 class="text-3xl md:text-4xl font-normal text-center">
-            Explore Our <span class="text-[#41B6E8] font-semibold">Products</span>
+           
+            @php
+                $text = $page->getTranslation('heading1',$lang)    ; // Get this from DB
+                $formattedText = preg_replace('/\[(.*?)\]/', '<span class="text-primary font-semibold">$1</span>', $text);
+            @endphp
+
+            {!! $formattedText !!}
         </h2>
         <p class="text-gray-600 mt-4 text-center">
-            Upgrade your home with the latest in security, energy-saving, and automation. <br>
-            Explore our categories to find the perfect smart devices for your lifestyle.
+            {{ $page->getTranslation('heading2',$lang) }}
         </p>
 
 
@@ -17,22 +22,22 @@
     <div class="flex justify-between items-center mt-6">
         
         <!-- 🚀 Button to Open Drawer (Filter) -->
-        <button @click="open = true" class="px-5 py-2 bg-black text-white rounded-full shadow-md hover:bg-gray-800 transition">
+        {{-- <button @click="open = true" class="px-5 py-2 bg-black text-white rounded-full shadow-md hover:bg-gray-800 transition">
             Filter
-        </button>
+        </button> --}}
 
         <!-- 🔽 Sort Dropdown (Right Aligned) -->
-        <div>
+        {{-- <div>
             <label for="sort_by" class="sr-only">Sort By</label>
             <select id="sort_by" class="border border-gray-300 px-4 py-2 rounded-full text-gray-700 hover:bg-gray-100 transition">
                 <option value="">Sort by</option>
                 <option value="low_high">Price: Low to High</option>
                 <option value="high_low">Price: High to Low</option>
             </select>
-        </div>
+        </div> --}}
     </div>
 
-    <!-- 🔥 Filters Drawer (Hidden by Default) -->
+    {{-- <!-- 🔥 Filters Drawer (Hidden by Default) -->
     <div x-show="open" class="fixed inset-0 z-50 flex justify-end bg-black bg-opacity-50">
         <!-- 🛠 Drawer Content -->
         <div class="bg-white w-80 p-6 h-full shadow-lg transform transition-transform duration-300"
@@ -82,7 +87,7 @@
                 Apply Filters
             </button>
         </div>
-    </div>
+    </div> --}}
 </div>
 
 
@@ -91,16 +96,13 @@
         <!-- Products Grid -->
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-[20px] gap-y-[30px] mt-[40px]">
             @foreach ($products as $product)
-                <x-product-card :product="$product" />
+                <x-product-card :product="$product" :lang="$lang" />
             @endforeach
         </div>
 
         <!-- View More Button -->
         <div class="mt-[40px] flex justify-center">
-        <a href="/products"
-   class="inline-block px-[30px] py-[12px] bg-black text-white rounded-full shadow-md hover:bg-[#41B6E8] transition duration-[300ms]">
-   View More
-</a>
+        <a href="{{ route('products.index') }}" class="inline-block px-[30px] py-[12px] bg-black text-white rounded-full shadow-md hover:bg-[#41B6E8] transition duration-[300ms]"> View More </a>
 
 
         </div>

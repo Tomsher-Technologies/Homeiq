@@ -2,11 +2,15 @@
     <div class="container mx-auto px-6 lg:px-12">
         <!-- Section Title -->
         <h2 class="text-3xl md:text-4xl font-normal text-center">
-            Why <span class="text-[#41B6E8] font-semibold">Choose Us</span>
+            @php
+                $text = $page->getTranslation('heading5',$lang)    ; // Get this from DB
+                $formattedText = preg_replace('/\[(.*?)\]/', '<span class="text-primary font-semibold">$1</span>', $text);
+            @endphp
+
+            {!! $formattedText !!}
         </h2>
         <p class="text-gray-600 mt-4 text-center">
-            Our professionals ensure a seamless setup for your smart home devices.<br>
-            Enjoy secure and hassle-free installation tailored to your needs.
+            {{ $page->getTranslation('heading6',$lang) }}
         </p>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 mt-10">
@@ -14,18 +18,18 @@
             <div class="lg:col-span-5 flex flex-wrap justify-center gap-4 lg:gap-6">
                 @php
                     $images = [
-                        'smart-speaker.png',
-                        'projector.png',
-                        'smart-home-kit.png',
-                        'smart-lock.png',
-                        'thermostat.png',
-                        'video-doorbell.png',
+                        $page->image1,
+                        $page->image2,
+                        $page->image3,
+                        $page->image4,
+                        $page->image5,
+                        $page->image6,
                     ];
                 @endphp
                 <div class="grid grid-cols-2 gap-4">
                     @foreach($images as $image)
                         <div class="bg-gray-100 rounded-full overflow-hidden">
-                            <img src="{{ asset('images/why-choose-us/' . $image) }}" class="w-full h-full object-cover" alt="Smart Home Feature">
+                            <img src="{{ uploaded_asset($image) }}" class="w-full h-full object-cover" alt="Smart Home Feature">
                         </div>
                     @endforeach
                 </div>
@@ -39,16 +43,16 @@
      style="background: url('{{ asset('images/bg-why-choose.png') }}') center/cover no-repeat;">
     @php
         $features = [
-            ['icon' => 'wifi.png', 'title' => 'Smart Home Solutions', 'description' => 'Transform your home with cutting-edge smart technology, offering convenience and control for a connected lifestyle.'],
-            ['icon' => 'bolt.png', 'title' => 'Energy Savings', 'description' => 'Reduce energy costs and waste with our efficient solutions, making your home more sustainable and eco-friendly.'],
-            ['icon' => 'shield.png', 'title' => 'Secure & Reliable', 'description' => 'Trust in our top-notch security systems to keep your home safe, offering peace of mind with reliable protection.'],
-            ['icon' => 'lightbulb.png', 'title' => 'Expert Installation', 'description' => 'Our experienced team ensures flawless installation, setting up your systems to work perfectly from day one.']
+            ['icon' => $page->image, 'title' => $page->getTranslation('title1', $lang), 'description' => $page->getTranslation('content1', $lang)],
+            ['icon' => $page->image7, 'title' => $page->getTranslation('title2', $lang), 'description' => $page->getTranslation('content2', $lang)],
+            ['icon' => $page->image8, 'title' => $page->getTranslation('title3', $lang), 'description' => $page->getTranslation('content3', $lang)],
+            ['icon' => $page->image, 'title' => $page->getTranslation('heading7', $lang), 'description' => $page->getTranslation('content4', $lang)]
         ];
     @endphp
     @foreach($features as $feature)
         <div class=" p-6 rounded-2xl border border-[#41B6E8] bg-[rgba(255,255,255,0.50)] shadow-md backdrop-blur-lg flex flex-col items-start text-left">
             <!-- Icon -->
-            <img src="{{ asset('images/icons/' . $feature['icon']) }}" class="w-[40px] h-[40px] mb-3" alt="{{ $feature['title'] }} Icon">
+            <img src="{{ uploaded_asset($feature['icon']) }}" class="w-[40px] h-[40px] mb-3" alt="{{ $feature['title'] }} Icon">
             <!-- Title -->
             <h3 class="text-lg font-semibold text-gray-800">{{ $feature['title'] }}</h3>
             <!-- Description -->

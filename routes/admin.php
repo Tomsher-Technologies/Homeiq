@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\AizUploadController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\AttributeController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\ProductBulkUploadController;
 use App\Http\Controllers\Admin\WebsiteController;
 use App\Http\Controllers\Admin\Bannercontroller;
 use App\Http\Controllers\Admin\OccasionController;
@@ -75,6 +76,9 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/custom-pages/destroy/{id}', [PageController::class, 'destroy'])->name('custom-pages.destroy');
         Route::post('/page/delete_image', [PageController::class, 'delete_image'])->name('page.delete_image');
 
+        Route::get('/subscribers', [PageController::class, 'subscribers'])->name('subscribers.index');
+        Route::get('/subscribers/destroy/{id}', [PageController::class, 'subscribersDestroy'])->name('subscriber.destroy');
+    
         // Partners
         Route::resource('partners', PartnersController::class)->except('show');
 
@@ -116,16 +120,17 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
     Route::post('/products/store/', [ProductController::class, 'store'])->name('products.store');
     Route::post('/products/update/{id}', [ProductController::class, 'update'])->name('products.update');
-    Route::post('/products/add-attributes', [ProductController::class, 'get_attribute_values'])->name('products.add-attributes');
     Route::get('/products/admin/{id}/edit', [ProductController::class, 'admin_product_edit'])->name('products.edit');
     Route::post('/products/todays_deal', [ProductController::class, 'updateTodaysDeal'])->name('products.todays_deal');
     Route::post('/products/published', [ProductController::class, 'updatePublished'])->name('products.published');
     Route::post('/products/approved', [ProductController::class, 'updateProductApproval'])->name('products.approved');
     Route::post('/products/featured', [ProductController::class, 'updateFeatured'])->name('products.featured');
     Route::post('/bulk-product-delete', [ProductController::class, 'bulk_product_delete'])->name('bulk-product-delete');
-    Route::post('/products/delete-variant-image', [ProductController::class, 'delete_variant_image'])->name('products.delete_varient_image');
     Route::post('/products/delete-thumbnail', [ProductController::class, 'delete_thumbnail'])->name('products.delete_thumbnail');
     Route::post('/products/delete_gallery', [ProductController::class, 'delete_gallery'])->name('products.delete_gallery');
+
+    Route::get('/product-bulk-upload/index', [ProductBulkUploadController::class, 'index'])->name('product_bulk_upload.index');
+    Route::post('/bulk-product-upload', [ProductBulkUploadController::class, 'bulk_upload'])->name('bulk_product_upload');
 
     //Reviews
     Route::get('/reviews', [ReviewController::class, 'index'])->name('reviews.index');

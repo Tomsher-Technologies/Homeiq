@@ -50,6 +50,13 @@
                     </div>
 
                     <div class="form-group row">
+                        <label class="col-md-3 col-from-label">{{ trans('messages.price') }} </label>
+                        <div class="col-md-6">
+                            <input type="number" lang="en" min="0" value="{{ $service->price ?? 0 }}" step="0.01" placeholder="{{ trans('messages.price') }}" name="price" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
                         <label class="col-md-3 col-form-label" for="signinSrEmail">{{ trans('messages.image') }}</label>
                         <div class="col-md-9">
                             <div class="input-group" data-toggle="aizuploader" data-type="image">

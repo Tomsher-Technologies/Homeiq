@@ -44,6 +44,13 @@
                         </div>
 
                         <div class="form-group row">
+                            <label class="col-md-2 col-from-label">{{ trans('messages.price') }} </label>
+                            <div class="col-md-10">
+                                <input type="number" lang="en" min="0" value="0" step="0.01" placeholder="{{ trans('messages.price') }}" name="price" class="form-control" >
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
                             <label class="col-md-2 col-form-label"
                                 for="signinSrEmail">{{ trans('messages.image') }}</label>
                             <div class="col-md-10">
