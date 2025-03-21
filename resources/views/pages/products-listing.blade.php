@@ -94,11 +94,16 @@
                             <option @if($price == '4001-200000') selected @endif value="4001-200000">More than AED 4000</option>
                         </select>
 
-                        <!-- Apply Filters Button -->
                         <button class="w-full mt-6 py-2 bg-[#41B6E8] text-white rounded-lg hover:bg-[#3498db] transition">
                             Apply Filters
                         </button>
+                       
                     </form>
+                    <a href="{{ route('products.index') }}">
+                        <button class="w-full mt-6 py-2 bg-[#4d4d4f] text-white rounded-lg hover:bg-[#4d4d4fbf]">
+                            Clear Filters
+                        </button>
+                    </a>
                 </div>
             </div>
         </div>

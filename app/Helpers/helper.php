@@ -594,7 +594,7 @@ function wishlistCount()
     }
 }
 
-function isWishlisted($productId, $productStockId)
+function isWishlisted($productId)
 {
     return Wishlist::where('user_id', Auth::id())
                    ->where('product_id', $productId)

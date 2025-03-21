@@ -41,7 +41,7 @@ Route::post('/subscribe', [FrontendController::class, 'subscribe'])->name('newsl
 
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 Route::get('/load-more-products', [ProductController::class, 'loadMoreProducts'])->name('product.loadMore');
-
+Route::get('/product-detail/{slug}', [ProductController::class, 'productDetails'])->name('products.show');
 
 
 
@@ -49,7 +49,7 @@ Route::get('/terms', [FrontendController::class, 'terms'])->name('terms');
 Route::get('/privacy', [FrontendController::class, 'privacy'])->name('privacy');
 
 
-Route::get('/product-detail', [ProductController::class, 'productDetails'])->name('products.show');
+
 Route::post('/recently-viewed', [CommonController::class, 'addRecentlyViewed']);
 Route::get('/recently-viewed', [CommonController::class, 'getRecentlyViewed']);
 Route::get('related-products', [ProductController::class, 'relatedProducts'])->name('related.products');

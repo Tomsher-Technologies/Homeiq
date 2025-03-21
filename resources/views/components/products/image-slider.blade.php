@@ -3,9 +3,9 @@
 <div class="w-full md:w-1/2 relative flex justify-center items-center">
     <div class="swiper product-images-swiper overflow-hidden rounded-lg border">
         <div class="swiper-wrapper py-10 m-auto">
-            @foreach ($product['images'] ?? ['default-product.jpg'] as $image)
+            @foreach ($product['photos'] ?? ['default-product.jpg'] as $image)
                 <div class="swiper-slide flex justify-center items-center">
-                    <img src="{{ asset('images/products/' . $image) }}" 
+                    <img src="{{ $image }}" 
                          alt="{{ $product['name'] }}" 
                          class="max-w-full max-h-[500px] object-contain m-auto">
                 </div>
