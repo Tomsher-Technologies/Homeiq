@@ -432,4 +432,26 @@ class FrontendController extends Controller
         return response()->json(['success' => trans('messages.newsletter_success')]);
     }
 
+    public function brands()
+    {
+        $page = Page::where('type','brands_list')->first();
+        $lang = getActiveLanguage();
+        $seo = [
+            'title'                 => $page->getTranslation('title', $lang),
+            'meta_title'            => $page->getTranslation('meta_title', $lang),
+            'meta_description'      => $page->getTranslation('meta_description', $lang),
+            'keywords'              => $page->getTranslation('keywords', $lang),
+            'og_title'              => $page->getTranslation('og_title', $lang),
+            'og_description'        => $page->getTranslation('og_description', $lang),
+            'twitter_title'         => $page->getTranslation('twitter_title', $lang),
+            'twitter_description'   => $page->getTranslation('twitter_description', $lang),
+        ];
+        
+        $this->loadSEO($seo);
+
+        $brands = Brand::where('is_active', 1)->orderBy('name', 'ASC')->get();
+
+        return view('pages.brand-listing',compact('page','lang','brands'));
+    }
+
 }

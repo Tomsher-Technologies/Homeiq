@@ -190,7 +190,7 @@
                     <li><a href="#" class="hover:text-white">About Us</a></li>
                     <li><a href="#" class="hover:text-white">Our Team</a></li>
                     <li><a href="#" class="hover:text-white">Careers</a></li>
-                    <li><a href="#" class="hover:text-white">Partners</a></li>
+                    <li><a href="{{ route('brand-listing') }}" class="hover:text-white">Partners</a></li>
                     <li><a href="#" class="hover:text-white">Contact Us</a></li>
                 </ul>
             </div>

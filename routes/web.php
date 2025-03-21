@@ -47,6 +47,7 @@ Route::get('/terms-conditions', [FrontendController::class, 'terms'])->name('ter
 Route::get('/privacy-policy', [FrontendController::class, 'privacy'])->name('privacy-policy');
 Route::get('/return-policy', [FrontendController::class, 'returnPolicy'])->name('return-policy');
 
+Route::get('/brands', [FrontendController::class, 'brands'])->name('brand-listing');
 
 
 
@@ -57,7 +58,6 @@ Route::view('/faq', 'pages.faq')->name('faq');
  Route::view('/login-page', 'pages.login-page')->name('login-page');
  Route::view('/register-page', 'pages.register-page')->name('register-page');
  Route::view('/forgot-password-page', 'pages.forgot-password-page')->name('forgot-password-page');
- Route::view('/brand-listing', 'pages.brand-listing')->name('brand-listing');
  Route::view('/wishlist', 'pages.wishlist')->name('wishlist');
  Route::view('/cart', 'pages.cart')->name('cart');
 
