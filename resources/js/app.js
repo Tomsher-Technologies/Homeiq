@@ -146,5 +146,18 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-
+function toggleFAQ(id, btn) {
+    const faq = document.getElementById(id);
+    const arrow = btn.querySelector('.arrow');
+    
+    if (faq.classList.contains('hidden')) {
+        faq.classList.remove('hidden');
+        faq.style.maxHeight = faq.scrollHeight + 'px';
+        arrow.textContent = '-';
+    } else {
+        faq.classList.add('hidden');
+        faq.style.maxHeight = '0px';
+        arrow.textContent = '+';
+    }
+}
 

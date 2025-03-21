@@ -43,10 +43,23 @@ Route::get('/products', [ProductController::class, 'index'])->name('products.ind
 Route::get('/load-more-products', [ProductController::class, 'loadMoreProducts'])->name('product.loadMore');
 Route::get('/product-detail/{slug}', [ProductController::class, 'productDetails'])->name('products.show');
 
+Route::get('/terms-conditions', [FrontendController::class, 'terms'])->name('terms-conditions');
+Route::get('/privacy-policy', [FrontendController::class, 'privacy'])->name('privacy-policy');
+Route::get('/return-policy', [FrontendController::class, 'returnPolicy'])->name('return-policy');
 
 
-Route::get('/terms', [FrontendController::class, 'terms'])->name('terms');
-Route::get('/privacy', [FrontendController::class, 'privacy'])->name('privacy');
+
+
+
+
+
+Route::view('/faq', 'pages.faq')->name('faq');
+ Route::view('/login-page', 'pages.login-page')->name('login-page');
+ Route::view('/register-page', 'pages.register-page')->name('register-page');
+ Route::view('/forgot-password-page', 'pages.forgot-password-page')->name('forgot-password-page');
+ Route::view('/brand-listing', 'pages.brand-listing')->name('brand-listing');
+ Route::view('/wishlist', 'pages.wishlist')->name('wishlist');
+ Route::view('/cart', 'pages.cart')->name('cart');
 
 
 
