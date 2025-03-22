@@ -49,17 +49,28 @@ Route::get('/return-policy', [FrontendController::class, 'returnPolicy'])->name(
 
 Route::get('/brands', [FrontendController::class, 'brands'])->name('brand-listing');
 
+Route::get('register', [AuthController::class, 'showRegistrationForm'])->name('register');
+Route::post('register', [AuthController::class, 'register']);
+
+Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('login', [AuthController::class, 'login']);
+
+Route::get('forgot-password', [ForgotPasswordController::class, 'showForgotForm'])->name('forgot-password');
+Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLink'])->name('password.sendResetLink');
+Route::get('/password/reset/{email}/{token}', [ForgotPasswordController::class, 'showResetPasswordForm'])->name('password.reset.form');
+Route::post('/password/reset', [ForgotPasswordController::class, 'resetPassword'])->name('password.reset');
+
+// Cart
+Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
 
 
 
 
 
 Route::view('/faq', 'pages.faq')->name('faq');
- Route::view('/login-page', 'pages.login-page')->name('login-page');
- Route::view('/register-page', 'pages.register-page')->name('register-page');
- Route::view('/forgot-password-page', 'pages.forgot-password-page')->name('forgot-password-page');
- Route::view('/wishlist', 'pages.wishlist')->name('wishlist');
- Route::view('/cart', 'pages.cart')->name('cart');
+Route::view('/wishlist', 'pages.wishlist')->name('wishlist');
+Route::view('/cart', 'pages.cart')->name('cart');
+Route::view('/checkout', 'pages.checkout')->name('checkout');
 
 
 
@@ -71,7 +82,7 @@ Route::post('/language_change', [FrontendController::class, 'changeLanguage'])->
 
 Route::get('/category/{category_slug}', [SearchController::class, 'listingByCategory'])->name('products.category');
 
-Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
+
 Route::get('cart/count', [CartController::class, 'getCount']);
 Route::post('cart/change_quantity', [CartController::class, 'changeQuantity']);
 Route::delete('/cart/{id}', [CartController::class, 'removeCartItem'])->name('cart.remove');
@@ -113,15 +124,9 @@ Route::group(['middleware' => ['auth']], function () {
 
 Route::post('/subscribe', [FrontendController::class, 'subscribe'])->name('newsletter.subscribe');
 
-Route::get('register', [AuthController::class, 'showRegistrationForm'])->name('register');
-Route::post('register', [AuthController::class, 'register']);
 
-Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
-Route::post('login', [AuthController::class, 'login']);
 
-Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLink'])->name('password.sendResetLink');
-Route::get('/password/reset/{email}/{token}', [ForgotPasswordController::class, 'showResetPasswordForm'])->name('password.reset.form');
-Route::post('/password/reset', [ForgotPasswordController::class, 'resetPassword'])->name('password.reset');
+
 
 
 

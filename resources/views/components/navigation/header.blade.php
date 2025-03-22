@@ -67,10 +67,20 @@
     </button>
 
     <!-- Login/Register Button -->
-    <a href="{{ route('login') }}" 
-       class="bg-primary text-white w-[125px] h-[45px] flex justify-center items-center rounded-full hover:bg-[#3498db] transition-all duration-300 transform hover:scale-105 font-medium text-sm">
-        Login/Register
-    </a>
+   
+
+    @if(auth()->check())
+        <a href="{{ route('account') }}" class="bg-primary text-white w-[125px] h-[45px] flex justify-center items-center rounded-full hover:bg-[#3498db] transition-all duration-300 transform hover:scale-105 font-medium text-sm">
+            My Account
+        </a>
+        <a href="{{ route('logout') }}" class="bg-primary text-white w-[125px] h-[45px] flex justify-center items-center rounded-full hover:bg-[#3498db] transition-all duration-300 transform hover:scale-105 font-medium text-sm">
+            Logout
+        </a>
+    @else
+        <a href="{{ route('login') }}" class="bg-primary text-white w-[125px] h-[45px] flex justify-center items-center rounded-full hover:bg-[#3498db] transition-all duration-300 transform hover:scale-105 font-medium text-sm">
+            Login/Register
+        </a>
+    @endif
 </div>
 
 

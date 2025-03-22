@@ -5,14 +5,14 @@ import Swiper from 'swiper/bundle';
 import 'swiper/css/bundle';
 import $ from 'jquery';
 
+import toastr from 'toastr';
+import 'toastr/build/toastr.min.css';
+
 window.$ = window.jQuery = $;
+window.toastr = toastr; // Make toastr globally available
 
 window.Alpine = Alpine;
 Alpine.start();
-
-
-
-
 
 document.addEventListener("DOMContentLoaded", function () {
     // ✅ Hero Swiper with Lazy Loading & Fixed Navigation
@@ -41,9 +41,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-
-
-
 // ✅ Categories Swiper
 new Swiper("#category-swiper", {
     loop: true,
@@ -66,9 +63,6 @@ new Swiper("#category-swiper", {
     // }
 });
 
-
-
-
 document.addEventListener("DOMContentLoaded", function() {
     // Initialize Swiper
     new Swiper(".product-images-swiper", {
@@ -88,7 +82,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
 });
 
-
 document.addEventListener("DOMContentLoaded", function () {
     new Swiper('.testimonials-swiper', {
         loop: true,
@@ -104,8 +97,6 @@ document.addEventListener("DOMContentLoaded", function () {
         },
     });
 });
-
-
 
 // Cart
 
@@ -126,10 +117,6 @@ document.addEventListener("DOMContentLoaded", function () {
         cartDrawer.classList.add("translate-x-full");
     });
 });
-
-
-
-
 
 
 import TomSelect from 'tom-select';
@@ -160,4 +147,20 @@ function toggleFAQ(id, btn) {
         arrow.textContent = '+';
     }
 }
+
+document.addEventListener('DOMContentLoaded', function () {
+    const checkbox = document.getElementById('different-address-checkbox');
+    const differentAddressFields = document.getElementById('different-address');
+
+    // Initially hide the different address fields
+    differentAddressFields.classList.add('hidden');
+
+    checkbox.addEventListener('change', function () {
+        if (this.checked) {
+            differentAddressFields.classList.remove('hidden');
+        } else {
+            differentAddressFields.classList.add('hidden');
+        }
+    });
+});
 

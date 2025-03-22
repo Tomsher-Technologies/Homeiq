@@ -1,188 +1,56 @@
-@extends('frontend.layouts.app')
+@extends('layouts.app')
+@section('title', 'Register - HOME_IQ')
 @section('content')
-    <!-- Minimal about -->
-    <div class="minimal-about">
-        <div class="minimal-about__d-flex d-flex">
-            <!-- Image -->
-            <div class="minimal-about__image">
-                <img alt="Image" data-sizes="auto"
-                    data-srcset="assets/images/login.webp 400w, assets/images/login.webp 800w"
-                    src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" class="lazyload" />
-            </div>
-            <!-- End image -->
-            <!-- Content -->
-            <div class="minimal-about__content">
-                <!-- Container -->
-                <div class="minimal-about__container">
-                    <!-- Login -->
-                    <div class="login">
-                        <!-- Container -->
-                        <div class="">
-                            <!-- Container -->
-                            <div class="">
-                                <!-- Login container -->
-                                <div class="login__container">
-                                    <!-- Login d-flex -->
-                                    <div class="login__d-flex">
-                                        <!-- Login left -->
-                                        <div class="login__left">
-                                            <!-- Login box -->
-                                            <!-- Login box -->
-                                            <div class="login__box active js-new-register">
-                                                <!-- Login heading -->
-                                                <h4 class="login__h4">{{trans('messages.register')}}</h4>
-                                                <!-- End login heading -->
-                                                <!-- Login description -->
-                                                <p class="login__description">
 
-                                                </p>
-                                                <!-- End login description -->
-                                                <!-- Form -->
-                                                <form action="{{ url('register') }}" method="POST">
-                                                    @csrf
-                                                    <div class="login__forgot-password">
-                                                        <a href="{{ route('login') }}" class="">{{trans('messages.existing_customer_login')}}
-                                                        </a>
-                                                    </div>
-                                                    <!-- Form groups -->
-                                                    <div class="form-group">
-                                                        <input type="text" id="name"  class="form-group__input" name="name" value="{{ old('name') }}" required  placeholder="{{trans('messages.full_name')}}">
-                                                        @error('name') <span class="red">{{ $message }}</span> @enderror
-                                                    </div>
-                                                    <!-- End form groups -->
-                                                    <!-- Form group -->
-                                                    <div class="form-group required">
-                                                        <input type="email" id="email"   placeholder="{{trans('messages.email')}}" class="form-group__input" name="email" value="{{ old('email') }}" required>
-                                                        @error('email') <span class="red">{{ $message }}</span> @enderror
-                                                    </div>
-                                                    <!-- End form group -->
-                                                    <!-- Form group -->
-                                                    <div class="form-group required">
-                                                        <input type="password" id="password" name="password"  class="form-group__input" placeholder="{{trans('messages.password')}}" required>
-                                                        @error('password') <span class="red">{{ $message }}</span> @enderror
-                                                    </div>
-                                                    <!-- End form group -->
-                                                    <div class="form-group required">
-                                                        <input type="password" id="password_confirmation" name="password_confirmation" placeholder="{{trans('messages.confirm_password')}}" class="form-group__input" required>
-                                                    </div>
-                                                    <!-- Action -->
-                                                    <div class="login__action"><input class="second-button" type="submit"
-                                                            value="{{trans('messages.create_account')}}"></div>
-                                                    <!-- End action -->
-                                                </form>
-                                                <!-- End form -->
-                                            </div>
-                                            <!-- End login box -->
-                                        </div>
-                                        <!-- End login left -->
-                                    </div>
-                                    <!-- End login d-flex -->
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <!-- Feature -->
-                                            <div class="home-about-us__feature d-flex">
-                                                <!-- Icon -->
-                                                <div class="feature__icon">
-                                                    <i class="lni lni-crown"></i>
-                                                </div>
-                                                <!-- End icon -->
-                                                <!-- Content -->
-                                                <div class="feature__content">
-                                                    <!-- Title -->
-                                                    <h6 class="feature__h6">1 YEAR ZENA & KAZENA BRAND WARRANTY</h6>
-                                                    <!-- End title -->
-                                                    <!-- Description -->
-                                                    <div class="feature__description">Zena & Kazena Promise for
-                                                        Exchange and Upgrades.</div>
-                                                    <!-- End Description -->
-                                                </div>
-                                                <!-- End content -->
-                                            </div>
-                                            <!-- End feature -->
-                                        </div>
-                                        <div class="col-md-6">
-                                            <!-- Feature -->
-                                            <div class="home-about-us__feature d-flex">
-                                                <!-- Icon -->
-                                                <div class="feature__icon">
-                                                    <i class="lni lni-spinner-solid"></i>
-                                                </div>
-                                                <!-- End icon -->
-                                                <!-- Content -->
-                                                <div class="feature__content">
-                                                    <!-- Title -->
-                                                    <h6 class="feature__h6">30 DAY RETURN POLICY</h6>
-                                                    <!-- End title -->
-                                                    <!-- Description -->
-                                                    <div class="feature__description">Zena & Kazena Promise for
-                                                        Exchange and Upgrades.</div>
-                                                    <!-- End Description -->
-                                                </div>
-                                                <!-- End content -->
-                                            </div>
-                                            <!-- End feature -->
-                                        </div>
-                                        <div class="col-md-6">
-                                            <!-- Feature -->
-                                            <div class="home-about-us__feature d-flex">
-                                                <!-- Icon -->
-                                                <div class="feature__icon">
-                                                    <i class="lnil lnil-ship"></i>
-                                                </div>
-                                                <!-- End icon -->
-                                                <!-- Content -->
-                                                <div class="feature__content">
-                                                    <!-- Title -->
-                                                    <h6 class="feature__h6">FREE SHIPPING</h6>
-                                                    <!-- End title -->
-                                                    <!-- Description -->
-                                                    <div class="feature__description">Durotan free shipping for all
-                                                        orders over AED 199
-                                                    </div>
-                                                    <!-- End Description -->
-                                                </div>
-                                                <!-- End content -->
-                                            </div>
-                                            <!-- End feature -->
-                                        </div>
-                                        <div class="col-md-6">
-                                            <!-- Feature -->
-                                            <div class="home-about-us__feature d-flex">
-                                                <!-- Icon -->
-                                                <div class="feature__icon">
-                                                    <i class="lnil lnil-money-protection"></i>
-                                                </div>
-                                                <!-- End icon -->
-                                                <!-- Content -->
-                                                <div class="feature__content">
-                                                    <!-- Title -->
-                                                    <h6 class="feature__h6">SECURE PAYMENT</h6>
-                                                    <!-- End title -->
-                                                    <!-- Description -->
-                                                    <div class="feature__description">We guarantee 100% secure with
-                                                        online payment
-                                                        on our
-                                                        site.</div>
-                                                    <!-- End Description -->
-                                                </div>
-                                                <!-- End content -->
-                                            </div>
-                                            <!-- End feature -->
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- End login container -->
-                            </div>
-                            <!-- End container -->
-                        </div>
-                        <!-- End container -->
-                    </div>
-                    <!-- End login -->
-                </div>
-                <!-- End container -->
+<div class="container mx-auto py-12 px-6 lg:px-12">
+    <div class="max-w-2xl m-auto bg-white shadow-2xl rounded-2xl p-8 transform transition duration-300">
+    <h1 class="text-4xl font-extrabold text-center text-gray-800 mb-6">Register</h1>
+        
+        <form action="{{ url('register') }}" method="POST" class="space-y-6" autocomplete="off">
+            @csrf
+            <div>
+                <label for="name" class="block text-gray-700 font-medium mb-1">Full Name</label>
+                <input type="text" id="name"  class="w-full mt-1 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm" name="name" value="{{ old('name') }}" placeholder="Enter name.." pattern="[A-Za-z ]+" title="Only letters and spaces are allowed.">
+                @error('name') <span class="text-red-600">{{ $message }}</span> @enderror
             </div>
-            <!-- End content -->
-        </div>
+            
+            <div>
+                <label for="email" class="block text-gray-700 font-medium mb-1">Email</label>
+                <input type="email" id="email" placeholder="Enter email.." class="w-full mt-1 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm" autocomplete="off" name="email" value="{{ old('email') }}">
+                @error('email') <span class="text-red-600">{{ $message }}</span> @enderror
+            </div>
+
+            <div>
+                <label class="block text-gray-700 font-medium mb-2">Phone Number</label>
+                <input type="tel" name="phone" id="phone" autocomplete="off" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary outline-none"  value="{{ old('phone') }}" placeholder="Enter phone..">
+                @error('phone') <span class="text-red-600">{{ $message }}</span> @enderror
+            </div>
+            
+            <div>
+                <label for="password" class="block text-gray-700 font-medium mb-1">Password</label>
+                <input type="password" id="password" name="password" class="w-full mt-1 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm" autocomplete="new-password" placeholder="Enter password..">
+                @error('password') <span class="text-red-600">{{ $message }}</span> @enderror
+            </div>
+            
+            <div>
+                <label for="confirm-password" class="block text-gray-700 font-medium mb-1">Confirm Password</label>
+                <input type="password" id="password_confirmation" name="password_confirmation" placeholder="Enter confirm password.." class="w-full mt-1 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm">
+                @error('password_confirmation') <span class="text-red-600">{{ $message }}</span> @enderror
+            </div>
+            
+            <button type="submit" class="w-full bg-primary text-white py-4 rounded-full hover:bg-[#3498db] transition-all duration-300 transform hover:scale-105 font-medium text-sm">Register</button>
+        </form>
+        
+        <p class="text-center text-gray-700 mt-6 text-sm">Already have an account? <a href="{{ route('login') }}" class="text-blue-600 font-medium hover:underline">Login</a></p>
     </div>
-    <!-- End minimal about -->
+    </div>
+
+@endsection
+
+@section('script')
+    <script>
+        document.querySelector('input[name="phone"]').addEventListener('input', function (e) {
+            this.value = this.value.replace(/[^0-9]/g, ''); // Remove non-numeric characters
+        });
+    </script>
 @endsection

@@ -88,9 +88,8 @@
                                                     <tr>
                                                         <td width="208" align="center" valign="middle">
                                                             <a href="{{ env('APP_URL') }}" target="_blank">
-                                                                <img src="{{ asset('assets/images/logo.svg') }}"
-                                                                    alt="{{ env('APP_NAME') }}"
-                                                                    title="{{ env('APP_NAME') }}" style="display: block;margin-top: 5px;margin-bottom: 5px;" width="222" ></a>
+                                                                <img src="{{ asset('assets/img/logo.svg') }}" alt="{{ env('APP_NAME') }}" title="{{ env('APP_NAME') }}" style="display: block;margin-top: 5px;margin-bottom: 5px;" width="222" />
+                                                            </a>
                                                         </td>
                                                     </tr>
                                                 </tbody>

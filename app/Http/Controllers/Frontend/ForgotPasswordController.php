@@ -12,6 +12,13 @@ use Hash;
 
 class ForgotPasswordController extends Controller
 {
+
+    public function showForgotForm()
+    {
+        $lang = getActiveLanguage();
+        return view('auth.forgot-password',['lang' => $lang ]);
+    }
+
     public function sendResetLink(Request $request)
     {
         $request->validate(['email' => 'required|email|exists:users,email']);
@@ -34,7 +41,8 @@ class ForgotPasswordController extends Controller
 
     public function showResetPasswordForm($email, $token)
     {
-        return view('frontend.auth.reset-password', ['token' => $token, 'email' => $email]); // Create this view
+        $lang = getActiveLanguage();
+        return view('auth.reset-password', ['token' => $token, 'email' => $email,'lang' =>$lang]); // Create this view
     }
 
     public function resetPassword(Request $request)
@@ -45,6 +53,7 @@ class ForgotPasswordController extends Controller
             'password' => 'required|min:8|confirmed',
         ]);
 
+        
         $resetRecord = DB::table('password_resets')
             ->where('email', $request->email)
             ->where('token', $request->token)
@@ -62,10 +71,7 @@ class ForgotPasswordController extends Controller
         // Delete the reset token
         DB::table('password_resets')->where('email', $request->email)->delete();
 
-        session()->flash('message', trans('messages.password_reseted'));
-        session()->flash('alert-type', 'success');
-
-        return redirect()->route('login');
+        return redirect()->route('login')->with('success', 'Your password has been reset successfully!');
     }
 
 }

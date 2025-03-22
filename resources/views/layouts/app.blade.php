@@ -11,6 +11,7 @@
     @yield('style')
     <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
+   
 </head>
 <body class="bg-gray-50">
 
@@ -27,6 +28,15 @@
 
     <script>
          document.addEventListener("DOMContentLoaded", function() {
+
+            @if (session('success'))
+                toastr.success('{{ session("success") }}');
+            @endif
+
+            @if (session('error'))
+                toastr.error('{{ session("error") }}');
+            @endif
+
             $('#newsletter-form').on('submit', function(e){
                 e.preventDefault();
         
@@ -47,8 +57,42 @@
                     }
                 });
             });
+
+            $(document).on('click', '.add-to-cart-btn', function () {
+                const productSlug = $(this).data('product-slug');
+                const productSku = $(this).data('product-sku');
+                var quantity = $('#product_quantity').val() ?? 1;
+            
+                $.ajax({
+                    url: '/cart/add', // Laravel route
+                    type: 'POST',
+                    data: {
+                        product_slug: productSlug,
+                        sku : productSku,
+                        quantity: quantity, // Default quantity
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                    },
+                    success: function (response) {
+                        $('.cart_count').text(response.cart_count);
+                        $('.canvasCartcount').text(response.cart_count);
+                        if (response.status == true) {
+                            toastr.success(response.message, "success");
+                        } else {
+                            toastr.error(response.message, "error");
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        toastr.error("{{trans('messages.product_add_cart_failed')}}", 'Error');
+                    },
+                });
+            });
+
+
         });
-    
+
+      
     </script>
 </body>
 </html>
