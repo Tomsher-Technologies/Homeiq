@@ -62,15 +62,34 @@ Route::post('/password/reset', [ForgotPasswordController::class, 'resetPassword'
 
 // Cart
 Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
+Route::get('cart/list', [CartController::class, 'index'])->name('cart.index');
+Route::delete('/cart/{id}', [CartController::class, 'removeCartItem'])->name('cart.remove');
+Route::get('/cart', [CartController::class, 'getCartDetails'])->name('cart');
+Route::post('cart/change_quantity', [CartController::class, 'changeQuantity']);
+Route::post('coupon-apply', [CheckoutController::class, 'apply_coupon_code'])->name('coupon-apply');
+Route::post('coupon-remove', [CheckoutController::class, 'remove_coupon_code'])->name('coupon-remove');
+
+Route::get('/checkout', [CheckoutController::class, 'index'])->middleware('auth')->name('checkout');
+Route::post('checkout.process', [CheckoutController::class, 'placeOrder'])->name('checkout.process');
+
+
+
 
 
 
 
 
 Route::view('/faq', 'pages.faq')->name('faq');
-Route::view('/wishlist', 'pages.wishlist')->name('wishlist');
-Route::view('/cart', 'pages.cart')->name('cart');
-Route::view('/checkout', 'pages.checkout')->name('checkout');
+// Route::view('/my-address', 'pages.my-address')->name('my-address');
+ Route::view('/my-orders', 'pages.my-orders')->name('my-orders');
+ Route::view('/order-details', 'pages.order-details')->name('order-details');
+ Route::view('/order-success', 'pages.order-success')->name('order-success');
+ Route::view('/order-field', 'pages.order-field')->name('order-field');
+ Route::view('/my-profile', 'pages.my-profile')->name('my-profile');
+
+
+
+
 
 
 
@@ -84,20 +103,18 @@ Route::get('/category/{category_slug}', [SearchController::class, 'listingByCate
 
 
 Route::get('cart/count', [CartController::class, 'getCount']);
-Route::post('cart/change_quantity', [CartController::class, 'changeQuantity']);
-Route::delete('/cart/{id}', [CartController::class, 'removeCartItem'])->name('cart.remove');
-Route::apiResource('cart', CartController::class)->only('index', 'store', 'destroy');
 
-Route::get('cart/items', [CartController::class, 'getCartDetails'])->name('cart.items');
-Route::post('coupon-apply', [CheckoutController::class, 'apply_coupon_code'])->name('coupon-apply');
-Route::post('coupon-remove', [CheckoutController::class, 'remove_coupon_code'])->name('coupon-remove');
+
+
+
+
 
 Route::get('/check-login-status', [UserController::class, 'checkLoginStatus'])->name('check.login.status');
 
 
 Route::group(['middleware' => ['auth']], function () {
-    Route::get('/checkout', [CheckoutController::class, 'index'])->middleware('auth')->name('checkout');
-    Route::post('checkout.process', [CheckoutController::class, 'placeOrder'])->name('checkout.process');
+    
+    
 
     Route::get('/order/success/{order_id}', [CheckoutController::class, 'success'])->name('order.success');
     Route::get('/order/failed', [CheckoutController::class, 'failed'])->name('order.failed');
@@ -120,6 +137,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('account', [ProfileController::class, 'getUserAccountInfo'])->name('account');
     Route::post('/account/update', [ProfileController::class, 'update'])->name('account.update'); 
     Route::post('/change-password', [ProfileController::class, 'changePassword'])->name('account.changePassword');
+
+    Route::get('my-address', [ProfileController::class, 'getUserAddressInfo'])->name('my-address');
 });
 
 Route::post('/subscribe', [FrontendController::class, 'subscribe'])->name('newsletter.subscribe');

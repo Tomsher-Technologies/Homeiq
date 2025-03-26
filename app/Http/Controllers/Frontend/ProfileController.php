@@ -374,8 +374,9 @@ class ProfileController extends Controller
         return view('frontend.order_details',compact('lang','order','track_list','dataByStatus'));
     }
 
-    public function getUserAccountInfo(){
-        $user = Auth::user();
-        return view('frontend.account', compact('user'));
+    public function getUserAddressInfo(){
+        $lang = getActiveLanguage();
+        $addresses = Address::where('user_id', auth()->user()->id)->get();
+        return view('pages.my-address', compact('addresses','lang'));
     }
 }

@@ -659,3 +659,36 @@ function generateUniqueSKU()
 
     return $sku;
 }
+
+function checkCartProduct($sku, $slug){
+    $userId = Auth::id();
+    $guestToken = request()->cookie('guest_token') ?? uniqid('guest_', true);
+
+    if (auth()->user()) {
+        $users_id_type = 'user_id';
+    }else{
+        $users_id_type = 'temp_user_id';
+    }
+
+    $product = ProductStock::leftJoin('products as p','p.id','=','product_stocks.product_id')
+                                ->where('product_stocks.sku', $sku)
+                                ->where('p.slug', $slug)
+                                ->select('product_stocks.*')->first() ?? [];
+
+    if(!empty($product)){
+        $product_id         = $product['product_id'] ?? null;
+        $product_stock_id   = $product['id'] ?? null;
+
+        $carts = Cart::where([
+            $users_id_type =>  ($users_id_type == 'user_id') ? $userId  : $guestToken,
+            'product_id' => $product_id,
+            'product_stock_id' => $product_stock_id
+        ])->first();
+
+        if ($carts) {
+            return true;
+        }else{
+            return false;
+        }
+    }
+}

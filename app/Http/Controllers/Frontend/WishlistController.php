@@ -51,7 +51,7 @@ class WishlistController extends Controller
         // print_r($result);
         // die;
 
-        return view('frontend.wishlists',compact('lang','result','wishlist'));
+        return view('pages.wishlist',compact('lang','result','wishlist'));
     }
 
     public function store(Request $request)

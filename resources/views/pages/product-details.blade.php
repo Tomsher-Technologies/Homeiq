@@ -36,17 +36,37 @@
 
             <!-- Action Buttons -->
             <div class="mt-6 flex items-center gap-4">
-                <!-- Add to Cart Button (70% Width) -->
-                <a href="#" class="bg-primary whitespace-nowrap text-white px-6 py-3 rounded-lg text-lg font-medium hover:bg-secondary transition-all w-[70%] lg:w-[50%] text-center">
-                    Add to Cart
-                </a>
 
+                @php
+                    $checkCartStatus = checkCartProduct($product->sku, $product->slug);
+                @endphp
+                <!-- Add to Cart Button (70% Width) -->
+                <div  id="detailsCartButton">
+                    @if ($checkCartStatus)
+                        <a href="{{ route('cart') }}" class="bg-primary whitespace-nowrap text-white px-6 py-3 rounded-lg text-lg font-medium hover:bg-secondary transition-all w-[70%] lg:w-[50%] text-center">
+                            Go to Cart
+                        </a>
+                    @else
+                        <a href="#" class="add-to-cart-btn  bg-primary whitespace-nowrap text-white px-6 py-3 rounded-lg text-lg font-medium hover:bg-secondary transition-all w-[70%] lg:w-[50%] text-center"   data-product-slug="{{$product->slug}}" data-product-sku="{{ $product->sku}}">
+                            Add to Cart
+                        </a>
+                    @endif
+                
+                </div>
+                
                 <!-- Wishlist Button -->
-                <button class="bg-gray-200 w-[45px] h-[45px] flex justify-center items-center rounded-full hover:bg-primary transition-all duration-300 transform hover:scale-105">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 21 21" fill="none">
-                        <path d="M17.3689 4.46447C19.2545 6.35393 19.3192 9.36417 17.5656 11.3275L10.5 18.4042L3.43456 11.3275C1.68095 9.36417 1.7465 6.34918 3.63121 4.46447C5.51806 2.57763 8.53774 2.51406 10.5009 4.27378C12.4584 2.51667 15.4834 2.575 17.3689 4.46447ZM4.80972 5.64298C3.56827 6.88443 3.50595 8.87275 4.65002 10.186L10.5 16.0453L16.3502 10.186C17.4947 8.87225 17.4326 6.88771 16.1892 5.64175C14.9498 4.39983 12.9549 4.34005 11.6453 5.48647L8.14306 8.98908L6.96455 7.81053L9.31841 5.455L9.25025 5.39751C7.93796 4.34331 6.01943 4.43328 4.80972 5.64298Z" fill="black"></path>
-                    </svg>
-                </button>
+                @if (Auth::id())
+                    @php
+                        $isWishlisted = isWishlisted($product->id);
+                    @endphp
+                    <button class="wishlist-btn bg-gray-200 w-[45px] h-[45px] flex justify-center items-center rounded-full hover:bg-primary transition-all duration-300 transform hover:scale-105"  data-product-slug="{{ $product->slug }}" data-product-sku="{{ $product->sku }}">
+                        <svg class="@if($isWishlisted) text-red-500 @endif h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="@if($isWishlisted) red @else none @endif" viewBox="0 0 24 24">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12.01 6.001C6.5 1 1 8 5.782 13.001L12.011 20l6.23-7C23 8 17.5 1 12.01 6.002Z" />
+                        </svg>
+                    </button>
+                @endif
+                
             </div>
 
             <!-- Social Share -->

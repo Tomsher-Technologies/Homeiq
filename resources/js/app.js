@@ -148,19 +148,25 @@ function toggleFAQ(id, btn) {
     }
 }
 
-document.addEventListener('DOMContentLoaded', function () {
-    const checkbox = document.getElementById('different-address-checkbox');
-    const differentAddressFields = document.getElementById('different-address');
 
-    // Initially hide the different address fields
-    differentAddressFields.classList.add('hidden');
 
-    checkbox.addEventListener('change', function () {
-        if (this.checked) {
-            differentAddressFields.classList.remove('hidden');
-        } else {
-            differentAddressFields.classList.add('hidden');
-        }
+
+// Cart
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const accountBtn = document.getElementById("accont-btn");
+        const accountDrawer = document.getElementById("account-drawer");
+        const closeAccount = document.getElementById("close-account"); // Corrected ID
+
+        // Open drawer
+        accountBtn.addEventListener("click", function (event) {
+            event.preventDefault();
+            accountDrawer.classList.remove("translate-x-full"); // Slide in
+        });
+
+        // Close drawer
+        closeAccount.addEventListener("click", function () {
+            accountDrawer.classList.add("translate-x-full"); // Slide out
+        });
     });
-});
-

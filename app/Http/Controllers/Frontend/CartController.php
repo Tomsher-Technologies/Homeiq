@@ -189,8 +189,8 @@ class CartController extends Controller
                         'brand' => $datas->product->brand->getTranslation('name', $lang),
                         'slug' => $datas->product->slug,
                         'sku' => $datas->product_stock->sku,
-                        'image' => get_product_image($datas->product->thumbnail_img,'300'),
-                        'attributes' => getProductAttributes($datas->product_stock->attributes)
+                        'max_qty' => $datas->product_stock->qty,
+                        'image' => get_product_image($datas->product->thumbnail_img,'300')
                     ],
                     
                     'stroked_price' => $datas->price ,
@@ -216,6 +216,7 @@ class CartController extends Controller
             $result['products'] = [];
         }
 
+        $cart_coupon_discount = round($cart_coupon_discount);
         $cart_total = ($overall_subtotal + $total_tax) - ($total_discount + $cart_coupon_discount);
 
         $freeShippingStatus = get_setting('free_shipping_status');
@@ -373,7 +374,7 @@ class CartController extends Controller
         // echo '<pre>';
         // print_r($response);
         // die;
-        return view('frontend.cart',compact('response','lang'));
+        return view('pages.cart',compact('response','lang'));
     }
 
 
@@ -495,4 +496,6 @@ class CartController extends Controller
             ], 200);
         }
     }
+
+    
 }

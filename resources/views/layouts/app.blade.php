@@ -29,6 +29,12 @@
     <script>
          document.addEventListener("DOMContentLoaded", function() {
 
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
             @if (session('success'))
                 toastr.success('{{ session("success") }}');
             @endif
@@ -36,6 +42,14 @@
             @if (session('error'))
                 toastr.error('{{ session("error") }}');
             @endif
+
+            $(document).ready(function () {
+                $('.counter-input').each(function () {
+                    let productId = $(this).attr('id').split('_')[1]; // Extract ID from `quantity-field_{id}`
+                    let maxQuantity = parseInt($('.increment-button[data-id="' + productId + '"]').data('max-quantity')) || Infinity;
+                    updateButtonState(productId, maxQuantity);
+                });
+            });
 
             $('#newsletter-form').on('submit', function(e){
                 e.preventDefault();
@@ -82,6 +96,12 @@
                         } else {
                             toastr.error(response.message, "error");
                         }
+                        // Check if #detailsCartButton exists on the page
+                        if ($('#detailsCartButton').length) {
+                            $('#detailsCartButton').html(`<a href="{{ route('cart') }}" class="bg-primary whitespace-nowrap text-white px-6 py-3 rounded-lg text-lg font-medium hover:bg-secondary transition-all w-[70%] lg:w-[50%] text-center">
+                                Go to Cart
+                            </a>`);
+                        }
                     },
                     error: function (xhr, status, error) {
                         toastr.error("{{trans('messages.product_add_cart_failed')}}", 'Error');
@@ -89,10 +109,274 @@
                 });
             });
 
+            // Event listener for the "Remove" button
+            $(document).on('click', '.remove-cart-item', function() {
+                var cartItemId = $(this).data('id'); // Get the cart item ID
+                var row = $(this).closest('div'); // Get the closest row to remove
+
+                // Send an Ajax request to remove the item from the cart
+                $.ajax({
+                    url: '/cart/' + cartItemId,
+                    type: 'DELETE',
+                    success: function(response) {
+                        if (response.status === true) {
+                            // Remove the row from the table
+                            $('#cart_item'+cartItemId).remove();
+                            $('.cart_count').text(response.cart_count);
+                            $('.canvasCartcount').text(response.cart_count);
+                            $('.cart_sub_total').html(response.updatedCartSummary.sub_total)
+                            // Optionally, you can update the cart summary here
+                            toastr.success(response.message, "{{trans('messages.success')}}");
+                            setTimeout(function() {
+                                window.location.reload();
+                            }, 2000);
+
+                        } else {
+                            toastr.error(response.message, "{{trans('messages.error')}}");
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        toastr.error("{{trans('messages.cart_remove_error')}}", "{{trans('messages.error')}}");
+                    }
+                });
+            });
+
+            $(document).on('click', '.change_quantity', function() {
+
+                var quantity = 0;
+                let action = $(this).data('action');
+                let cartItemId = $(this).data('id');
+                let maxQuantity = parseInt($(this).data('max-quantity')) || Infinity; // Default to infinity if no max
+                let inputField = $('#quantity-field_'+cartItemId);
+                let currentValue = parseInt(inputField.val()) || 0;
+
+                if (action === 'plus' && currentValue < maxQuantity) {
+                    quantity = currentValue + 1;
+                } else if (action === 'minus' && currentValue > 1) {
+                    quantity = currentValue - 1;
+                }
+               
+                inputField.val(quantity);
+                updateButtonState(cartItemId, maxQuantity);
+
+                $.ajax({
+                    url: '/cart/change_quantity',
+                    type: 'POST',
+                    data: {
+                        cart_id: cartItemId,
+                        action : action,
+                        quantity : quantity
+                    },
+                    success: function(response) {
+                        if (response.status === true) {
+                            // Optionally, you can update the cart summary here
+                            toastr.success(response.message, "{{trans('messages.success')}}");
+                            window.location.reload();
+                        } else {
+                            toastr.error(response.message, "{{trans('messages.error')}}");
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        toastr.error("{{trans('messages.cart_remove_error')}}", "{{trans('messages.error')}}");
+                    }
+                });
+            });
+
+            // Function to enable/disable buttons based on quantity
+            function updateButtonState(productId, maxQuantity) {
+                let inputField = $('#quantity-field_' + productId);
+                let currentValue = parseInt(inputField.val()) || 0;
+                
+                let decrementButton = $('.decrement-button[data-id="' + productId + '"]');
+                let incrementButton = $('.increment-button[data-id="' + productId + '"]');
+
+                // Disable decrement button if quantity is 1
+                if (currentValue <= 1) {
+                    decrementButton.prop('disabled', true).addClass('opacity-50 cursor-not-allowed');
+                } else {
+                    decrementButton.prop('disabled', false).removeClass('opacity-50 cursor-not-allowed');
+                }
+
+                // Disable increment button if max quantity is reached
+                if (currentValue >= maxQuantity) {
+                    incrementButton.prop('disabled', true).addClass('opacity-50 cursor-not-allowed');
+                } else {
+                    incrementButton.prop('disabled', false).removeClass('opacity-50 cursor-not-allowed');
+                }
+            }
+      
+            $(document).on('click', '.wishlist-btn', function () {
+                const productSlug = $(this).data('product-slug');
+                const productSku = $(this).data('product-sku');
+                const url = '/wishlist/store';
+                const wishButton = $(this);
+
+                $.ajax({
+                    url: '/check-login-status',  // Endpoint to check login status
+                    type: 'GET',
+                    success: function (response) {
+                        if (response.is_logged_in) {
+                            $.ajax({
+                                url: url,
+                                type: 'POST',
+                                data: {
+                                    productSlug: productSlug, 
+                                    productSku: productSku, 
+                                    _token: $('meta[name="csrf-token"]').attr('content') 
+                                },
+                                success: function(response) {
+                                    if(response.status == true){
+                                        $('.wishlist_count').text(response.wishlist_count);
+                                        toastr.success(response.message, "{{trans('messages.success')}}");
+                                        if(response.wishlist_status == 1){
+                                            wishButton.find("span").html('Remove from wishlist');
+                                            wishButton.find("svg").addClass('text-red-500').attr("fill", "red");;
+                                            $('.wishlist_msg').html("{{trans('messages.remove_wishlist')}}");
+                                        }else{
+                                            wishButton.find("span").html('Add to wishlist');
+                                            wishButton.find("svg").removeClass('text-red-500').attr("fill", "none");;
+                                            $('.wishlist_msg').html("{{trans('messages.add_wishlist')}}");
+                                        }
+                                    
+                                    }else{
+                                        toastr.error(response.message, "{{trans('messages.error')}}");
+                                    }
+                                },
+                                error: function(xhr, status, error) {
+                                    toastr.error("{{trans('messages.wishlist_remove_error')}}", "{{trans('messages.error')}}");
+                                }
+                            });
+                        } else {
+                            // Show alert if not logged in
+                            toastr.error("{{trans('messages.login_msg')}}", "{{trans('messages.error')}}");
+                        }
+                    },
+                    error: function () {
+                        toastr.error("{{trans('messages.error_try_again')}}", "{{trans('messages.error')}}");
+                    }
+                });
+
+            });
+
+            $('.proceedToCheckout').on('click', function () {
+                $.ajax({
+                    url: '/check-login-status',  // Endpoint to check login status
+                    type: 'GET',
+                    success: function (response) {
+                        if (response.is_logged_in) {
+                            // Redirect to checkout page
+                            window.location.href = '/checkout';
+                        } else {
+                            // Show alert if not logged in
+                            toastr.error("{{trans('messages.login_msg')}}", "{{trans('messages.error')}}");
+                        }
+                    },
+                    error: function () {
+                        toastr.error("{{trans('messages.error_try_again')}}", "{{trans('messages.error')}}");
+                    }
+                });
+            });
+
+            var productDetailRoute = "{{ route('products.show', ['slug' => '__slug__']) }}"; // this will be a placeholder
+            $(".open-canvas-cart").on("click", function() {
+
+                $.get('{{ route('cart.index') }}', {
+                    _token: '{{ csrf_token() }}'
+                }, function(data) {
+                    console.log();
+                    // location.reload();
+                    var productRow = '';
+                    $.each(data.products, function(index, product) {
+                        
+                        var productLink = productDetailRoute.replace('__slug__', product.product.slug).replace('__sku__', product.product.sku);
+                        var  price = '';
+                        if(product.stroked_price != product.main_price){
+                            price = `<span class="text-gray-500 line-through text-xs"> &nbsp;AED ${product.stroked_price }</span>`;
+                        }
+        
+                        productRow += `<div class="flex items-center space-x-4"  id="cart_item${product.id}">
+                                            <a href="${productLink}"> 
+                                                <img src="${product.product.image}" alt="${product.product.name}" class="w-16 h-16 object-cover rounded-lg shadow-sm">
+                                            </a>
+                                            <div class="flex-1">
+                                                <h4 class="text-gray-800 font-medium">
+                                                    <a href="${productLink}"> ${product.product.name} </a>
+                                                </h4>
+                                                <p class="text-gray-600 text-sm">Quantity: ${product.quantity}</p>
+                                                <p class="text-primary font-semibold">
+                                                    AED ${product.main_price} ${price}
+                                                </p>
+                                            </div>
+                                            
+                                            <button class="remove-cart-item text-red-500 hover:text-red-700 focus:outline-none"  data-id="${product.id}">
+                                                ✖
+                                            </button>
+                                        </div>`;
+                        
+                    });
+
+                    if(productRow == ''){
+                        var cart_empty = "{{ trans('messages.cart_empty') }}";
+                        productRow += `
+                                <div class="flex items-center space-x-4">
+                                    <p>${cart_empty}</p>
+                                    </div>
+                                    `;
+                    }
+
+                    $('#cart-canvas-content').html(productRow);
+                                
+                    $('.cart_sub_total').html(data.summary.after_discount);
+                });
+
+
+
+                $(".js-canvas-cart").addClass("active");
+                $("body").css("overflow", "hidden");
+                return false;
+            });
+
+
+            $('#applyCouponForm').on('submit', function (e) {
+                e.preventDefault(); // Prevent the form from submitting the traditional way
+
+                var couponCode = $('#couponCode').val(); // Get the coupon code from the input
+                var coupon_action = $('#coupon_action').val();
+                coupon_action = coupon_action.trim(); 
+
+                var url = '';
+                if(String(coupon_action) === "add"){
+                    url = "{{ route('coupon-apply')}}";
+                }else{
+                    url = "{{ route('coupon-remove')}}";
+                }
+
+                $.ajax({
+                    url: url,  // URL to your backend endpoint
+                    type: 'POST',
+                    data: {
+                        coupon: couponCode,
+                        _token: $('meta[name="csrf-token"]').attr('content') // Include CSRF token
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            $('#couponMessage').html('<span style="color: green;">' + response.message + '</span>');
+                            setTimeout(function() {
+                                window.location.reload();
+                            }, 2000);
+                        } else {
+                            $('#couponMessage').html('<span style="color: red;">' + response.message + '</span>');
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        $('#couponMessage').html('<span style="color: red;">An error occurred. Please try again.</span>');
+                    }
+                });
+            });
 
         });
 
-      
+            
     </script>
 </body>
 </html>
