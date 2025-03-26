@@ -61,27 +61,22 @@
             </div>
             <div class="row gutters-5">
                 <div class="col-sm-12 col-md-6 text-md-left">
-                    <address>
-                        <strong class="text-main">{{ json_decode($order->shipping_address)->name }}</strong><br>
-                        {{ json_decode($order->shipping_address)->email }}<br>
-                        {{ json_decode($order->shipping_address)->phone }}<br>
-                        {{ json_decode($order->shipping_address)->address }},
-                        {{ json_decode($order->shipping_address)->city }},
-                        <br>
-                        {{ json_decode($order->shipping_address)->zipcode }}
-                    </address>
-                    @if ($order->manual_payment && is_array(json_decode($order->manual_payment_data, true)))
-                        <br>
-                        <strong class="text-main">Payment Information</strong><br>
-                        Name: {{ json_decode($order->manual_payment_data)->name }},
-                        Amount: {{ single_price(json_decode($order->manual_payment_data)->amount) }},
-                        TRX ID: {{ json_decode($order->manual_payment_data)->trx_id }}
-                        <br>
-                        <a href="{{ uploaded_asset(json_decode($order->manual_payment_data)->photo) }}"
-                            target="_blank"><img
-                                src="{{ uploaded_asset(json_decode($order->manual_payment_data)->photo) }}" alt=""
-                                height="100"></a>
+                    @php
+                        $shipping_address = json_decode($order->shipping_address);
+                    @endphp
+                    @if ($shipping_address)
+                        <address>
+                            <strong class="text-main">{{ $shipping_address->name }}</strong><br>
+                            {{ $shipping_address->email }}<br>
+                            {{ $shipping_address->phone }}<br>
+                            {{ $shipping_address->address }},
+                            {{ $shipping_address->city }}, {{ $shipping_address->state }}, {{ $shipping_address->country }},
+                            <br>
+                            {{ $shipping_address->zipcode }}
+                        </address>
                     @endif
+                    
+                    
                 </div>
                 <div class="col-sm-12 col-md-6 float-right">
                     <table class="float-right">

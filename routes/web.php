@@ -69,9 +69,11 @@ Route::post('cart/change_quantity', [CartController::class, 'changeQuantity']);
 Route::post('coupon-apply', [CheckoutController::class, 'apply_coupon_code'])->name('coupon-apply');
 Route::post('coupon-remove', [CheckoutController::class, 'remove_coupon_code'])->name('coupon-remove');
 
-Route::get('/checkout', [CheckoutController::class, 'index'])->middleware('auth')->name('checkout');
+Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
 Route::post('checkout.process', [CheckoutController::class, 'placeOrder'])->name('checkout.process');
 
+Route::get('/order/success/{order_id}', [CheckoutController::class, 'success'])->name('order.success');
+Route::get('/order/failed', [CheckoutController::class, 'failed'])->name('order.failed');
 
 
 
@@ -116,8 +118,7 @@ Route::group(['middleware' => ['auth']], function () {
     
     
 
-    Route::get('/order/success/{order_id}', [CheckoutController::class, 'success'])->name('order.success');
-    Route::get('/order/failed', [CheckoutController::class, 'failed'])->name('order.failed');
+    
     
     Route::get('logout', [AuthController::class, 'logout'])->name('logout');
 

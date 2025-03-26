@@ -45,31 +45,12 @@
           </g>
        </svg>
        <h2 class="text-2xl text-red-500 font-bold mb-2">Order Failed</h2>
-       <p class="text-gray-600 mb-4">Thank you for your purchase. Your order details are below.</p>
+       <p class="text-gray-600 mb-4">Oops! Your Order Could Not Be Processed.</p>
     </div>
-    <div class="border-t border-gray-200 mt-4 pt-4">
-       <div class="mb-2">
-          <span class="font-semibold">Order ID:</span>
-          <span>123456789</span>
-       </div>
-       <div class="mb-2">
-          <span class="font-semibold">Order Date:</span>
-          <span>May 25, 2024</span>
-       </div>
-       <div class="mb-2">
-          <span class="font-semibold">Total Amount:</span>
-          <span>AED 299.99</span>
-       </div>
-       <div class="mb-2">
-          <span class="font-semibold">Shipping Address:</span>
-          <span>123 Main St, Anytown, USA</span>
-       </div>
-       <hr>
- 
-    </div>
+    
     <div class="text-center mt-6">
        <div class="flex gap-2">
-         <a href="404.html" class="flex items-center justify-center w-full px-4 py-2.5 text-sm font-bold text-white transition-all border  border-[#41b6e8] duration-200 bg-[#41b6e8]  hover:text-[#41b6e8]  hover:bg-[#41b6e8]" href="order-field.html">Continue Shopping</a>
+         <a class="flex items-center justify-center w-full px-4 py-2.5 text-sm font-bold text-white transition-all border  border-[#41b6e8] duration-200 bg-[#41b6e8]  hover:text-[#000000]  hover:bg-[#41b6e8]" href="{{ route('products.index') }}">Continue Shopping</a>
        </div>
     </div>
  </div>

@@ -99,7 +99,7 @@
 
 
 
-                            <a href="login.html" class="px-3 py-4 flex flex-col items-center rounded-md border  gap-y-4 text-center hover:bg-gray-50 w-full bg-white hover:text-[#41b6e8] group">
+                            <a href="{{ route('logout') }}" class="px-3 py-4 flex flex-col items-center rounded-md border  gap-y-4 text-center hover:bg-gray-50 w-full bg-white hover:text-[#41b6e8] group">
 
 
                                 <svg class="w-[30px] group-hover:fill-[#41b6e8]" version="1.1" id="fi_126467" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 471.2 471.2" style="enable-background:new 0 0 471.2 471.2;" xml:space="preserve">

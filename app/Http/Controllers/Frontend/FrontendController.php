@@ -95,6 +95,7 @@ class FrontendController extends Controller
 
     public function home()
     {
+        setGuestToken();
         $page = Page::where('type','home')->first();
         $lang = getActiveLanguage();
         $seo = [
