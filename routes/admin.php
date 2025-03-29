@@ -28,6 +28,8 @@ use App\Http\Controllers\Admin\FaqCategoryController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\BlogController;
 use App\Http\Controllers\Admin\TestimonialController;
+use App\Http\Controllers\Admin\ReportController;
+use App\Http\Controllers\Admin\AbandonedCartController;
 
 
 Route::group(['middleware' => ['guest']], function () {
@@ -146,7 +148,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/orders/update_tracking_code', [OrderController::class, 'update_tracking_code'])->name('orders.update_tracking_code');
 
     Route::get('/return_requests', [OrderController::class, 'allReturnRequests'])->name('return_requests.index');
-    Route::post('/return-request-status', [OrderController::class, 'returnRequestStatus'])->name('return-request-status');
+    Route::post('/return-request-status', [OrderController::class, 'updateReturnStatus'])->name('return-request-status');
     Route::get('/return_orders/{id}/show', [OrderController::class, 'return_orders_show'])->name('return_orders.show');
 
     Route::get('invoice/{order_id}', [InvoiceController::class, 'invoice_download'])->name('invoice.download');
@@ -196,4 +198,26 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/blog/update/{id}', [BlogController::class, 'update'])->name('blog.update');
     Route::post('/blog/status', [BlogController::class, 'updateStatus'])->name('blog.status');
     Route::get('/blog/delete/{id}', [BlogController::class, 'destroy'])->name('blog.delete');
+
+    Route::get('/configuration', [BusinessSettingsController::class, 'shipping_configuration'])->name('shipping_configuration.index');
+    Route::post('/shipping_configuration/free_shipping', [BusinessSettingsController::class, 'freeshipping_settings'])->name('shipping_configuration.free_shipping');
+    Route::post('/configuration/return', [BusinessSettingsController::class, 'return_settings'])->name('configuration.return_settings');
+
+     //Reports
+     Route::get('/stock_report', [ReportController::class, 'stock_report'])->name('stock_report.index');
+     Route::get('/export-stock-report', [ReportController::class, 'exportStockReport'])->name('export.stock_report');
+     
+     Route::get('/in_house_sa le_report', [ReportController::class, 'in_house_sale_report'])->name('in_house_sale_report.index');
+     
+     Route::get('/wish_report', [ReportController::class, 'wish_report'])->name('wish_report.index');
+     Route::get('/export-wish-report', [ReportController::class, 'exportWishReport'])->name('export.wish_report');
+ 
+     Route::get('/user_search_report', [ReportController::class, 'user_search_report'])->name('user_search_report.index');
+     Route::get('/export-search-report', [ReportController::class, 'exportSearchReport'])->name('export.search_report');
+     
+     Route::get('/abandoned-cart', [AbandonedCartController::class, 'index'])->name('abandoned-cart.index');
+     Route::get('/{cart}/abandoned-cart', [AbandonedCartController::class, 'view'])->name('abandoned-cart.view');
+     Route::get('/sales_report', [ReportController::class, 'sales_report'])->name('sales_report.index');
+     Route::get('/sales_orders/{id}/show', [ReportController::class, 'sales_orders_show'])->name('sales_orders.show');
+     Route::get('/export-sales-report', [ReportController::class, 'exportSalesReport'])->name('export.sales_report');
 });

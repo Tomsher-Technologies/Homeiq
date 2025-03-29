@@ -297,6 +297,7 @@ class ProfileController extends Controller
     }
 
     public function orderList(Request $request){
+        $lang = getActiveLanguage();
         $user_id = (!empty(auth()->user())) ? auth()->user()->id : '';
         $user = User::find($user_id);
         $total_count = 0;
@@ -318,7 +319,7 @@ class ProfileController extends Controller
             $total_count = $orders->count();
             $orderList = $orders->get();
         }
-        return view('frontend.orders',compact('orderList','total_count'));
+        return view('pages.my-orders',compact('orderList','total_count','lang'));
     }
     
     public function orderReturnList(Request $request){
@@ -361,7 +362,7 @@ class ProfileController extends Controller
         }
 
         if(!empty($track_list)){
-            $dataByStatus = array_column($track_list, null, 'status');
+            $dataByStatus = $track_list;
         }else{
             $dataByStatus = [];
         }
@@ -371,7 +372,7 @@ class ProfileController extends Controller
         // print_r($dataByStatus);
         // die;
 
-        return view('frontend.order_details',compact('lang','order','track_list','dataByStatus'));
+        return view('pages.order-details',compact('lang','order','track_list','dataByStatus'));
     }
 
     public function getUserAddressInfo(){

@@ -11,6 +11,7 @@ use App\Http\Controllers\Frontend\AuthController;
 use App\Http\Controllers\Frontend\WishlistController;
 use App\Http\Controllers\Frontend\ProfileController;
 use App\Http\Controllers\Frontend\ForgotPasswordController;
+use App\Http\Controllers\Admin\InvoiceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -130,10 +131,11 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::get('orders', [ProfileController::class, 'orderList'])->name('orders.index');
     Route::get('order-details', [ProfileController::class, 'orderDetails'])->name('order-details');
+    Route::get('invoice-download/{order_id}', [InvoiceController::class, 'invoice_download'])->name('download-invoice');
     Route::get('order/returns', [ProfileController::class, 'orderReturnList'])->name('orders.returns');
     
-    Route::post('cancel-order', [CheckoutController::class, 'cancelOrderRequest'])->name('cancel-order');
-    Route::post('return-order', [CheckoutController::class, 'returnOrderRequest'])->name('return-order');
+    Route::post('cancel-order', [CheckoutController::class, 'cancelOrderRequest'])->name('order.cancel');
+    Route::post('/order/return', [CheckoutController::class, 'returnOrderRequest'])->name('order.return');
 
     Route::get('account', [ProfileController::class, 'getUserAccountInfo'])->name('account');
     Route::post('/account/update', [ProfileController::class, 'update'])->name('account.update'); 

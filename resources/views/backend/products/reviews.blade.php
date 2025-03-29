@@ -64,7 +64,7 @@
                 </tbody>
             </table>
             <div class="aiz-pagination">
-                {{ $reviews->appends(request()->input())->links() }}
+                {{ $reviews->appends(request()->input())->links('pagination::bootstrap-5') }}
             </div>
         </div>
     </div>

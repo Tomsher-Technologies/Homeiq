@@ -14,6 +14,7 @@ use App\Models\CouponUsage;
 use App\Models\Coupon;
 use App\Models\User;
 use App\Models\OrderTracking;
+use App\Models\OrderReturn;
 use App\Models\BusinessSetting;
 use Auth;
 use Session;
@@ -134,22 +135,21 @@ class OrderController extends Controller
         $date           = ($request->has('date')) ? $request->date : ''; //
         $refund_search  = ($request->has('refund_search')) ? $request->refund_search : '';
 
-        $orders = Order::where('return_request',1)->orderBy('return_request_date','DESC');
+        
+        $orders = OrderReturn::with(['order', 'product'])->orderBy('created_at','DESC');
         if($search){
-            $orders = $orders->where('code', 'like', '%' . $search . '%');
+            $orders = $orders->whereHas('order', function($query) use ($search) {
+                            $query->where('code', 'like', '%' . $search . '%'); // Adjust field name if necessary
+                        });
         }
         if($ca_search){
-            $ca_search = ($ca_search == 10) ? 0 : $ca_search;
-            $orders = $orders->where('return_approval', $ca_search);
+            $orders = $orders->where('status', $ca_search);
         }
 
         if ($date != null) {
-            $orders = $orders->whereDate('return_request_date', '>=', date('Y-m-d', strtotime(explode(" to ", $date)[0])))->whereDate('return_request_date', '<=', date('Y-m-d', strtotime(explode(" to ", $date)[1])));
+            $orders = $orders->whereDate('created_at', '>=', date('Y-m-d', strtotime(explode(" to ", $date)[0])))->whereDate('created_at', '<=', date('Y-m-d', strtotime(explode(" to ", $date)[1])));
         }
-        if ($refund_search) {
-            $orders = $orders->where('return_refund_type', $refund_search);
-        }
-
+        
         $orders = $orders->paginate(15);
         // echo '<pre>';
         // print_r($orders);
@@ -157,26 +157,25 @@ class OrderController extends Controller
         return view("backend.sales.return_requests",compact('orders', 'search', 'ca_search', 'date', 'refund_search'));
     }
 
-    public function returnRequestStatus(Request $request){
-        $id = $request->id;
-        $status = $request->status;
-        
-        $return_request = Order::findOrFail($id);
-        if($return_request->return_request == 1 ){
-            $return_request->return_approval = $status;
-            
-            $return_request->return_approval_date = date('Y-m-d H:i:s');
-            $return_request->save(); 
-            
-            echo 1;
-        }else{
-            echo 0;
-        }
-     }
+    // Update return request status
+    public function updateReturnStatus(Request $request)
+    {
+        $request->validate([
+            'return_id' => 'required|exists:order_returns,id',
+            'status' => 'required|in:approved,rejected',
+        ]);
+
+        $return = OrderReturn::findOrFail($request->return_id);
+        $return->status = $request->status;
+        $return->save();
+
+        return response()->json(['success' => true, 'message' => 'Return status updated successfully.']);
+    }
 
      public function return_orders_show($id)
      {
          $order = Order::findOrFail(decrypt($id));
+         
          return view('backend.sales.return_orders_show', compact('order'));
      }
  
@@ -278,47 +277,27 @@ class OrderController extends Controller
             $user->balance += $order->grand_total;
             $user->save();
         }
-
-        if (Auth::user()->user_type == 'seller') {
-            foreach ($order->orderDetails->where('seller_id', Auth::user()->id) as $key => $orderDetail) {
-                $orderDetail->delivery_status = $request->status;
-                $orderDetail->save();
-
-                if ($request->status == 'cancelled') {
-                    $variant = $orderDetail->variation;
-                    if ($orderDetail->variation == null) {
-                        $variant = '';
-                    }
-
-                    $product_stock = ProductStock::where('product_id', $orderDetail->product_id)
-                        ->where('variant', $variant)
-                        ->first();
-
-                    if ($product_stock != null) {
-                        $product_stock->qty += $orderDetail->quantity;
-                        $product_stock->save();
-                    }
-                }
-            }
-        } else {
-            foreach ($order->orderDetails as $key => $orderDetail) {
-
-                $orderDetail->delivery_status = $request->status;
-                $orderDetail->save();
-
-                $product_stock = ProductStock::where('id', $orderDetail->product_stock_id)
-                ->first();
-
-                if ($request->status == 'cancelled') {
-                    if ($product_stock != null) {
-                        $product_stock->qty += $orderDetail->quantity;
-                        $product_stock->save();
-                    }
-                }
-
-            }
+        if ($request->status == 'delivered') {
+            $order->delivery_completed_date = date('Y-m-d H:i:s');
+            $order->save();
         }
-       
+
+        foreach ($order->orderDetails as $key => $orderDetail) {
+
+            $orderDetail->delivery_status = $request->status;
+            $orderDetail->save();
+
+            $product_stock = ProductStock::where('id', $orderDetail->product_stock_id)
+            ->first();
+
+            if ($request->status == 'cancelled') {
+                if ($product_stock != null) {
+                    $product_stock->qty += $orderDetail->quantity;
+                    $product_stock->save();
+                }
+            }
+
+        }
         
 
         return 1;

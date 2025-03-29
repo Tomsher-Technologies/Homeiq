@@ -1,324 +1,515 @@
 @extends('layouts.app')
 @section('title', 'Order Details- HOME_IQ')
 @section('content')
-<section class="container mx-auto py-12 px-6 lg:px-12">
+    <section class="container mx-auto py-12 px-6 lg:px-12">
+        <div class="flex justify-center items-center">
+            <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-6xl">
+                @if (!empty($order))
+                    <!-- Header -->
+                    <div class="flex justify-between items-start">
+                        <div class="flex items-start">
 
+                            <div>
+                                <div class="flex">
+                                    <h1 class="text-2xl font-semibold">Order #{{ $order->code }}</h1>
 
-<div class="flex justify-center items-center">
-        <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-6xl">
-            <!-- Header -->
-            <div class="flex justify-between items-start">
-                <div class="flex items-start">
+                                    @if ($order->delivery_status == 'delivered')
+                                        <span class="px-3 py-1 rounded-full text-sm text-[#48a839] bg-green-100 ml-5">
+                                            {{ ucfirst(str_replace('_', ' ', $order->delivery_status)) }}
+                                        </span>
+                                    @elseif($order->delivery_status == 'cancelled')
+                                        <span class="px-3 py-1 rounded-full text-sm text-[#ff0000] bg-red-100  ml-5">
+                                            {{ ucfirst(str_replace('_', ' ', $order->delivery_status)) }}
+                                        </span>
+                                    @else
+                                        <span class="px-3 py-1 rounded-full text-sm bg-yellow-200 text-yellow-800  ml-5">
+                                            {{ ucfirst(str_replace('_', ' ', $order->delivery_status)) }}
+                                        </span>
+                                    @endif
+                                </div>
 
-                    <div>
-                        <h1 class="text-2xl font-semibold">Order #5913879987894</h1>
-
-                        <p class="text-gray-700 mukta-medium">14 Jan 2024, 15:43:23</p>
+                                <p class="text-gray-700 mukta-medium">
+                                    {{ date('M d, Y h:i A', $order->date) }}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="flex">
+                            <a class="flex items-center gap-2 justify-center px-4 py-2 text-sm font-bold text-white transition-all duration-200 border border-[#41b6e8] bg-[#41b6e8] rounded-lg shadow-md hover:bg-[#3498db] hover:shadow-lg" href="{{ route('download-invoice',['order_id' => $order->id]) }}">
+                                Invoice
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                    <polyline points="7 10 12 15 17 10"/>
+                                    <line x1="12" y1="15" x2="12" y2="3"/>
+                                </svg>
+                            </a>
+                        </div>
                     </div>
-                </div>
-                <div>
-                    <span class="bg-yellow-200 text-yellow-800 px-3 py-1 rounded-full text-sm">In progress</span>
-                </div>
+
+                    <div class="mt-3 flex justify-between items-center">
+                        <div class="flex space-x-2">
+                            @if ($order->delivery_status == 'pending')
+                                @if ($order->cancel_request == 0)
+                                    <button
+                                        class="cancel-order-btn flex items-center justify-center px-4 py-2.5 text-sm font-bold text-center text-[#41b6e8] border border-[#41b6e8] transition-all duration-200 hover:text-[#ffffff]  hover:bg-[#41b6e8] " onclick="openCancelModal({{ $order->id }})">{{ trans('messages.cancel') . ' ' . trans('messages.order') }}</button>
+                                @else
+                                    @if ($order->cancel_approval == 0)
+                                        <span style="color: red;">{{ trans('messages.cancel_request_send') }}</span>
+                                    @elseif ($order->cancel_approval == 2)
+                                        <span style="color: red;">Cancel request rejected!</span>
+                                    @endif
+                                    
+                                @endif
+
+                            @endif
+
+                            @if ($order->delivery_status == 'delivered')
+                                @php
+                                    $returnDeadline = \Carbon\Carbon::parse($order->delivery_completed_date)->addDays(get_setting('default_return_time') ?? 1);
+                                    $now = \Carbon\Carbon::now();
+                                    $isReturnEligible = $now->lessThanOrEqualTo($returnDeadline);
+
+                                    // Check if all products are already requested for return
+                                    $allReturned = $order->orderDetails->every(function ($orderDetail) {
+                                        return $orderDetail->returns()->exists(); // Check if this product has a return request
+                                    });
+                                    
+                                @endphp
+
+                                @if ($isReturnEligible && !$allReturned )
+                                    <button class="return-order-btn flex items-center justify-center px-4 py-2.5 text-sm font-bold text-center text-[#41b6e8] border border-[#41b6e8] transition-all duration-200 hover:text-[#ffffff]  hover:bg-[#41b6e8] " data-order-id="{{ $order->id }}" onclick="openReturnModal()">
+                                        {{ trans('messages.return') }}
+                                    </button>
+                                @elseif ($allReturned)
+                                    <p class="text-green-600 font-semibold">All products in this order have been requested for return.</p>
+                                @else
+                                    <p class="text-red-500 font-semibold">Return period expired on {{ $returnDeadline->format('d M, Y') }}.</p>
+                                @endif
+                               
+                            @endif
+
+                           
+                        </div>
+                    </div>
+
+                    <!-- Additional Products -->
+                    <div class="mt-6 border-t border-gray-200 pt-4">
+                        <h2 class="text-xl font-semibold mb-4">Item Details</h2>
+                        <div class="space-y-6">
+                            @foreach ($order->orderDetails as $key => $orderDetail)
+                                @php
+                                    // Check if this product has a return request
+                                    $returnRequest = $orderDetail->returns()->latest()->first(); // Get the latest return request for the product
+                                @endphp
+                                <div class=" border-b md:pb-3">
+                                    <div class="space-y-4 md:flex md:items-center md:justify-between md:gap-6 md:space-y-0">
+                                        <a href="{{ route('products.show', ['slug' => $orderDetail->product->slug]) }}"
+                                            class="shrink-0 md:order-1">
+                                            <img class="h-10 w-10 dark:block rounded-md"
+                                                src="{{ get_product_image($orderDetail->product->thumbnail_img, '300') }}"
+                                                alt="imac image" />
+                                        </a>
+
+                                        <div class="w-full min-w-0 flex-1 space-y-4 md:order-2 md:max-w-md">
+                                            <a href="{{ route('products.show', ['slug' => $orderDetail->product->slug]) }}"
+                                                class="text-base font-medium text-gray-900 hover:underline text-black">{{ $orderDetail->product->getTranslation('name', $lang) }}</a>
+                                            x {{ $orderDetail->quantity }}
+                                            @if ($order->delivery_status == 'delivered')
+                                                @if ($returnRequest)
+                                                    <p>Return Status: 
+                                                        <span class="text-sm
+                                                            @if($returnRequest->status == 'pending') text-yellow-500
+                                                            @elseif($returnRequest->status == 'approved') text-green-500
+                                                            @else text-red-500 @endif">
+                                                            {{ ucfirst($returnRequest->status) }}
+                                                        </span>
+                                                    </p>
+                                                @else
+                                                    <p>No return request for this product.</p>
+                                                @endif
+                                            @endif
+                                        </div>
+                                        <div class="flex items-center justify-between md:order-3 md:justify-end ">
+                                            <div class="text-end md:order-4 md:w-32">
+                                                <p class="text-base text-lg font-semibold text-gray-900 text-black">
+                                                    @if ($orderDetail->og_price != $orderDetail->price)
+                                                        <span class="text-gray-500 line-through text-xs">
+                                                            {{ single_price($orderDetail->og_price) }}</span> <br>
+                                                    @endif
+                                                    {{ single_price($orderDetail->price / $orderDetail->quantity) }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    <!-- Order Summary -->
+                    <div class="mt-6 border-t border-gray-200 pt-4">
+                        <h2 class="text-xl font-semibold mb-4">Order Summary</h2>
+
+                        <div class="flex justify-between text-gray-600 mb-3">
+                            <p>Sub Total</p>
+                            <p>{{ single_price($order->orderDetails->sum('price')) }}</p>
+                        </div>
+
+                        <div class="flex justify-between text-gray-800 mb-3">
+                            <p>Shipping Charges</p>
+                            <p>{{ single_price($order->orderDetails->sum('shipping_cost')) }}</p>
+                        </div>
+
+                        <div class="flex justify-between text-gray-800 mb-3">
+                            <p>VAT</p>
+                            <p>{{ single_price($order->orderDetails->sum('tax')) }}</p>
+                        </div>
+
+                        <div class="flex justify-between text-gray-600 mb-3">
+                            <p>Discount</p>
+                            <p>- {{ single_price($order->offer_discount) }}</p>
+                        </div>
+
+                        <div class="flex justify-between text-gray-600 mb-3">
+                            <p>Coupon Discount</p>
+                            <p>- {{ single_price($order->coupon_discount) }}</p>
+                        </div>
+
+                        <hr>
+
+                        <div class="mb-2 mt-3 flex justify-between">
+                            <p class="text-base text-default-700">Total</p>
+                            <p class="text-base font-bold text-default-700">{{ single_price($order->grand_total) }}
+                            </p>
+                        </div>
+                        <!-- Payment Method -->
+                        <div class="mt-3 border-t border-gray-200 pt-4">
+                            <h2 class="text-xl font-semibold mb-4">Payment Method</h2>
+                            <p class="text-gray-600">
+                                @if ($order->payment_type == 'cod')
+                                    Cash On Delivery
+                                @else
+                                    {{ strtoupper($order->payment_type) }}
+                                @endif
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="mb-4 flex">
+                        <!-- Billing Address -->
+                        <div class="md:w-1/2 mt-6 border-t border-gray-200 pt-4">
+                            <h2 class="text-xl font-semibold mb-4">Billing Address</h2>
+                            @php
+                                $billing_address = json_decode($order->billing_address);
+                            @endphp
+
+                            @if ($billing_address)
+                                <p class="text-gray-600">{{ $billing_address->name }}</p>
+                                <p class="text-gray-600">{{ $billing_address->address }},</p>
+                                <p class="text-gray-600">{{ $billing_address->city }}, {{ $billing_address->state }}</p>
+                                <p class="text-gray-600">{{ $billing_address->country }} - {{ $billing_address->zipcode }}
+                                </p>
+                            @endif
+                        </div>
+
+                        <!-- Shipping Address -->
+                        <div class="md:w-1/2 mt-6 border-t border-gray-200 pt-4">
+
+                            <h2 class="text-xl font-semibold mb-4">Shipping Address</h2>
+                            @php
+                                $shipping_address = json_decode($order->shipping_address);
+                            @endphp
+
+                            @if ($shipping_address)
+                                <p class="text-gray-600">{{ $shipping_address->name }}</p>
+                                <p class="text-gray-600">{{ $shipping_address->address }},</p>
+                                <p class="text-gray-600">{{ $shipping_address->city }}, {{ $shipping_address->state }}</p>
+                                <p class="text-gray-600">{{ $shipping_address->country }} -
+                                    {{ $shipping_address->zipcode }}</p>
+                            @endif
+                        </div>
+                    </div>
+                    <!-- Order History Timeline -->
+                    <div id="track-order" class="mt-6 border-t space-y-4 pt-4">
+                        <h2 class="text-xl font-semibold mb-4">Track Order</h2>
+
+                        <ol class="relative border-s border-gray-300 ">
+                            @if (!empty($dataByStatus))
+                                @foreach ($dataByStatus as $dStat)
+                                    <li class="mb-6 ms-4">
+                                        <div
+                                            class="absolute w-3 h-3 bg-[#41b6e8] rounded-full mt-1.5 -start-1.5 border border-white">
+                                        </div>
+                                        <time class="mb-1 text-lg font-normal leading-none font-semibold text-black">
+                                            {{ ucfirst(str_replace('_', ' ', $dStat['status'])) }}
+                                        </time>
+                                        <h3 class="mb-1 text-md text-gray-500">{{ $dStat['date'] }}</h3>
+                                    </li>
+                                @endforeach
+                            @endif
+
+
+                        </ol>
+                    </div>
+
+
+                    <!-- Footer -->
+                @endif
             </div>
-    
-
-
-            <div class="mt-3 flex justify-between items-center">
-                <div class="flex space-x-2">
-                    <a class="flex items-center justify-center px-4 py-2.5 text-sm font-bold text-center text-[#41b6e8] border border-[#41b6e8] transition-all duration-200 hover:text-[#41b6e8]  hover:bg-[#41b6e8] " href="re-turn.html">Retun / Cancel</a>
-                     <a class="flex items-center justify-center px-4 py-2.5 text-sm font-bold text-white transition-all border  border-[#41b6e8] duration-200 bg-[#41b6e8]  hover:text-[#41b6e8]  hover:bg-[#41b6e8]" href="">Invoice</a>
-                </div>
-            </div>
-
-
-            <!-- Order History Timeline -->
-            <div id="track-order" class="mt-6 space-y-4">
-                <h2 class="text-xl font-semibold mb-4">Track Order</h2>
-
-
-
-
-                
-<ol class="relative border-s border-gray-300 ">                  
-    <li class="mb-10 ms-4">
-        <div class="absolute w-3 h-3 bg-[#41b6e8] rounded-full mt-1.5 -start-1.5 border border-white"></div>
-        <time class="mb-1 text-lg font-normal leading-none font-semibold text-black">Product Shipped</time>
-        <h3 class="mb-1 text-md text-gray-500">13/09/2024 5:23 pm</h3>
-        <p class="mb-1 text-base font-normal text-gray-500">Courier Service: UPS, R. Gosling</p>
-        <p class="mb-1 text-base font-normal text-gray-500">Estimated Delivery Date: 15/09/2024</p>
-   
-    </li>
-    <li class="mb-10 ms-4">
-        <div class="absolute w-3 h-3 bg-[#41b6e8] rounded-full mt-1.5 -start-1.5 border border-white"></div>
-        <time class="mb-1 text-lg font-normal leading-none font-semibold text-black">Product Packaging</time>
-        <h3 class="mb-1 text-md text-gray-500">13/09/2024 4:13 pm</h3>
-        <p class="mb-1 text-base font-normal text-gray-500">Warehouse: Apple Spot 13b</p>
-
-        
-    </li>
-    <li class="ms-4">
-        <div class="absolute w-3 h-3 bg-[#41b6e8] rounded-full mt-1.5 -start-1.5 border border-[white]"></div>
-        <time class="mb-1 text-lg font-normal leading-none font-semibold text-black">Order Confirmed</time>
-        <h3 class="mb-1 text-md text-gray-500">13/09/2024 3:53 pm</h3>
-    </li>
-
-    <li class="ms-4">
-        <div class="absolute w-3 h-3 bg-[#41b6e8] rounded-full mt-1.5 -start-1.5 border border-white"></div>
-        <time class="mb-1 text-lg font-normal leading-none font-semibold text-black">Order Placed</time>
-        <h3 class="mb-1 text-md text-gray-500">13/09/2024 3:53 pm</h3>
-    </li>
-
-
-    <li class="ms-4">
-        <div class="absolute w-3 h-3 bg-[#41b6e8] rounded-full mt-1.5 -start-1.5 border border-white"></div>
-        <time class="mb-1 text-lg font-normal leading-none font-semibold text-black">Product Packaging</time>
-        <h3 class="mb-1 text-md text-gray-500">13/09/2024 4:13 pm</h3>
-        <p class="mb-1 text-base font-normal text-gray-500">Warehouse: Apple Spot 13b</p>
-    </li>
-</ol>
-
-
-
-            </div>
-
-
-
-
-            <!-- Additional Products -->
-            <div class="mt-6 border-t border-gray-200 pt-4">
-                <h2 class="text-xl font-semibold mb-4">Item Details</h2>
-                <div class="space-y-6">
-                  <div class=" border-b md:pb-3">
-                     <div class="space-y-4 md:flex md:items-center md:justify-between md:gap-6 md:space-y-0">
-                        <a href="#" class="shrink-0 md:order-1">
-                        <img class="hidden h-10 w-10 dark:block rounded-md" src="http://127.0.0.1:8000/images/products/ecoheat-5000.jpeg" alt="imac image" />
-                        </a>
-                        <div class="flex items-center justify-between md:order-3 md:justify-end ">
-                           <div class="text-end md:order-4 md:w-32">
-                              <p class="text-base text-lg font-semibold text-gray-900 text-black">AED 499.00</p>
-                           </div>
-                        </div>
-                        <div class="w-full min-w-0 flex-1 space-y-4 md:order-2 md:max-w-md">
-                           <a href="#" class="text-base font-medium text-gray-900 hover:underline text-black">Google Nest Learning Thermostat 4th Gen with Sensor</a>
-                        </div>
-                     </div>
-                  </div>
-                  <div class="border-b md:pb-3">
-                     <div class="space-y-4 md:flex md:items-center md:justify-between md:gap-6 md:space-y-0">
-                        <a href="#" class="shrink-0 md:order-1">
-                        <img class="hidden h-10 w-10 dark:block rounded-md" src="http://127.0.0.1:8000/images/products/thermasense-x1.jpeg" alt="imac image" />
-                        </a>
-                        <div class="flex items-center justify-between md:order-3 md:justify-end">
-                           <div class="text-end md:order-4 md:w-32">
-                              <p class="text-lg font-semibold text-gray-900">AED 199.00</p>
-                           </div>
-                        </div>
-                        <div class="w-full min-w-0 flex-1 space-y-4 md:order-2 md:max-w-md">
-                           <a href="#" class="text-base font-medium text-gray-900 hover:underline text-black">ThermaSense X1</a>
-                        </div>
-                     </div>
-                  </div>
-                  <div class="border-b md:pb-3">
-                     <div class="space-y-4 md:flex md:items-center md:justify-between md:gap-6 md:space-y-0">
-                        <a href="#" class="shrink-0 md:order-1">
-                        <img class="hidden h-10 w-10 dark:block rounded-md" src="http://127.0.0.1:8000/images/products/frostwave-elite.jpeg" alt="imac image" />
-                        </a>
-                        <div class="flex items-center justify-between md:order-3 md:justify-end">
-                           <div class="text-end md:order-4 md:w-32">
-                              <p class="text-lg font-semibold text-gray-900">AED 412.00</p>
-                           </div>
-                        </div>
-                        <div class="w-full min-w-0 flex-1 space-y-4 md:order-2 md:max-w-md">
-                           <a href="#" class="text-base font-medium text-gray-900 hover:underline text-black">FrostWave Elite</a>
-                        </div>
-                     </div>
-                  </div>
-                  <div class="border-b md:pb-3">
-                     <div class="space-y-4 md:flex md:items-center md:justify-between md:gap-6 md:space-y-0">
-                        <a href="#" class="shrink-0 md:order-1">
-                        <img class="hidden h-10 w-10 dark:block rounded-md" src="http://127.0.0.1:8000/images/products/sentinel-vision-x.jpeg" alt="imac image" />
-                        </a>
-                        <label for="counter-input" class="sr-only">Choose quantity:</label>
-                        <div class="flex items-center justify-between md:order-3 md:justify-end">
-                           <div class="text-end md:order-4 md:w-32">
-                              <p class="text-lg font-semibold text-gray-900">AED 219.00</p>
-                           </div>
-                        </div>
-                        <div class="w-full min-w-0 flex-1 space-y-4 md:order-2 md:max-w-md">
-                           <a href="#" class="text-base font-medium text-gray-900 hover:underline text-black">Sentinel Vision X</a>
-                        </div>
-                     </div>
-                  </div>
-               </div>
-            </div>
-
-
-            <!-- Order Summary -->
-            <div class="mt-6 border-t border-gray-200 pt-4">
-                <h2 class="text-xl font-semibold mb-4">Order Summary</h2>
-                <div class="flex justify-between text-gray-600 mb-3">
-                    <p>Total MRP</p>
-                    <p>AED 2,795</p>
-                </div>
-                <div class="flex justify-between text-gray-600 mb-3">
-                    <p>Cart Discount</p>
-                    <p>- AED 902</p>
-                </div>
-                <div class="flex justify-between text-gray-600 mb-3">
-                    <p>Sub Total</p>
-                    <p>AED 1,893</p>
-                </div>
-                <div class="flex justify-between text-gray-800 mb-3">
-                    <p>Delivery Charges</p>
-                    <p>Free</p>
-                </div>
-
-                <div class="flex justify-between text-gray-800 mb-3">
-                    <p>Delivery Charges</p>
-                    <p>Free</p>
-                </div>
-
-                <hr>
-
-                <div class="mb-2 mt-3 flex justify-between">
-                    <p class="text-base text-default-700">Total</p>
-                    <p class="text-base font-bold text-default-700">AED 1,893
-                    </p>
-                </div>
-
-
-                <!-- Payment Method -->
-                <div class="mt-3 border-t border-gray-200 pt-4">
-                    <h2 class="text-xl font-semibold mb-4">Payment Method</h2>
-                    <p class="text-gray-600">Credit Card ending in 1234</p>
-                    <p class="text-gray-600">Billing Address: Same as Shipping Address</p>
-                </div>
-            </div>
-
-
-
-
-
-            <!-- Shipping Address -->
-            <div class="mt-6 border-t border-gray-200 pt-4">
-                <h2 class="text-xl font-semibold mb-4">Shipping Address</h2>
-                <p class="text-gray-600">John Doe</p>
-                <p class="text-gray-600">4517 Washington Ave</p>
-                <p class="text-gray-600">Manchester, Kentucky 39495</p>
-                <p class="text-gray-600">United States</p>
-            </div>
-            <!-- Footer -->
-
-            <!-- Need Help? -->
-            <div class="mt-6 border-t border-gray-200 pt-4">
-                <h2 class="text-xl font-semibold mb-4">Need Help?</h2>
-                <ul class="list-none pl-5 text-gray-600 space-y-2">
-                    <li>
-                        <a href="#" class="text-gray-600 flex  itemms-center gap-2">
-                            <svg width="18pt" height="18pt" class="fill-gray-600" version="1.1" id="fi_471664" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve">
-                                <g>
-                                    <g>
-                                        <path d="M256,0C114.509,0,0,114.496,0,256c0,141.489,114.496,256,256,256c141.491,0,256-114.496,256-256
-                                            C512,114.509,397.504,0,256,0z M256,476.279c-121.462,0-220.279-98.816-220.279-220.279S134.538,35.721,256,35.721
-                                            c121.463,0,220.279,98.816,220.279,220.279S377.463,476.279,256,476.279z">
-                                        </path>
-                                    </g>
-                                </g>
-                                <g>
-                                    <g>
-                                        <path d="M248.425,323.924c-14.153,0-25.61,11.794-25.61,25.946c0,13.817,11.12,25.948,25.61,25.948
-                                            c14.49,0,25.946-12.131,25.946-25.948C274.371,335.718,262.577,323.924,248.425,323.924z">
-                                        </path>
-                                    </g>
-                                </g>
-                                <g>
-                                    <g>
-                                        <path d="M252.805,127.469c-45.492,0-66.384,26.959-66.384,45.155c0,13.142,11.12,19.208,20.218,19.208
-                                            c18.197,0,10.784-25.948,45.155-25.948c16.848,0,30.328,7.414,30.328,22.915c0,18.196-18.871,28.642-29.991,38.077
-                                            c-9.773,8.423-22.577,22.24-22.577,51.22c0,17.522,4.718,22.577,18.533,22.577c16.511,0,19.881-7.413,19.881-13.817
-                                            c0-17.522,0.337-27.631,18.871-42.121c9.098-7.076,37.74-29.991,37.74-61.666S295.937,127.469,252.805,127.469z">
-                                        </path>
-                                    </g>
-                                </g>
-                                <g>
-                                </g>
-                                <g>
-                                </g>
-                                <g>
-                                </g>
-                                <g>
-                                </g>
-                                <g>
-                                </g>
-                                <g>
-                                </g>
-                                <g>
-                                </g>
-                                <g>
-                                </g>
-                                <g>
-                                </g>
-                                <g>
-                                </g>
-                                <g>
-                                </g>
-                                <g>
-                                </g>
-                                <g>
-                                </g>
-                                <g>
-                                </g>
-                                <g>
-                                </g>
-                            </svg>
-                            Order Issues
-                        </a>
-                    </li>
-
-                    <li><a href="#" class="text-gray-600 flex  itemms-center gap-2">
-
-
-                            <svg id="fi_2769339" width="20pt" height="20pt" class="fill-gray-600" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-                                <path d="m41.211 37.288a4.112 4.112 0 1 1 4.109-4.112 4.114 4.114 0 0 1 -4.109 4.112zm0-6.724a2.612 2.612 0 1 0 2.609 2.612 2.613 2.613 0 0 0 -2.609-2.612z">
-                                </path>
-                                <path d="m19.542 37.288a4.112 4.112 0 1 1 4.108-4.112 4.115 4.115 0 0 1 -4.108 4.112zm0-6.724a2.612 2.612 0 1 0 2.608 2.612 2.614 2.614 0 0 0 -2.608-2.612z">
-                                </path>
-                                <path d="m46.621 33.926h-2.051a.75.75 0 0 1 0-1.5h1.839v-3.977a3.16 3.16 0 0 0 -.4-1.536l-4.06-7.279a.4.4 0 0 0 -.349-.205h-5.533v13h1.786a.75.75 0 0 1 0 1.5h-2.536a.75.75 0 0 1 -.75-.75v-14.5a.75.75 0 0 1 .75-.75h6.283a1.9 1.9 0 0 1 1.66.974l4.059 7.28a4.662 4.662 0 0 1 .589 2.266v4.19a1.289 1.289 0 0 1 -1.287 1.287z">
-                                </path>
-                                <path d="m16.183 33.926h-7.191a.75.75 0 0 1 -.75-.75v-5.768a.75.75 0 0 1 1.5 0v5.018h6.441a.75.75 0 0 1 0 1.5z">
-                                </path>
-                                <path d="m8.992 24.747a.75.75 0 0 1 -.75-.75v-5.036a.75.75 0 0 1 1.5 0v5.039a.75.75 0 0 1 -.75.747z">
-                                </path>
-                                <path d="m35.317 33.926h-12.417a.75.75 0 0 1 0-1.5h11.667v-19.621h-24.825v3.089a.75.75 0 0 1 -1.5 0v-3.227a1.364 1.364 0 0 1 1.363-1.362h25.1a1.364 1.364 0 0 1 1.362 1.362v20.509a.75.75 0 0 1 -.75.75z">
-                                </path>
-                                <path d="m11.957 28.158h-9.519a.75.75 0 0 1 0-1.5h9.519a.75.75 0 0 1 0 1.5z"></path>
-                                <path d="m19.542 24.747h-13.283a.75.75 0 0 1 0-1.5h13.283a.75.75 0 0 1 0 1.5z">
-                                </path>
-                                <path d="m5.846 20.787h-5.187a.75.75 0 1 1 0-1.5h5.187a.75.75 0 0 1 0 1.5z"></path>
-                                <path d="m14.163 16.644h-9.156a.75.75 0 1 1 0-1.5h9.156a.75.75 0 0 1 0 1.5z"></path>
-                            </svg>
-
-
-                            Delivery Information</a></li>
-                    <li><a href="#" class="text-gray-600 flex  itemms-center gap-2">
-
-                            <svg width="20pt" height="20pt" class="fill-gray-600" viewBox="0 1 511.99981 511" xmlns="http://www.w3.org/2000/svg" id="fi_1585147">
-                                <path d="m506.8125 111.230469-199.40625-109.496094c-2.996094-1.6445312-6.628906-1.6445312-9.625 0l-75.160156 41.269531c-1.585938.417969-3.066406 1.214844-4.292969 2.359375l-119.949219 65.867188c-3.199218 1.753906-5.1875 5.113281-5.1875 8.765625v132.429687c-20.234375 6.328125-38.777344 17.488281-54.195312 32.910157-40.1875 40.183593-50.433594 101.472656-25.496094 152.507812 2.421875 4.960938 8.410156 7.019531 13.371094 4.59375 4.964844-2.425781 7.019531-8.414062 4.597656-13.375-21.1875-43.363281-12.480469-95.4375 21.667969-129.585938 21.355469-21.355468 49.746093-33.117187 79.945312-33.117187s58.589844 11.761719 79.945313 33.117187c21.351562 21.351563 33.113281 49.742188 33.113281 79.941407s-11.761719 58.589843-33.117187 79.945312c-34.148438 34.148438-86.222657 42.855469-129.585938 21.667969-4.960938-2.425781-10.949219-.367188-13.371094 4.59375-2.425781 4.964844-.371094 10.953125 4.59375 13.375 18.589844 9.085938 38.535156 13.5 58.335938 13.5 34.542968-.003906 68.625-13.449219 94.171875-38.996094 11.714843-11.714844 20.972656-25.230468 27.523437-39.921875l43.089844 23.660157c1.5.824218 3.15625 1.234374 4.8125 1.234374s3.316406-.410156 4.8125-1.234374l199.40625-109.492188c3.199219-1.757812 5.1875-5.117188 5.1875-8.765625v-69.496094c0-5.523437-4.476562-10-10-10s-10 4.476563-10 10v63.578125l-179.375 98.496094v-196.171875l59.199219-32.507813v51.53125c0 3.539063 1.867187 6.8125 4.910156 8.609376 1.570313.925781 3.328125 1.390624 5.089844 1.390624 1.65625 0 3.316406-.410156 4.820312-1.238281l42.730469-23.519531c3.195312-1.757812 5.175781-5.113281 5.175781-8.757812v-62.460938l57.449219-31.542969v52.597657c0 5.523437 4.476562 10 10 10s10-4.476563 10-10v-69.496094c0-3.648438-1.988281-7.011719-5.1875-8.765625zm-204.21875-89.324219 178.628906 98.089844-56.347656 30.941406-178.628906-98.089844zm0 196.175781-178.628906-98.085937 58.414062-32.078125 178.632813 98.085937zm79.191406-43.484375-178.628906-98.085937 22.3125-12.253907 178.632812 98.085938zm-154.617187 110.738282c-25.132813-25.132813-58.546875-38.972657-94.085938-38.972657-6.722656 0-13.363281.496094-19.890625 1.46875v-110.9375l179.4375 98.53125v196.171875l-31.144531-17.101562c3.066406-11.289063 4.652344-23.0625 4.652344-35.078125 0-35.539063-13.839844-68.953125-38.96875-94.082031zm187.386719-60.347657-22.730469 12.511719v-45.597656l22.730469-12.480469zm0 0">
-                                </path>
-                                <path d="m502 219.441406c-2.628906 0-5.210938 1.070313-7.070312 2.929688-1.859376 1.859375-2.929688 4.4375-2.929688 7.070312 0 2.628906 1.070312 5.207032 2.929688 7.066406 1.859374 1.863282 4.441406 2.929688 7.070312 2.929688s5.210938-1.066406 7.070312-2.929688c1.859376-1.859374 2.929688-4.4375 2.929688-7.066406 0-2.632812-1.070312-5.210937-2.929688-7.070312-1.859374-1.859375-4.441406-2.929688-7.070312-2.929688zm0 0">
-                                </path>
-                                <path d="m99.457031 389.417969c2.558594 0 5.121094-.976563 7.070313-2.925781 3.90625-3.90625 3.90625-10.238282 0-14.144532l-6.925782-6.929687h59.101563c14.335937 0 26 11.664062 26 26 0 14.335937-11.664063 26-26 26h-35.019531c-5.523438 0-10 4.476562-10 10 0 5.519531 4.476562 9.996093 10 9.996093h35.019531c25.363281 0 46-20.632812 46-45.996093s-20.636719-45.996094-46-45.996094h-59.101563l6.925782-6.929687c3.90625-3.90625 3.90625-10.238282 0-14.144532-3.902344-3.902344-10.234375-3.902344-14.140625 0l-24 24c-3.902344 3.90625-3.902344 10.238282 0 14.144532l24 23.996093c1.953125 1.953125 4.511719 2.929688 7.070312 2.929688zm0 0">
-                                </path>
-                                <path d="m46.074219 476.449219c-2.84375 0-5.667969-1.210938-7.640625-3.558594l-.019532-.023437c-3.554687-4.226563-3.007812-10.53125 1.21875-14.085938 4.226563-3.558594 10.535157-3.011719 14.089844 1.214844 3.550782 4.230468 3.015625 10.546875-1.210937 14.101562-1.878907 1.578125-4.164063 2.351563-6.4375 2.351563zm0 0">
-                                </path>
-                            </svg>
-
-                            Returns</a></li>
-                </ul>
-            </div>
-
         </div>
-    </div>
 
-</section>
+        <!-- Return Order Modal -->
+        <div id="returnModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+            <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl">
+                <h2 class="text-xl font-bold mb-2">Return Order</h2>
+                <p class="text-sm text-gray-600 mb-4">Select the products you want to return</p>
+
+                <form id="returnForm">
+                    <!-- Dynamic Return Product List -->
+                    <div class="max-h-80 overflow-y-auto border rounded">
+                        <table class="w-full border-collapse">
+                            <thead class="bg-gray-100">
+                                <tr>
+                                    <th class="p-2 border text-left">Select</th>
+                                    <th class="p-2 border text-left">Product</th>
+                                    <th class="p-2 border text-center">Ordered Qty</th>
+                                    <th class="p-2 border text-center">Return Qty</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @php
+                                    $productsAvailableForReturn = false; // Flag to check if any product is eligible for return
+                                @endphp
+                                @foreach ($order->orderDetails as $orderDetail)
+                                    
+                                    @if ($orderDetail->product->return_refund == 1 && $orderDetail->returns->isEmpty())
+                                        @php
+                                            $productsAvailableForReturn = true;
+                                        @endphp
+                                        <tr class="border">
+                                            <td class="p-2 text-center">
+                                                <input type="checkbox" class="return-modal-checkbox"
+                                                    data-id="{{ $orderDetail->id }}" data-max="{{ $orderDetail->quantity }}">
+                                            </td>
+                                            <td class="p-2">
+                                                {{ $orderDetail->product->getTranslation('name', $lang) }}
+                                            </td>
+                                            <td class="p-2 text-center">
+                                                {{ $orderDetail->quantity }}
+                                            </td>
+                                            <td class="p-2 text-center">
+                                                <input type="number" class="border px-2 py-1 w-20 return-qty"
+                                                    name="return_qty[{{ $orderDetail->id }}]" min="1" max="{{ $orderDetail->quantity }}" 
+                                                    value="1" disabled>
+                                            </td>
+                                        </tr>
+                                    @else
+
+                                    @endif
+                                @endforeach
+                                <!-- Show message if no products are available for return -->
+                                @if (!$productsAvailableForReturn)
+                                    <tr>
+                                        <td colspan="4" class="text-center text-red-500 p-4">
+                                            No products are available for return in this order.
+                                        </td>
+                                    </tr>
+                                @endif
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Return Reason -->
+                    <label class="block mt-4 text-sm font-semibold">Return Reason:</label>
+                    <textarea class="w-full border rounded p-2 mt-1" placeholder="Enter reason" id="returnReason" name="returnReason" required></textarea>
+
+                    <!-- Submit & Close Buttons -->
+                    <div class="mt-4 text-right space-x-2">
+                        <button type="button" onclick="closeReturnModal()" class="bg-gray-400 text-white px-4 py-2 rounded">
+                            Cancel
+                        </button>
+                        <button id="returnSubmit" type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">
+                            Submit Return
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Cancel Order Modal -->
+        <div id="cancelModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+            <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+                <h2 class="text-xl font-bold mb-2">Cancel Order</h2>
+                <p class="text-sm text-gray-600 mb-4">Please provide a reason for cancellation.</p>
+
+                <form id="cancelForm">
+                    <input type="hidden" id="cancelOrderId" value="">
+
+                    <!-- Cancellation Reason -->
+                    <label class="block text-sm font-semibold">Cancellation Reason:</label>
+                    <textarea id="cancelReason" class="w-full border rounded p-2 mt-1" placeholder="Enter reason" required></textarea>
+
+                    <!-- Submit & Close Buttons -->
+                    <div class="mt-4 text-right space-x-2">
+                        <button type="button" onclick="closeCancelModal()" class="bg-gray-400 text-white px-4 py-2 rounded">
+                            Close
+                        </button>
+                        <button type="button" id="cancelSubmit" class="bg-red-500 text-white px-4 py-2 rounded">
+                            Cancel Order
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </section>
+@endsection
+
+@section('script')
+    <script>
+        function openReturnModal() {
+            document.getElementById("returnModal").classList.remove("hidden");
+        }
+
+        function closeReturnModal() {
+            document.getElementById("returnModal").classList.add("hidden");
+        }
+
+       // Enable quantity input only if the product is selected
+        document.querySelectorAll(".return-modal-checkbox").forEach(checkbox => {
+            checkbox.addEventListener("change", function() {
+                let input = this.closest("tr").querySelector(".return-qty");
+                input.disabled = !this.checked;
+            });
+        });
+
+        document.getElementById("returnSubmit").addEventListener("click", function(e) {
+            e.preventDefault();  // Prevent form from submitting the usual way
+            
+            // Collect form data
+            let selectedProducts = {};
+            let validReturnQty = true;
+
+            document.querySelectorAll(".return-modal-checkbox:checked").forEach(checkbox => {
+                let productId = checkbox.dataset.id;
+                let returnQty = checkbox.closest("tr").querySelector(".return-qty").value;
+                let maxQty = checkbox.dataset.max;  // Get the max quantity allowed for return
+
+                // Ensure that return quantity is not empty and valid (greater than 0)
+                if (returnQty === "" || parseInt(returnQty) <= 0) {
+                    validReturnQty = false;
+                    toastr.error("Please enter a valid return quantity for all selected products.", 'Error');
+                }
+
+                // Ensure that the return quantity does not exceed the available quantity
+                if (parseInt(returnQty) > parseInt(maxQty)) {
+                    validReturnQty = false;
+                    toastr.error("Return quantity cannot exceed the ordered quantity for the product.", 'Error');
+                }
+
+                selectedProducts[productId] = returnQty;
+            });
+
+            let returnReason = document.querySelector("textarea[placeholder='Enter reason']").value;
+            let orderId = "{{ $order->id }}"; // Ensure the order ID is dynamically passed in
+
+            // Validation check: Ensure at least one product is selected and return reason is provided
+            if (Object.keys(selectedProducts).length === 0) {
+                toastr.error("Please select at least one product to return.", 'Error');
+                return;
+            }
+
+            if (returnReason.trim() === "") {
+                toastr.error("Please enter a return reason.", 'Error');
+                return;
+            }
+
+            // If return quantity is not valid, don't proceed
+            if (!validReturnQty) {
+                return;
+            }
+
+            // Prepare data to send
+            let formData = {
+                order_id: orderId,
+                return_reason: returnReason,
+                return_qty: selectedProducts
+            };
+
+            // Send data using fetch (AJAX)
+            fetch("{{ route('order.return') }}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": "{{ csrf_token() }}"  // Include CSRF token
+                },
+                body: JSON.stringify(formData)  // Convert the data to JSON
+            })
+            .then(response => response.json())  // Parse the JSON response
+            .then(data => {
+                if (data.success) {
+                    toastr.success("Return request submitted successfully!", 'Success');
+                    closeReturnModal();  // Close modal on success
+                    setTimeout(function() {
+                        window.location.reload();
+                    }, 2000);
+                } else {
+                    toastr.error("Something went wrong. Try again.", 'Error');
+                }
+            })
+            .catch(error => {
+                toastr.error("There was an error submitting your request.", 'Error');
+                console.error("Error:", error);
+            });
+        });
+
+        function openCancelModal(orderId) {
+            document.getElementById("cancelOrderId").value = orderId;
+            document.getElementById("cancelModal").classList.remove("hidden");
+        }
+
+        function closeCancelModal() {
+            document.getElementById("cancelModal").classList.add("hidden");
+        }
+
+        document.getElementById("cancelSubmit").addEventListener("click", function(e) {
+            e.preventDefault();
+
+            let orderId = document.getElementById("cancelOrderId").value;
+            let cancelReason = document.getElementById("cancelReason").value.trim();
+
+            if (cancelReason === "") {
+                toastr.error("Please enter a cancellation reason.", "Error");
+                return;
+            }
+
+            fetch("{{ route('order.cancel') }}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                },
+                body: JSON.stringify({
+                    order_id: orderId,
+                    cancel_reason: cancelReason
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status) {
+                    toastr.success("Order cancel request send successfully!", "Success");
+                    closeCancelModal();
+                    setTimeout(function() {
+                        window.location.reload();
+                    }, 2000); // Refresh the page to reflect the changes
+                } else {
+                    toastr.error("Something went wrong. Try again.", "Error");
+                }
+            })
+            .catch(error => {
+                toastr.error("Error cancelling order.", "Error");
+                console.error("Error:", error);
+            });
+        });
+
+    </script>
 @endsection

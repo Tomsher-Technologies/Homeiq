@@ -118,6 +118,59 @@
                 </li>
                 @endcanany
 
+                <li class="aiz-side-nav-item">
+                    <a href="#" class="aiz-side-nav-link">
+                        <i class="las la-file-alt aiz-side-nav-icon"></i>
+                        <span class="aiz-side-nav-text">Reports</span>
+                        <span class="aiz-side-nav-arrow"></span>
+                    </a>
+                    <ul class="aiz-side-nav-list level-2">
+                        <!--<li class="aiz-side-nav-item">-->
+                        <!--    <a href="{{ route('in_house_sale_report.index') }}"-->
+                        <!--        class="aiz-side-nav-link {{ areActiveRoutes(['in_house_sale_report.index']) }}">-->
+                        <!--        <span class="aiz-side-nav-text">Product Sale</span>-->
+                        <!--    </a>-->
+                        <!--</li>-->
+                        {{-- <li class="aiz-side-nav-item">
+                            <a href="{{ route('seller_sale_report.index') }}"
+                                class="aiz-side-nav-link {{ areActiveRoutes(['seller_sale_report.index']) }}">
+                                <span class="aiz-side-nav-text">Seller Products Sale</span>
+                            </a>
+                        </li> --}}
+                        
+                        <li class="aiz-side-nav-item">
+                            <a href="{{ route('sales_report.index') }}"
+                                class="aiz-side-nav-link {{ areActiveRoutes(['sales_report.index']) }}">
+                                <span class="aiz-side-nav-text">Sales Report</span>
+                            </a>
+                        </li>
+                        <li class="aiz-side-nav-item">
+                            <a href="{{ route('stock_report.index') }}"
+                                class="aiz-side-nav-link {{ areActiveRoutes(['stock_report.index']) }}">
+                                <span class="aiz-side-nav-text">Products Stock</span>
+                            </a>
+                        </li>
+                        <li class="aiz-side-nav-item">
+                            <a href="{{ route('wish_report.index') }}"
+                                class="aiz-side-nav-link {{ areActiveRoutes(['wish_report.index']) }}">
+                                <span class="aiz-side-nav-text">Products wishlist</span>
+                            </a>
+                        </li>
+                        <li class="aiz-side-nav-item">
+                            <a href="{{ route('user_search_report.index') }}"
+                                class="aiz-side-nav-link {{ areActiveRoutes(['user_search_report.index']) }}">
+                                <span class="aiz-side-nav-text">User Searches</span>
+                            </a>
+                        </li>
+                        <li class="aiz-side-nav-item">
+                            <a href="{{ route('abandoned-cart.index') }}"
+                                class="aiz-side-nav-link {{ areActiveRoutes(['abandoned-cart.index','abandoned-cart.view']) }}">
+                                <span class="aiz-side-nav-text">Abandoned Cart</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
                 @canany(['manage_services'])
                     <li class="aiz-side-nav-item">
                         <a href="#" class="aiz-side-nav-link">
@@ -306,6 +359,12 @@
                         <li class="aiz-side-nav-item">
                             <a href="{{ route('testimonials.index') }}" class="aiz-side-nav-link">
                                 <span class="aiz-side-nav-text">Testimonials</span>
+                            </a>
+                        </li>
+
+                        <li class="aiz-side-nav-item">
+                            <a href="{{ route('shipping_configuration.index') }}" class="aiz-side-nav-link">
+                                <span class="aiz-side-nav-text">Shipping and Return</span>
                             </a>
                         </li>
                         {{-- <li class="aiz-side-nav-item">

@@ -123,13 +123,10 @@
                         </td>
                         <td class="text-center">
                             @php
-                                $status = $order->delivery_status;
-                                if($order->delivery_status == 'cancelled') {
-                                    $status = '<span class="badge badge-inline badge-danger">'.trans('messages.cancel').'</span>';
-                                }
-
+                                $status = ucfirst(str_replace('_', ' ', $order->delivery_status));
+                               
                             @endphp
-                            {!! $status !!}
+                            <span class="badge badge-lg badge-inline @if($order->delivery_status == 'delivered') bg-success @elseif($order->delivery_status == 'cancelled') bg-danger @else bg-warning @endif" >{!! $status !!}</span>
                         </td>
                         <td class="text-center">
                             @if ($order->payment_status == 'paid')
@@ -154,7 +151,7 @@
             </table>
 
             <div class="aiz-pagination">
-                {{ $orders->appends(request()->input())->links() }}
+                {{ $orders->appends(request()->input())->links('pagination::bootstrap-5') }}
             </div>
 
         </div>

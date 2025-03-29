@@ -80,7 +80,7 @@
                             </tbody>
                         </table>
                         <div class="aiz-pagination">
-                            {{ $sliders->appends(request()->input())->links() }}
+                            {{ $sliders->appends(request()->input())->links('pagination::bootstrap-5') }}
                         </div>
                     </div>
                 </form>

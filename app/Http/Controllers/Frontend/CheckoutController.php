@@ -12,13 +12,16 @@ use App\Models\Address;
 use App\Models\CombinedOrder;
 use App\Models\Product;
 use App\Models\Order;
+use App\Models\User;
 use App\Models\OrderDetail;
 use App\Models\ProductStock;
+use App\Models\OrderReturn;
 use App\Models\OrderPayments;
 use Illuminate\Http\Request;
 use App\Utility\NotificationUtility;
 use App\Utility\SendSMSUtility;
 use Illuminate\Support\Facades\Auth;
+use App\Notifications\NewOrderNotification;
 use App\Models\Cart;
 use App\Mail\EmailManager;
 use Mail;
@@ -182,7 +185,7 @@ class CheckoutController
             'billing_city' => 'required|string|max:255',
             'billing_state' => 'required|string|max:255',
             'billing_country' => 'required|string|max:255',
-            'billing_zipcode' => 'required|string|max:10',
+            'billing_zipcode' => 'nullable|string|max:10',
             'billing_phone' => 'required|string|max:15',  // Add phone validation
             'billing_email' => 'required|email|max:255', // Add email validation
             'shipping_name' => 'nullable|string|max:255',
@@ -341,8 +344,11 @@ class CheckoutController
                 Cart::where('temp_user_id', $temp_user_id)->delete();
             }
             
-            // NotificationUtility::sendOrderPlacedNotification($order);
-            // NotificationUtility::sendNotification($order, 'created');
+            NotificationUtility::sendOrderPlacedNotification($order);
+            $admin = User::where('user_type', 'admin')->get();  // or however you identify the admin
+            $admin->each(function ($admin) use ($order) {
+                $admin->notify(new NewOrderNotification($order));
+            });
         
             return redirect()->route('order.success', $order->id);
         }else{
@@ -351,9 +357,15 @@ class CheckoutController
     }
    
     public function cancelOrderRequest(Request $request){
+
+        $request->validate([
+            'order_id' => 'required|exists:orders,id',
+            'cancel_reason' => 'required|string|max:255'
+        ]);
+
         $order_id = $request->order_id ?? '';
-        $reason   = $request->reason ?? '';
-        $user = getUser();
+        $reason   = $request->cancel_reason ?? '';
+        
         if($order_id != ''){
             $order = Order::find($order_id);
             if($order){
@@ -363,19 +375,19 @@ class CheckoutController
                     $order->cancel_reason = $reason;
                     $order->save();
 
-                    // $array['view'] = 'emails.commonmail';
-                    // $array['subject'] = "New Order Cancel Request - ".$order->code;
-                    // $array['from'] = env('MAIL_FROM_ADDRESS');
-                    // $array['content'] = "<p>Hi,</p>
-                    //                 <p style='line-height: 25px;'>We have received a new order cancel request. Below are the details of the order:</p>
-                    //                 <p><b>Order Code : </b>".$order->code."</p>
-                    //                 <p><b>Customer Name : </b>".$order->user->name ."</p>
-                    //                 <p style='line-height: 25px;'><b>Reason for cancel: </b>".$reason ."</p>
-                    //                 <p><b>Cancel Request Date: </b>".date('d-M-Y H:i a')."</p><br>
-                    //                 <p>Thank you for your cooperation.</p>
-                    //                 <p>Best regards,</p>
-                    //                 <p>Team ".env('APP_NAME')."</p>";
-                    // Mail::to(env('MAIL_ADMIN'))->queue(new EmailManager($array));
+                    $array['view'] = 'emails.commonmail';
+                    $array['subject'] = "New Order Cancel Request - ".$order->code;
+                    $array['from'] = env('MAIL_FROM_ADDRESS');
+                    $array['content'] = "<p>Hi,</p>
+                                    <p style='line-height: 25px;'>We have received a new order cancel request. Below are the details of the order:</p>
+                                    <p><b>Order Code : </b>".$order->code."</p>
+                                    <p><b>Customer Name : </b>".$order->user->name ."</p>
+                                    <p style='line-height: 25px;'><b>Reason for cancel: </b>".$reason ."</p>
+                                    <p><b>Cancel Request Date: </b>".date('d-M-Y H:i a')."</p><br>
+                                    <p>Thank you for your cooperation.</p>
+                                    <p>Best regards,</p>
+                                    <p>Team ".env('APP_NAME')."</p>";
+                    Mail::to(env('MAIL_ADMIN'))->queue(new EmailManager($array));
                     
                     return response()->json([
                         'status' => true,
@@ -401,55 +413,37 @@ class CheckoutController
         }
     }
 
-    public function returnOrderRequest(Request $request){
-        $order_id = $request->order_id ?? '';
-        $reason   = $request->reason ?? '';
-        $user = getUser();
-        if($order_id != ''){
-            $order = Order::find($order_id);
-            if($order){
-                if($order->return_request == 0 && $order->delivery_status == "delivered"){
-                    $order->return_request = 1;
-                    $order->return_request_date = date('Y-m-d H:i:s');
-                    $order->return_reason = $reason;
-                    $order->save();
+    public function returnOrderRequest(Request $request)
+    {
+        // Validate the input
+        $request->validate([
+            'order_id' => 'required|exists:orders,id',
+            'return_reason' => 'required|string|max:255',
+            'return_qty' => 'required|array',
+            'return_qty.*' => 'integer|min:1',
+        ]);
 
-                    // $array['view'] = 'emails.commonmail';
-                    // $array['subject'] = "New Order Cancel Request - ".$order->code;
-                    // $array['from'] = env('MAIL_FROM_ADDRESS');
-                    // $array['content'] = "<p>Hi,</p>
-                    //                 <p style='line-height: 25px;'>We have received a new order cancel request. Below are the details of the order:</p>
-                    //                 <p><b>Order Code : </b>".$order->code."</p>
-                    //                 <p><b>Customer Name : </b>".$order->user->name ."</p>
-                    //                 <p style='line-height: 25px;'><b>Reason for cancel: </b>".$reason ."</p>
-                    //                 <p><b>Cancel Request Date: </b>".date('d-M-Y H:i a')."</p><br>
-                    //                 <p>Thank you for your cooperation.</p>
-                    //                 <p>Best regards,</p>
-                    //                 <p>Team ".env('APP_NAME')."</p>";
-                    // Mail::to(env('MAIL_ADMIN'))->queue(new EmailManager($array));
-                    
-                    return response()->json([
-                        'status' => true,
-                        'message' => trans('messages.request_success')
-                    ], 200);
-                }else{
-                    return response()->json([
-                        'status' => false,
-                        'message' => trans('messages.request_already_send')
-                    ], 200);
+        // Get the order
+        $order = Order::findOrFail($request->order_id);
+        if($order && $order->delivery_status == "delivered"){
+            // Loop through selected products and save return details
+            foreach ($request->return_qty as $orderDetailId => $qty) {
+                $orderDetail = OrderDetail::find($orderDetailId);
+
+                if ($orderDetail && $qty <= $orderDetail->quantity) {
+                    OrderReturn::create([
+                        'order_id' => $order->id,
+                        'order_detail_id' => $orderDetail->id,
+                        'product_id' => $orderDetail->product_id,
+                        'return_qty' => $qty,
+                        'return_reason' => $request->return_reason,
+                        'status' => 'Pending', // Default status
+                    ]);
                 }
-            }else{
-                return response()->json([
-                    'status' => false,
-                    'message' => trans('messages.not_found')
-                ], 200);
             }
-        }else{
-            return response()->json([
-                'status' => false,
-                'message' => trans('messages.not_found')
-            ], 200);
         }
+
+        return response()->json(['success' => true, 'message' => 'Return request submitted successfully.']);
     }
 
     public function success($order_id)

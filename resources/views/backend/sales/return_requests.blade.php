@@ -27,9 +27,9 @@
                                 <label>Request Approval Status</label>
                                 <select id="ca_search" name="ca_search" class="form-control" >
                                     <option {{ ($ca_search == '') ? 'selected' : '' }} value="">Select status</option>
-                                    <option {{ ($ca_search == '0') ? 'selected' : '' }} value="10">Pending</option>
-                                    <option {{ ($ca_search == '1') ? 'selected' : '' }} value="1">Approved</option>
-                                    <option {{ ($ca_search == '2') ? 'selected' : '' }} value="2">Rejected</option>
+                                    <option {{ ($ca_search == 'pending') ? 'selected' : '' }} value="pending">Pending</option>
+                                    <option {{ ($ca_search == 'approved') ? 'selected' : '' }} value="approved">Approved</option>
+                                    <option {{ ($ca_search == 'rejected') ? 'selected' : '' }} value="rejected">Rejected</option>
                                 </select>
                             </div>
                         </div>
@@ -56,58 +56,39 @@
             <table class="table aiz-table mb-2">
                 <thead>
                     <tr>
-                        <th>#</th>
-                        <th>Order Code</th>
-                        <th>Request Date</th>
-                        <th data-breakpoints="xl">Customer</th>
+                        <th class="text-center">#</th>
+                        <th class="text-center">Order Code</th>
+                        <th class="w-25">Product</th>
+                        <th class="text-center">Return Qty</th>
                         <th class="w-25">Reason</th>
-                        <th data-breakpoints="xl">Amount</th>
-                        <th class="text-center">Request Approval</th>
-                        <th class="text-center">Order Details</th>
+                        <th class="text-center">Status</th>
+                        <th class="text-center">View Order</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($orders as $key => $order)
-                        
-                        <tr>
-                            <td>
-                                {{ ($key+1) + ($orders->currentPage() - 1)*$orders->perPage() }}
-                            </td>
-                            
-                            <td>
-                                {{ $order->code ?? '' }}
-                            </td>
-
-                            <td>
-                                {{ ($order->return_request_date) ? date('d-m-Y H:i a', strtotime($order->return_request_date)) : ''}}
-                            </td>
-
-                            <td>
-                                {{ $order->user->name }}
-                            </td>
-                           
-                            <td>
-                                {{ $order->return_reason }}
-                            </td>
-                            <td>
-                                {{ $order->grand_total }}
-                            </td>
-                           
-                            <td class="text-center">
-                                @if($order->return_approval == 0)
-                                    <button class="btn btn-success d-innline-block adminApprove" data-id="{{$order->id}}" data-status="1">Approve</button>
-                                    <button class="btn btn-warning d-innline-block adminApprove" data-id="{{$order->id}}" data-status="2">Reject</button>
+                        <tr class="">
+                            <td class="text-center">{{ ($key+1) + ($orders->currentPage() - 1)*$orders->perPage() }}</td>
+                            <td class=" text-center">{{ $order->order->code }}</td>
+                            <td class="">{{ $order->product->name }}</td>
+                            <td class=" text-center">{{ $order->return_qty }}</td>
+                            <td class="">{{ $order->return_reason }}</td>
+                            <td class=" text-center">
+                                @if($order->status == 'pending')
+                                    <button onclick="updateReturnStatus({{ $order->id }}, 'approved')"  class="btn btn-success d-innline-block">Approve</button>
+                                    <button onclick="updateReturnStatus({{ $order->id }}, 'rejected')"  class="btn btn-danger d-innline-block">Reject</button>
+                                @elseif($order->status == 'approved')
+                                    <span class="badge badge-lg badge-inline bg-success">
+                                        {{ $order->status }}
+                                    </span>
                                 @else
-                                    @if($order->return_approval == 1)
-                                        <span class=" badge-soft-success">Approved</span>
-                                    @elseif($order->return_approval == 2)
-                                        <span class=" badge-soft-danger">Rejected</span>
-                                    @endif
+                                    <span class="badge badge-lg badge-inline bg-danger">
+                                        {{ $order->status }}
+                                    </span>
                                 @endif
                             </td>
-
-                            <td class="text-center">
-                                <a class="btn btn-soft-primary btn-icon btn-circle" href="{{route('return_orders.show', encrypt($order->id))}}" title="View">
+                            <td class=" text-center">
+                                <a class="btn btn-soft-primary btn-icon btn-circle" href="{{route('return_orders.show', encrypt($order->order->id))}}" title="View">
                                     <i class="las la-eye"></i>
                                 </a>
                             </td>
@@ -117,7 +98,7 @@
             </table>
 
             <div class="aiz-pagination">
-                {{ $orders->appends(request()->input())->links() }}
+                {{ $orders->appends(request()->input())->links('pagination::bootstrap-5') }}
             </div>
 
         </div>
@@ -126,59 +107,41 @@
 
 @endsection
 
-@section('modal')
-    @include('modals.delete_modal')
-@endsection
-
 @section('script')
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js" integrity="sha512-AA1Bzp5Q0K1KanKKmvN/4d3IRKVlv9PYgwFPvm32nPO6QS8yH1HO7LbgB1pgiOxPtfeg5zEn2ba64MUcqJx6CA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script type="text/javascript">
-        $(document).on("click", ".adminApprove", function(e) {
-            var status = $(this).attr('data-status');
-            var id = $(this).attr('data-id');
-            var msg = (status == '1') ? "Do you want to approve this request?" : "Do you want to reject this request?";
-            
-            swal({
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js" integrity="sha512-AA1Bzp5Q0K1KanKKmvN/4d3IRKVlv9PYgwFPvm32nPO6QS8yH1HO7LbgB1pgiOxPtfeg5zEn2ba64MUcqJx6CA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+    function updateReturnStatus(returnId, status) {
+        swal({
                 title: "Are you sure?",
-                text: msg,
+                text: `Are you sure you want to mark this return as ${status}?`,
                 icon: "warning",
                 buttons: true,
                 dangerMode: true,
             })
-            .then((willDelete) => {
-                if (willDelete) {
-                    $.ajax({
-                        url: "{{ route('return-request-status') }}",
-                        type: "POST",
-                        data: {
-                            id: id,
-                            status:status,
-                            _token: '{{ @csrf_token() }}',
-                        },
-                        dataType: "html",
-                        success: function(response) {
-                            if(response == 1){
-                                swal("Successfully updated!", {
-                                    icon: "success",
-                                });
-                            }else{
-                                swal("Something went wrong!", {
-                                    icon: "error",
-                                });
-                            }
-                            setTimeout(function () { 
-                                location.reload(true); 
-                            }, 3000); 
-                        }
-                    });
-                }else{
-                    $(this).val('');
-                }
-            });
-           
+        .then((willDelete) => {
+            if (willDelete) {
+                $.ajax({
+                    url: "{{ route('return-request-status') }}",
+                    type: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                    },
+                    data: JSON.stringify({ return_id: returnId, status: status }),
+
+                    success: function(response) {
+                        swal("Successfully updated!", {
+                            icon: "success",
+                        });
+                        setTimeout(function () { 
+                            location.reload(true); 
+                        }, 3000); 
+                    }
+                });
+            }else{
+                $(this).val('');
+            }
         });
-
-    
-
-    </script>
+    }
+</script>
 @endsection
