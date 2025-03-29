@@ -15,4 +15,9 @@ class FaqCategory extends Model
     {
         return $this->hasMany(Faq::class);
     }
+
+    public function faq_list()
+    {
+        return $this->hasMany(Faq::class)->where('is_active',1)->orderBy('sort_order', 'ASC' );
+    }
 }

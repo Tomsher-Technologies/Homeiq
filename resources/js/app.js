@@ -148,9 +148,6 @@ function toggleFAQ(id, btn) {
     }
 }
 
-
-
-
 // Cart
 
 
@@ -169,4 +166,6 @@ function toggleFAQ(id, btn) {
         closeAccount.addEventListener("click", function () {
             accountDrawer.classList.add("translate-x-full"); // Slide out
         });
+
+       
     });

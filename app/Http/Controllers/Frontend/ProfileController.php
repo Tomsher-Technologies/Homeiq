@@ -27,24 +27,36 @@ class ProfileController extends Controller
         ]);
     }
 
+    public function getUserAccountInfo(){
+        $lang = getActiveLanguage();
+        $user_id = (!empty(auth('sanctum')->user())) ? auth('sanctum')->user()->id : '';
+        $user = User::find($user_id);
+        
+        return view('pages.my-profile',compact('lang','user'));
+    }
+
     public function update(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            // 'email' => 'required|email|unique:users,email,' . Auth::id(),
-            'phone' => 'nullable|min:9',
+            'phone' => 'required|min:9',
         ]);
 
         $user = Auth::user();
         $user->name = $request->name;
         $user->phone = $request->phone;
         $user->save();
-        // $user->update($request->only('name', 'phone'));
+    
 
         session()->flash('message', trans('messages.profile_update_success'));
         session()->flash('alert-type', 'success');
 
         return redirect()->back();
+    }
+
+    public function updatePassword(){
+        $lang = getActiveLanguage();
+        return view('pages.change-password',compact('lang'));
     }
 
     public function changePassword(Request $request)

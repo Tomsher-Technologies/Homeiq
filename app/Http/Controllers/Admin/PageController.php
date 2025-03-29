@@ -112,9 +112,6 @@ class PageController extends Controller
             return view('backend.website_settings.pages.home_page_edit', compact('page', 'services', 'categories', 'brands', 'products', 'lang','page_id'));
             
           }
-          else if ($id == 'find_us' || $id == 'news' || $id == 'faq') {
-            return view('backend.website_settings.pages.find_us', compact('page','lang','page_id'));
-          }
           else if ($id == 'blogs' || $id == 'product_list' || $id == 'service_list') {
             return view('backend.website_settings.pages.blog_listing', compact('page','lang','page_id'));
           }
@@ -124,7 +121,7 @@ class PageController extends Controller
           else if ($id == 'about_us') {
             return view('backend.website_settings.pages.about_us', compact('page','lang','page_id'));
           }
-          else if ($id == 'brands_list') {
+          else if ($id == 'brands_list' || $id == 'faq') {
             return view('backend.website_settings.pages.plist', compact('page','lang','page_id'));
           }
           else{

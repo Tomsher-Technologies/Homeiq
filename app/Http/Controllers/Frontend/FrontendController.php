@@ -15,6 +15,7 @@ use App\Models\BusinessSetting;
 use App\Models\Subscriber;
 use App\Models\Contacts;
 use App\Models\Testimonials;
+use App\Models\FaqCategory;
 use App\Models\Blog;
 use App\Mail\ContactEnquiry;
 use Illuminate\Http\Request;
@@ -453,6 +454,30 @@ class FrontendController extends Controller
         $brands = Brand::where('is_active', 1)->orderBy('name', 'ASC')->get();
 
         return view('pages.brand-listing',compact('page','lang','brands'));
+    }
+
+    public function faq()
+    {
+        $page = Page::where('type','faq')->first();
+        $lang = getActiveLanguage();
+        $seo = [
+            'title'                 => $page->getTranslation('title', $lang),
+            'meta_title'            => $page->getTranslation('meta_title', $lang),
+            'meta_description'      => $page->getTranslation('meta_description', $lang),
+            'keywords'              => $page->getTranslation('keywords', $lang),
+            'og_title'              => $page->getTranslation('og_title', $lang),
+            'og_description'        => $page->getTranslation('og_description', $lang),
+            'twitter_title'         => $page->getTranslation('twitter_title', $lang),
+            'twitter_description'   => $page->getTranslation('twitter_description', $lang),
+        ];
+        
+        $this->loadSEO($seo);
+
+        $faq_categories = FaqCategory::with(['faq_list'])->where('is_active', 1)->orderBy('sort_order','asc')->get();
+        // echo '<pre>';
+        // print_r($faq_categories);
+        // die;
+        return view('pages.faq',compact('page','lang','faq_categories'));
     }
 
 }

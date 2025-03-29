@@ -21,7 +21,7 @@
             {{-- <p class="sm:text-18 text-sm tracking-wide text-[#41b6e8]">Verified</p> --}}
         </div>
 
-        <a href="my-profile.html" class="flex flex-col">
+        <a href="{{ route('account') }}" class="flex flex-col">
             <p class="text-ms tracking-wide leading-1 text-black font-bold">
                 <svg class="w-[26px] group-hover:fill-[#41b6e8]" id="fi_2356780"
                     enable-background="new 0 0 511.984 511.984" viewBox="0 0 511.984 511.984"
@@ -87,7 +87,7 @@
                     My Orders </p>
             </a>
 
-            <a href="my_wallet.html"
+            <a href="{{ route('update-password') }}"
                 class="px-3 py-4 flex flex-col items-center rounded-md border  gap-y-4 text-center hover:bg-gray-50 w-full bg-white hover:text-[#41b6e8] group">
                 <svg class="w-[30px] group-hover:fill-[#41b6e8]" ca xmlns="http://www.w3.org/2000/svg"
                     fill="currentColor" class="bi bi-person-lock" viewBox="0 0 16 16">

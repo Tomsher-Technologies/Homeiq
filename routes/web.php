@@ -76,18 +76,13 @@ Route::post('checkout.process', [CheckoutController::class, 'placeOrder'])->name
 Route::get('/order/success/{order_id}', [CheckoutController::class, 'success'])->name('order.success');
 Route::get('/order/failed', [CheckoutController::class, 'failed'])->name('order.failed');
 
+Route::get('/faq', [FrontendController::class, 'faq'])->name('faq');
 
 
 
 
 
 
-Route::view('/faq', 'pages.faq')->name('faq');
-// Route::view('/my-address', 'pages.my-address')->name('my-address');
- Route::view('/my-orders', 'pages.my-orders')->name('my-orders');
- Route::view('/order-details', 'pages.order-details')->name('order-details');
- Route::view('/order-success', 'pages.order-success')->name('order-success');
- Route::view('/order-field', 'pages.order-field')->name('order-field');
  Route::view('/my-profile', 'pages.my-profile')->name('my-profile');
 
 
@@ -107,20 +102,11 @@ Route::get('/category/{category_slug}', [SearchController::class, 'listingByCate
 
 Route::get('cart/count', [CartController::class, 'getCount']);
 
-
-
-
-
-
 Route::get('/check-login-status', [UserController::class, 'checkLoginStatus'])->name('check.login.status');
 
 
 Route::group(['middleware' => ['auth']], function () {
-    
-    
 
-    
-    
     Route::get('logout', [AuthController::class, 'logout'])->name('logout');
 
     Route::get('wishlists', [WishlistController::class, 'index'])->name('wishlist.index');
@@ -139,6 +125,8 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::get('account', [ProfileController::class, 'getUserAccountInfo'])->name('account');
     Route::post('/account/update', [ProfileController::class, 'update'])->name('account.update'); 
+
+    Route::get('update-password', [ProfileController::class, 'updatePassword'])->name('update-password');
     Route::post('/change-password', [ProfileController::class, 'changePassword'])->name('account.changePassword');
 
     Route::get('my-address', [ProfileController::class, 'getUserAddressInfo'])->name('my-address');

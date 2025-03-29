@@ -122,7 +122,7 @@
 
 
         <!-- Middle Section: Contact & Links in One Row -->
-        <div class="grid grid-cols-2 lg:grid-cols-6 gap-4 mt-8 items-start">
+        <div class="grid grid-cols-2 lg:grid-cols-5 gap-4 mt-8 items-start">
             <!-- Contact & Address (Left Side) with Right Border -->
             <div class="col-span-1 border-r border-gray-600 pr-6">
                 <h3 class="text-gray-300 font-semibold text-sm">{{ get_setting('footer_contact_title') }}</h3>
@@ -160,38 +160,26 @@
                 </ul>
             </div>
 
-            <!-- Support -->
-            <div>
-                <h3 class="text-gray-300 font-semibold text-sm">Support</h3>
-                <ul class="text-gray-400 text-sm mt-3 space-y-2">
-                    <li><a href="#" class="hover:text-white">Installation Guide</a></li>
-                    <li><a href="#" class="hover:text-white">Technical Support</a></li>
-                    <li><a href="#" class="hover:text-white">FAQ</a></li>
-                    <li><a href="#" class="hover:text-white">Warranty Info</a></li>
-                    <li><a href="#" class="hover:text-white">Contact Support</a></li>
-                </ul>
-            </div>
-
+           
             <!-- Resources & Company -->
             <div>
                 <h3 class="text-gray-300 font-semibold text-sm">Resources</h3>
                 <ul class="text-gray-400 text-sm mt-3 space-y-2">
-                    <li><a href="#" class="hover:text-white">Blog</a></li>
-                    <li><a href="#" class="hover:text-white">Knowledge Base</a></li>
-                    <li><a href="#" class="hover:text-white">Video Tutorials</a></li>
-                    <li><a href="#" class="hover:text-white">Case Studies</a></li>
-                    <li><a href="#" class="hover:text-white">News</a></li>
+                    <li><a href="{{ route('faq') }}" class="hover:text-white">FAQ</a></li>
+                    <li><a href="{{ route('blog') }}" class="hover:text-white">Blog</a></li>
+                    <li><a href="{{ route('privacy-policy') }}" class="hover:text-white">Privacy Policy</a></li>
+                    <li><a href="{{ route('terms-conditions') }}" class="hover:text-white">Terms of Service</a></li>
+                    <li><a href="{{ route('return-policy') }}" class="hover:text-white">Return Policy</a></li>
+                    
                 </ul>
             </div>
 
             <div>
                 <h3 class="text-gray-300 font-semibold text-sm">Company</h3>
                 <ul class="text-gray-400 text-sm mt-3 space-y-2">
-                    <li><a href="#" class="hover:text-white">About Us</a></li>
-                    <li><a href="#" class="hover:text-white">Our Team</a></li>
-                    <li><a href="#" class="hover:text-white">Careers</a></li>
+                    <li><a href="{{ route('about-us') }}" class="hover:text-white">About Us</a></li>
                     <li><a href="{{ route('brand-listing') }}" class="hover:text-white">Partners</a></li>
-                    <li><a href="#" class="hover:text-white">Contact Us</a></li>
+                    <li><a href="{{ route('contact') }}" class="hover:text-white">Contact Us</a></li>
                 </ul>
             </div>
         </div>
