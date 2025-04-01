@@ -15,7 +15,8 @@ class AuthController extends Controller
     // Show the registration form
     public function showRegistrationForm()
     {
-        return view('frontend.auth.register');
+        $lang = getActiveLanguage();
+        return view('auth.register',['lang' => $lang ]);
     }
 
     // Handle the registration logic
@@ -23,9 +24,10 @@ class AuthController extends Controller
     {
         // Validation for registration form
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'phone' => ['required', 'regex:/^[0-9]+$/', 'min:10', 'max:15', 'unique:users'], // Allow only numbers
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
 
         if ($validator->fails()) {
@@ -38,6 +40,7 @@ class AuthController extends Controller
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
+            'phone' => $request->phone,
             'user_type' => 'customer',
             'password' => Hash::make($request->password),
         ]);
@@ -56,33 +59,34 @@ class AuthController extends Controller
         // Log the user in after registration
         Auth::login($user);
 
-        return redirect()->route('home');  // Redirect to home page after registration
+        return redirect()->route('home')->with('success', 'Welcome! Your registration was successful. Start shopping with us!');  // Redirect to home page after registration
     }
 
     // Show the login form
     public function showLoginForm()
     {
-        return view('frontend.auth.login');
+        $lang = getActiveLanguage();
+        return view('auth.login',['lang' => $lang ]);
     }
 
     // Handle the login logic
     public function login(Request $request)
     {
         // Validation for login form
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|string|email',
-            'password' => 'required|string',
+        $credentials = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
         ]);
 
-        if ($validator->fails()) {
-            return redirect('login')
-                ->withErrors($validator)
-                ->withInput();
-        }
-
+        $remember = $request->has('remember');
         // Attempt to log the user in
-        if (Auth::attempt($request->only('email', 'password'))) {
-            return redirect()->route('home'); // Redirect to home page if login is successful
+        if (Auth::attempt($credentials, $remember)) {
+            if (Auth::user()->user_type === 'customer') {
+                return redirect()->route('home')->with('success', 'Login successful! Welcome back.'); // Redirect to home for customersP
+            } else {
+                Auth::logout(); // Log out non-customers
+                return back()->with('error', 'Access restricted to customers only.');
+            }
         }
 
         // If authentication fails

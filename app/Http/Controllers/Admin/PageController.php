@@ -14,6 +14,8 @@ use App\Models\BusinessSetting;
 use App\Models\Banner;
 use App\Models\Product;
 use App\Models\Contacts;
+use App\Models\Service;
+use App\Models\Subscriber;
 use Storage;
 use File;
 
@@ -100,26 +102,29 @@ class PageController extends Controller
         if($page != null){
             $page_id = $page->id;
           if ($id == 'home') {
-            $banners = Banner::where('status', 1)->get();
-            $current_banners = BusinessSetting::whereIn('type', array('home_banner','home_mid_section_banner','home_center_banner', 'home_mid_banner', 'home_large_banner'))->get()->keyBy('type');
-            // echo '<pre>';
-            // print_r($current_banners);
-            // die;
+            
             $categories = Category::where('parent_id', 0)->where('is_active',1)->with('childrenCategories')->get();
 
             $products = Product::select('id', 'name')->where('published',1)->get();
             $brands = Brand::where('is_active',1)->orderBy('name', 'asc')->get();
-            $occasions = [];
-
-            return view('backend.website_settings.pages.home_page_edit', compact('page', 'banners', 'current_banners', 'categories', 'brands', 'products','occasions','lang','page_id'));
+            $services = Service::where('status',1)->orderBy('name', 'asc')->get();
             
-          }else if ($id == 'find_us' || $id == 'news' || $id == 'faq') {
-            return view('backend.website_settings.pages.find_us', compact('page','lang','page_id'));
-          }else if ($id == 'contact_us') {
+            return view('backend.website_settings.pages.home_page_edit', compact('page', 'services', 'categories', 'brands', 'products', 'lang','page_id'));
+            
+          }
+          else if ($id == 'blogs' || $id == 'product_list' || $id == 'service_list') {
+            return view('backend.website_settings.pages.blog_listing', compact('page','lang','page_id'));
+          }
+          else if ($id == 'contact_us') {
             return view('backend.website_settings.pages.contact_us', compact('page','lang','page_id'));
-          }else if ($id == 'about_us') {
+          }
+          else if ($id == 'about_us') {
             return view('backend.website_settings.pages.about_us', compact('page','lang','page_id'));
-          }else{
+          }
+          else if ($id == 'brands_list' || $id == 'faq') {
+            return view('backend.website_settings.pages.plist', compact('page','lang','page_id'));
+          }
+          else{
             return view('backend.website_settings.pages.edit', compact('page','lang','page_id'));
           }
         }
@@ -143,11 +148,19 @@ class PageController extends Controller
                 $page->image = $photo;
                 $page->save();
             }
+
+            $page->image1               = $request->has('image1') ? $request->image1 : NULL;
+            $page->image2               = $request->has('image2') ? $request->image2 : NULL;
+            $page->image3               = $request->has('image3') ? $request->image3 : NULL;
+            $page->save();
             
             $page_translation                       = PageTranslation::firstOrNew(['lang' => $request->lang, 'page_id' => $page->id]);
             $page_translation->title                = $request->title;
             $page_translation->content              = $request->has('content') ? $request->content : NULL;
             $page_translation->sub_title            = $request->has('sub_title') ? $request->sub_title : NULL;
+            $page_translation->title1               = $request->has('title1') ? $request->title1 : NULL;
+            $page_translation->title2               = $request->has('title2') ? $request->title2 : NULL;
+            $page_translation->title3               = $request->has('title3') ? $request->title3 : NULL;
             $page_translation->heading1             = $request->has('heading1') ? $request->heading1 : NULL;
             $page_translation->content1             = $request->has('content1') ? $request->content1 : NULL;
             $page_translation->heading2             = $request->has('heading2') ? $request->heading2 : NULL;
@@ -157,6 +170,11 @@ class PageController extends Controller
             $page_translation->content4             = $request->has('content4') ? $request->content4 : NULL;
             $page_translation->content5             = $request->has('content5') ? $request->content5 : NULL;
             $page_translation->heading4             = $request->has('heading4') ? $request->heading4 : NULL;
+            $page_translation->heading5             = $request->has('heading5') ? $request->heading5 : NULL;
+            $page_translation->heading6             = $request->has('heading6') ? $request->heading6 : NULL;
+            $page_translation->heading7             = $request->has('heading7') ? $request->heading7 : NULL;
+            $page_translation->heading8             = $request->has('heading8') ? $request->heading8 : NULL;
+            $page_translation->heading9             = $request->has('heading9') ? $request->heading9 : NULL;
             $page_translation->meta_title           = $request->meta_title;
             $page_translation->meta_description     = $request->meta_description;
             $page_translation->og_title             = $request->og_title;
@@ -164,7 +182,7 @@ class PageController extends Controller
             $page_translation->twitter_title        = $request->twitter_title;
             $page_translation->twitter_description  = $request->twitter_description;
             $page_translation->keywords             = $request->keywords;
-            $page_translation->image1               = $request->has('image1') ? $request->image1 : NULL;
+            
             $page_translation->save();
 
             flash(trans('messages.page').' '.trans('messages.updated_msg'))->success();
@@ -240,5 +258,19 @@ class PageController extends Controller
         } else {
             return 0;
         }
+    }
+
+    public function subscribers()
+    {
+        $subscribers = Subscriber::orderBy('created_at', 'desc')->paginate(15);
+        return view('backend.subscribers', compact('subscribers'));
+    }
+
+    
+    public function subscribersDestroy($id)
+    {
+        Subscriber::destroy($id);
+        flash(trans('messages.subscriber').' '.trans('messages.deleted_msg'))->success();
+        return redirect()->route('subscribers.index');
     }
 }

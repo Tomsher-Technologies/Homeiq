@@ -55,7 +55,7 @@
             </tbody>
         </table>
         <div class="aiz-pagination">
-            {{ $contact->appends(request()->input())->links('pagination::bootstrap-4') }}
+            {{ $contact->appends(request()->input())->links('pagination::bootstrap-5') }}
         </div>
     </div>
 </div>

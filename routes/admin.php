@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\AizUploadController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\AttributeController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\ProductBulkUploadController;
 use App\Http\Controllers\Admin\WebsiteController;
 use App\Http\Controllers\Admin\Bannercontroller;
 use App\Http\Controllers\Admin\OccasionController;
@@ -22,6 +23,14 @@ use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\BusinessSettingsController;
 use App\Http\Controllers\Admin\HomeSliderController;
 use App\Http\Controllers\Admin\PartnersController;
+use App\Http\Controllers\Admin\ServiceController;
+use App\Http\Controllers\Admin\FaqCategoryController;
+use App\Http\Controllers\Admin\FaqController;
+use App\Http\Controllers\Admin\BlogController;
+use App\Http\Controllers\Admin\TestimonialController;
+use App\Http\Controllers\Admin\ReportController;
+use App\Http\Controllers\Admin\AbandonedCartController;
+
 
 Route::group(['middleware' => ['guest']], function () {
     Route::get('login', [AuthController::class, 'showLoginForm'])->name('admin.login');
@@ -69,8 +78,17 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/custom-pages/destroy/{id}', [PageController::class, 'destroy'])->name('custom-pages.destroy');
         Route::post('/page/delete_image', [PageController::class, 'delete_image'])->name('page.delete_image');
 
+        Route::get('/subscribers', [PageController::class, 'subscribers'])->name('subscribers.index');
+        Route::get('/subscribers/destroy/{id}', [PageController::class, 'subscribersDestroy'])->name('subscriber.destroy');
+    
         // Partners
         Route::resource('partners', PartnersController::class)->except('show');
+
+        // Manage testimonials
+        Route::resource('testimonials', TestimonialController::class)->except('show');
+        Route::get('/testimonials/delete/{id}', [TestimonialController::class, 'destroy'])->name('testimonials.delete');
+        Route::post('/testimonials/update-status', [TestimonialController::class, 'updateStatus'])->name('testimonials.update-status');
+        
     });
 
     // Brands
@@ -100,33 +118,21 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/categories/edit/{id}', [CategoryController::class, 'edit'])->name('categories.edit');
     Route::post('/categories/status', [CategoryController::class, 'updateStatus'])->name('categories.status');
 
-    // Attributes
-    Route::resource('attributes', AttributeController::class);
-    Route::get('/attributes/edit/{id}', [AttributeController::class, 'edit'])->name('attributes.edit');
-    Route::get('/attributes/destroy/{id}', [AttributeController::class, 'destroy'])->name('attributes.destroy');
-    Route::post('/attributes/status', [AttributeController::class, 'updateAttributeStatus'])->name('attributes.status');
-    Route::post('/attribute_value/status', [AttributeController::class, 'updateAttributeValueStatus'])->name('attribute_value.status');
-
-    //Attribute Value
-    Route::post('/store-attribute-value', [AttributeController::class, 'store_attribute_value'])->name('store-attribute-value');
-    Route::get('/edit-attribute-value/{id}', [AttributeController::class, 'edit_attribute_value'])->name('edit-attribute-value');
-    Route::post('/update-attribute-value/{id}', [AttributeController::class, 'update_attribute_value'])->name('update-attribute-value');
-    Route::get('/destroy-attribute-value/{id}', [AttributeController::class, 'destroy_attribute_value'])->name('destroy-attribute-value');
-
     Route::get('/products/all', [ProductController::class, 'all_products'])->name('products.all');
     Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
     Route::post('/products/store/', [ProductController::class, 'store'])->name('products.store');
     Route::post('/products/update/{id}', [ProductController::class, 'update'])->name('products.update');
-    Route::post('/products/add-attributes', [ProductController::class, 'get_attribute_values'])->name('products.add-attributes');
     Route::get('/products/admin/{id}/edit', [ProductController::class, 'admin_product_edit'])->name('products.edit');
     Route::post('/products/todays_deal', [ProductController::class, 'updateTodaysDeal'])->name('products.todays_deal');
     Route::post('/products/published', [ProductController::class, 'updatePublished'])->name('products.published');
     Route::post('/products/approved', [ProductController::class, 'updateProductApproval'])->name('products.approved');
     Route::post('/products/featured', [ProductController::class, 'updateFeatured'])->name('products.featured');
     Route::post('/bulk-product-delete', [ProductController::class, 'bulk_product_delete'])->name('bulk-product-delete');
-    Route::post('/products/delete-variant-image', [ProductController::class, 'delete_variant_image'])->name('products.delete_varient_image');
     Route::post('/products/delete-thumbnail', [ProductController::class, 'delete_thumbnail'])->name('products.delete_thumbnail');
     Route::post('/products/delete_gallery', [ProductController::class, 'delete_gallery'])->name('products.delete_gallery');
+
+    Route::get('/product-bulk-upload/index', [ProductBulkUploadController::class, 'index'])->name('product_bulk_upload.index');
+    Route::post('/bulk-product-upload', [ProductBulkUploadController::class, 'bulk_upload'])->name('bulk_product_upload');
 
     //Reviews
     Route::get('/reviews', [ReviewController::class, 'index'])->name('reviews.index');
@@ -142,7 +148,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/orders/update_tracking_code', [OrderController::class, 'update_tracking_code'])->name('orders.update_tracking_code');
 
     Route::get('/return_requests', [OrderController::class, 'allReturnRequests'])->name('return_requests.index');
-    Route::post('/return-request-status', [OrderController::class, 'returnRequestStatus'])->name('return-request-status');
+    Route::post('/return-request-status', [OrderController::class, 'updateReturnStatus'])->name('return-request-status');
     Route::get('/return_orders/{id}/show', [OrderController::class, 'return_orders_show'])->name('return_orders.show');
 
     Route::get('invoice/{order_id}', [InvoiceController::class, 'invoice_download'])->name('invoice.download');
@@ -159,4 +165,59 @@ Route::group(['middleware' => ['auth']], function () {
     // Route::get('/pages', [WebsiteController::class, 'index'])->name('website.pages');
 
     Route::post('/business-settings/update', [BusinessSettingsController::class, 'update'])->name('business_settings.update');
+
+    // Manage services
+
+    Route::get('/service/all', [ServiceController::class, 'index'])->name('service.index');
+    Route::get('/service/create', [ServiceController::class, 'create'])->name('service.create');
+    Route::post('/service/store/', [ServiceController::class, 'store'])->name('service.store');
+    Route::get('/service/edit/{id}', [ServiceController::class, 'edit'])->name('service.edit');
+    Route::post('/service/update/{id}', [ServiceController::class, 'update'])->name('service.update');
+    Route::post('/service/status', [ServiceController::class, 'updateStatus'])->name('service.status');
+    Route::get('/service/delete/{id}', [ServiceController::class, 'destroy'])->name('service.delete');
+
+
+    //Manage faq categories
+    Route::get('/faq_categories/all', [FaqCategoryController::class, 'index'])->name('faq_categories.index');
+    Route::get('/faq_categories/create', [FaqCategoryController::class, 'create'])->name('faq_categories.create');
+    Route::post('/faq_categories/store/', [FaqCategoryController::class, 'store'])->name('faq_categories.store');
+    Route::get('/faq_categories/edit/{id}', [FaqCategoryController::class, 'edit'])->name('faq_categories.edit');
+    Route::post('/faq_categories/update/{id}', [FaqCategoryController::class, 'update'])->name('faq_categories.update');
+    Route::post('/faq_categories/status', [FaqCategoryController::class, 'updateStatus'])->name('faq_categories.status');
+    Route::get('/faq_categories/delete/{id}', [FaqCategoryController::class, 'destroy'])->name('faq_categories.delete');
+
+    Route::get('/faqs/edit/{id}', [FaqCategoryController::class, 'getAllCategoryFaqs'])->name('faqs.edit');
+    Route::post('/faqs/update', [FaqCategoryController::class, 'updateFaq'])->name('faqs.update');
+
+    // Manage Blogs
+    
+    Route::get('/blogs/all', [BlogController::class, 'index'])->name('blog.index');
+    Route::get('/blog/create', [BlogController::class, 'create'])->name('blog.create');
+    Route::post('/blog/store/', [BlogController::class, 'store'])->name('blog.store');
+    Route::get('/blog/edit/{id}', [BlogController::class, 'edit'])->name('blog.edit');
+    Route::post('/blog/update/{id}', [BlogController::class, 'update'])->name('blog.update');
+    Route::post('/blog/status', [BlogController::class, 'updateStatus'])->name('blog.status');
+    Route::get('/blog/delete/{id}', [BlogController::class, 'destroy'])->name('blog.delete');
+
+    Route::get('/configuration', [BusinessSettingsController::class, 'shipping_configuration'])->name('shipping_configuration.index');
+    Route::post('/shipping_configuration/free_shipping', [BusinessSettingsController::class, 'freeshipping_settings'])->name('shipping_configuration.free_shipping');
+    Route::post('/configuration/return', [BusinessSettingsController::class, 'return_settings'])->name('configuration.return_settings');
+
+     //Reports
+     Route::get('/stock_report', [ReportController::class, 'stock_report'])->name('stock_report.index');
+     Route::get('/export-stock-report', [ReportController::class, 'exportStockReport'])->name('export.stock_report');
+     
+     Route::get('/in_house_sa le_report', [ReportController::class, 'in_house_sale_report'])->name('in_house_sale_report.index');
+     
+     Route::get('/wish_report', [ReportController::class, 'wish_report'])->name('wish_report.index');
+     Route::get('/export-wish-report', [ReportController::class, 'exportWishReport'])->name('export.wish_report');
+ 
+     Route::get('/user_search_report', [ReportController::class, 'user_search_report'])->name('user_search_report.index');
+     Route::get('/export-search-report', [ReportController::class, 'exportSearchReport'])->name('export.search_report');
+     
+     Route::get('/abandoned-cart', [AbandonedCartController::class, 'index'])->name('abandoned-cart.index');
+     Route::get('/{cart}/abandoned-cart', [AbandonedCartController::class, 'view'])->name('abandoned-cart.view');
+     Route::get('/sales_report', [ReportController::class, 'sales_report'])->name('sales_report.index');
+     Route::get('/sales_orders/{id}/show', [ReportController::class, 'sales_orders_show'])->name('sales_orders.show');
+     Route::get('/export-sales-report', [ReportController::class, 'exportSalesReport'])->name('export.sales_report');
 });

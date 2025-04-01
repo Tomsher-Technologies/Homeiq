@@ -74,7 +74,7 @@
             <table class="table aiz-table mb-0">
                 <thead>
                     <tr>
-                        <th>#</th>
+                        <th class="text-center">#</th>
                         {{-- <th>
                             <div class="form-group">
                                 <div class="aiz-checkbox-inline">
@@ -86,48 +86,49 @@
                             </div>
                         </th> --}}
                         <th>Order Code</th>
-                        <th >Num. of Products</th>
+                        <th  class="text-center">Num. of Products</th>
                         <th >Customer</th>
-                        <th >Amount</th>
-                        <th >Delivery Status</th>
-                        <th >Payment Status</th>
-                        <th class="text-right" width="15%">{{trans('messages.options')}}</th>
+                        <th class="text-center" >Amount</th>
+                        <th  class="text-center">Delivery Status</th>
+                        <th  class="text-center">Payment Status</th>
+                        <th class="text-center" width="15%">{{trans('messages.options')}}</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($orders as $key => $order)
                     <tr>
-                        <td>
+                        <td class="text-center">
                             {{ ($key+1) + ($orders->currentPage() - 1)*$orders->perPage() }}
                         </td>
                        
                         <td>
                             {{ $order->code }}
                         </td>
-                        <td>
+                        <td class="text-center">
                             {{ count($order->orderDetails) }}
                         </td>
                         <td>
                             @if ($order->user != null)
                             {{ $order->user->name }}
                             @else
-                            Guest ({{ $order->guest_id }})
+                                @php
+                                    $shipping_address = json_decode($order->shipping_address);
+                                @endphp
+                               
+                                Guest ({{ $shipping_address->name ?? ''}})
                             @endif
                         </td>
-                        <td>
+                        <td class="text-center">
                             {{ single_price($order->grand_total) }}
                         </td>
-                        <td>
+                        <td class="text-center">
                             @php
-                                $status = $order->delivery_status;
-                                if($order->delivery_status == 'cancelled') {
-                                    $status = '<span class="badge badge-inline badge-danger">'.trans('messages.cancel').'</span>';
-                                }
-
+                                $status = ucfirst(str_replace('_', ' ', $order->delivery_status));
+                               
                             @endphp
-                            {!! $status !!}
+                            <span class="badge badge-lg badge-inline @if($order->delivery_status == 'delivered') bg-success @elseif($order->delivery_status == 'cancelled') bg-danger @else bg-warning @endif" >{!! $status !!}</span>
                         </td>
-                        <td>
+                        <td class="text-center">
                             @if ($order->payment_status == 'paid')
                             <span class="badge badge-inline badge-success">{{trans('messages.paid')}}</span>
                             @else
@@ -135,7 +136,7 @@
                             @endif
                         </td>
                         
-                        <td class="text-right">
+                        <td class="text-center">
                             <a class="btn btn-soft-primary btn-icon btn-circle" href="{{route('all_orders.show', encrypt($order->id))}}" title="View">
                                 <i class="las la-eye"></i>
                             </a>
@@ -150,7 +151,7 @@
             </table>
 
             <div class="aiz-pagination">
-                {{ $orders->appends(request()->input())->links() }}
+                {{ $orders->appends(request()->input())->links('pagination::bootstrap-5') }}
             </div>
 
         </div>

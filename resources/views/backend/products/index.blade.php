@@ -52,9 +52,9 @@
                 </div>
 
                
-                <div class="col-md-2 ml-auto bootstrap-select">
+                <div class="col-md-3 bootstrap-select">
                     
-                    <select class="form-control form-control-sm aiz-selectpicker mb-2 mb-md-0" data-live-search="true"
+                    <select class="form-control form-control-sm aiz-selectpicker mb-md-0" data-live-search="true"
                             name="category" id="" data-selected={{ $category }}>
                         <option value="0">All</option>
                         @foreach (getAllCategories()->where('parent_id', 0) as $item)
@@ -70,8 +70,8 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-md-2 ml-auto bootstrap-select">
-                    <select class="form-control form-control-sm aiz-selectpicker mb-2 mb-md-0" name="type" id="type"
+                <div class="col-md-2 bootstrap-select">
+                    <select class="form-control form-control-sm aiz-selectpicker mb-md-0" name="type" id="type"
                         onchange="sort_products()">
                         <option value="">Sort By</option>
                         <option value="rating,desc"

@@ -21,9 +21,5 @@ class ProductStock extends Model
     {
         return URL::to($path);
     }
-    public function attributes()
-    {
-        return $this->hasMany(ProductAttributes::class,'product_varient_id','id');
-    }
 
 }

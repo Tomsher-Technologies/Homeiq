@@ -9,6 +9,7 @@ use App\Models\Banner;
 use App\Models\Occasion;
 use App\Models\BannerTranslation;
 use App\Models\Product;
+use App\Models\Service;
 use Cache;
 use Illuminate\Http\Request;
 use Artisan;
@@ -172,16 +173,20 @@ class Bannercontroller extends Controller
     {
         $old_data = $request->old_data ?? null;
         if ($request->link_type == "product") {
-            $products = Product::select(['id', 'name'])->get();
+            $products = Product::select(['id', 'name'])->where('published',1)->get();
             return view('partials.banners.banner_form_product', compact('products', 'old_data'));
         } elseif ($request->link_type == "category") {
             $categories = Category::where('parent_id', 0)
                 ->with('childrenCategories')
+                ->where('is_active',1)
                 ->get();
             return view('partials.banners.banner_form_category', compact('categories', 'old_data'));
         } elseif ($request->link_type == "brand") {
             $brands = Brand::select(['id', 'name'])->where('is_active', 1)->get();
             return view('partials.banners.banner_form_brand', compact('old_data', 'brands'));
+        }elseif ($request->link_type == "service") {
+            $services = Service::select(['id', 'name'])->where('status', 1)->get();
+            return view('partials.banners.banner_form_service', compact('old_data', 'services'));
         }else {
             return view('partials.banners.banner_form', compact('old_data'));
         }

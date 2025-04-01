@@ -88,7 +88,7 @@
                     </tbody>
                 </table>
                 <div class="aiz-pagination">
-                    {{ $users->appends(request()->input())->links() }}
+                    {{ $users->appends(request()->input())->links('pagination::bootstrap-5') }}
                 </div>
             </div>
         </form>

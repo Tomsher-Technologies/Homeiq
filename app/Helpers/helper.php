@@ -18,29 +18,33 @@ use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Request;
 // use DB;
 
+
+function setGuestToken(){
+    $guestToken = Cookie::get('guest_token', Str::uuid());
+    Cookie::queue('guest_token', $guestToken, 60 * 24 * 7); // 7 days
+}
+
 function trackRecentlyViewed($productId)
 {
+    $guestToken = Cookie::get('guest_token', Str::uuid());
     // Check if the user is authenticated
     if (auth()->check()) {
         $userId = auth()->id();
+        if ($guestToken) {
+            RecentlyViewedProduct::where('guest_token', $guestToken)
+                ->update([
+                        'user_id' => $userId,
+                        'guest_token' => null
+                ]);
+        }
 
-        // Save for authenticated user
         RecentlyViewedProduct::updateOrCreate(
             ['user_id' => $userId, 'product_id' => $productId],
             ['updated_at' => now()]
         );
-
-        // Limit to last 10 products
-        // RecentlyViewedProduct::where('user_id', $userId)
-        //         ->orderBy('updated_at', 'desc')
-        //         ->skip(10)
-        //         ->get()
-        //         ->each(function ($row) {
-        //             $row->delete();
-        //         });
     } else {
         // Get or create a guest token
-        $guestToken = Cookie::get('guest_token', Str::uuid());
+        
         Cookie::queue('guest_token', $guestToken, 60 * 24 * 7); // 7 days
         
         // Save for guest user
@@ -48,16 +52,6 @@ function trackRecentlyViewed($productId)
             ['guest_token' => $guestToken, 'product_id' => $productId],
             ['updated_at' => now()]
         );
-    
-        // Limit to last 10 products
-        // RecentlyViewedProduct::where('guest_token', $guestToken)
-        //         ->orderBy('updated_at', 'desc')
-        //         ->skip(10)
-        //         ->take(PHP_INT_MAX)
-        //         ->get()
-        //         ->each(function ($row) {
-        //             $row->delete();
-        //         });
     }
 }
 
@@ -275,6 +269,7 @@ if (!function_exists('currency_symbol')) {
         //     return Session::get('currency_symbol');
         // }
         // return get_system_default_currency()->symbol;
+        return env('DEFAULT_CURRENCY');
     }
 }
 
@@ -432,7 +427,7 @@ function getChildCategoryIds($parentId)
 if (!function_exists('single_price')) {
     function single_price($price)
     {
-        return format_price(convert_price($price));
+        return format_price($price);
     }
 }
 
@@ -477,7 +472,7 @@ function getActiveLanguage()
 }
 
 function getProductOfferPrice($product){
-
+    
     $data["original_price"] = $product->min_price ;
     $discountPrice = $product->min_price ;
     
@@ -594,7 +589,7 @@ function wishlistCount()
     }
 }
 
-function isWishlisted($productId, $productStockId)
+function isWishlisted($productId)
 {
     return Wishlist::where('user_id', Auth::id())
                    ->where('product_id', $productId)
@@ -649,4 +644,46 @@ function getCategoryHeader(){
     });
 
     return $data;
+}
+
+function generateUniqueSKU()
+{
+    do {
+        $sku = random_int(10000000, 99999999); // Generates an 8-digit number
+    } while (Product::where('sku', $sku)->exists());
+
+    return $sku;
+}
+
+function checkCartProduct($sku, $slug){
+    $userId = Auth::id();
+    $guestToken = request()->cookie('guest_token') ?? uniqid('guest_', true);
+
+    if (auth()->user()) {
+        $users_id_type = 'user_id';
+    }else{
+        $users_id_type = 'temp_user_id';
+    }
+
+    $product = ProductStock::leftJoin('products as p','p.id','=','product_stocks.product_id')
+                                ->where('product_stocks.sku', $sku)
+                                ->where('p.slug', $slug)
+                                ->select('product_stocks.*')->first() ?? [];
+
+    if(!empty($product)){
+        $product_id         = $product['product_id'] ?? null;
+        $product_stock_id   = $product['id'] ?? null;
+
+        $carts = Cart::where([
+            $users_id_type =>  ($users_id_type == 'user_id') ? $userId  : $guestToken,
+            'product_id' => $product_id,
+            'product_stock_id' => $product_stock_id
+        ])->first();
+
+        if ($carts) {
+            return true;
+        }else{
+            return false;
+        }
+    }
 }
