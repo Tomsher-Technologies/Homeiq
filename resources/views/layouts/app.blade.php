@@ -72,11 +72,13 @@
                 });
             });
 
-            $(document).on('click', '.add-to-cart-btn', function () {
+            $(document).on('click', '.add-to-cart-btn', function (event) {
                 const productSlug = $(this).data('product-slug');
                 const productSku = $(this).data('product-sku');
                 var quantity = $('#product_quantity').val() ?? 1;
-            
+                
+                let btn = event.target.closest(".add-to-cart-btn");
+
                 $.ajax({
                     url: '/cart/add', // Laravel route
                     type: 'POST',
@@ -102,6 +104,17 @@
                                 Go to Cart
                             </a>`);
                         }
+                        
+                        let parentElement = btn.closest(".cart_button_edit");
+
+                        if (parentElement) {
+                            $(parentElement).html(`<button class="w-[35px] h-[35px] flex items-center justify-center bg-[#22a914] hover:bg-[#41B6E8] text-white hover:text-white rounded-full shadow-md transition duration-[300ms]" aria-label="Add to Cart">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="white">
+                                        <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/>
+                                    </svg>
+                                </button>`);
+                        }
+                        
                     },
                     error: function (xhr, status, error) {
                         toastr.error("{{trans('messages.product_add_cart_failed')}}", 'Error');

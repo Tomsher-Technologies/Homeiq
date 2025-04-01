@@ -358,7 +358,7 @@ class CartController extends Controller
         }
 
         $variantProduct = ProductStock::leftJoin('products as p','p.id','=','product_stocks.product_id')
-                                    ->where('product_stocks.sku', $sku)
+                                    ->where('p.sku', $sku)
                                     ->where('p.slug', $product_slug)
                                     ->select('product_stocks.*')->first() ?? [];
 

@@ -9,6 +9,7 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Auth;
+use DB;
 
 class OrdersExport implements FromCollection, WithHeadings, WithMapping, WithStyles
 {
@@ -50,7 +51,7 @@ class OrdersExport implements FromCollection, WithHeadings, WithMapping, WithSty
         
         
         return $orders->get();
-               
+            
     }
 
     /**

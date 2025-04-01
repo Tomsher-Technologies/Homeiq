@@ -84,230 +84,6 @@ class ProfileController extends Controller
         return redirect()->back();
     }
 
-    public function updateImage(Request $request)
-    {
-        $user = User::find(auth()->user()->id);
-        if(!$user){
-            return response()->json([
-                'result' => false,
-                'message' => translate("User not found."),
-                'path' => ""
-            ]);
-        }
-
-        $type = array(
-            "jpg" => "image",
-            "jpeg" => "image",
-            "png" => "image",
-            "svg" => "image",
-            "webp" => "image",
-            "gif" => "image",
-        );
-
-        try {
-            $image = $request->image;
-            $request->filename;
-            $realImage = base64_decode($image);
-
-            $dir = public_path('uploads/all');
-            $full_path = "$dir/$request->filename";
-
-            $file_put = file_put_contents($full_path, $realImage); // int or false
-
-            if ($file_put == false) {
-                return response()->json([
-                    'result' => false,
-                    'message' => "File uploading error",
-                    'path' => ""
-                ]);
-            }
-
-
-            $upload = new Upload;
-            $extension = strtolower(File::extension($full_path));
-            $size = File::size($full_path);
-
-            if (!isset($type[$extension])) {
-                unlink($full_path);
-                return response()->json([
-                    'result' => false,
-                    'message' => "Only image can be uploaded",
-                    'path' => ""
-                ]);
-            }
-
-
-            $upload->file_original_name = null;
-            $arr = explode('.', File::name($full_path));
-            for ($i = 0; $i < count($arr) - 1; $i++) {
-                if ($i == 0) {
-                    $upload->file_original_name .= $arr[$i];
-                } else {
-                    $upload->file_original_name .= "." . $arr[$i];
-                }
-            }
-
-            //unlink and upload again with new name
-            unlink($full_path);
-            $newFileName = rand(10000000000, 9999999999) . date("YmdHis") . "." . $extension;
-            $newFullPath = "$dir/$newFileName";
-
-            $file_put = file_put_contents($newFullPath, $realImage);
-
-            if ($file_put == false) {
-                return response()->json([
-                    'result' => false,
-                    'message' => "Uploading error",
-                    'path' => ""
-                ]);
-            }
-
-            $newPath = "uploads/all/$newFileName";
-
-            if (env('FILESYSTEM_DRIVER') == 's3') {
-                Storage::disk('s3')->put($newPath, file_get_contents(base_path('public/') . $newPath));
-                unlink(base_path('public/') . $newPath);
-            }
-
-            $upload->extension = $extension;
-            $upload->file_name = $newPath;
-            $upload->user_id = $user->id;
-            $upload->type = $type[$upload->extension];
-            $upload->file_size = $size;
-            $upload->save();
-
-            $user->avatar_original = $upload->id;
-            $user->save();
-
-
-
-            return response()->json([
-                'result' => true,
-                'message' => translate("Image updated"),
-                'path' => api_asset($upload->id)
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'result' => false,
-                'message' => $e->getMessage(),
-                'path' => ""
-            ]);
-        }
-    }
-
-    // not user profile image but any other base 64 image through uploader
-    public function imageUpload(Request $request)
-    {
-        $user = User::find(auth()->user()->id);
-        if(!$user){
-            return response()->json([
-                'result' => false,
-                'message' => translate("User not found."),
-                'path' => "",
-                'upload_id' => 0
-            ]);
-        }
-
-        $type = array(
-            "jpg" => "image",
-            "jpeg" => "image",
-            "png" => "image",
-            "svg" => "image",
-            "webp" => "image",
-            "gif" => "image",
-        );
-
-        try {
-            $image = $request->image;
-            $request->filename;
-            $realImage = base64_decode($image);
-
-            $dir = public_path('uploads/all');
-            $full_path = "$dir/$request->filename";
-
-            $file_put = file_put_contents($full_path, $realImage); // int or false
-
-            if ($file_put == false) {
-                return response()->json([
-                    'result' => false,
-                    'message' => "File uploading error",
-                    'path' => "",
-                    'upload_id' => 0
-                ]);
-            }
-
-
-            $upload = new Upload;
-            $extension = strtolower(File::extension($full_path));
-            $size = File::size($full_path);
-
-            if (!isset($type[$extension])) {
-                unlink($full_path);
-                return response()->json([
-                    'result' => false,
-                    'message' => "Only image can be uploaded",
-                    'path' => "",
-                    'upload_id' => 0
-                ]);
-            }
-
-
-            $upload->file_original_name = null;
-            $arr = explode('.', File::name($full_path));
-            for ($i = 0; $i < count($arr) - 1; $i++) {
-                if ($i == 0) {
-                    $upload->file_original_name .= $arr[$i];
-                } else {
-                    $upload->file_original_name .= "." . $arr[$i];
-                }
-            }
-
-            //unlink and upload again with new name
-            unlink($full_path);
-            $newFileName = rand(10000000000, 9999999999) . date("YmdHis") . "." . $extension;
-            $newFullPath = "$dir/$newFileName";
-
-            $file_put = file_put_contents($newFullPath, $realImage);
-
-            if ($file_put == false) {
-                return response()->json([
-                    'result' => false,
-                    'message' => "Uploading error",
-                    'path' => "",
-                    'upload_id' => 0
-                ]);
-            }
-
-            $newPath = "uploads/all/$newFileName";
-
-            if (env('FILESYSTEM_DRIVER') == 's3') {
-                Storage::disk('s3')->put($newPath, file_get_contents(base_path('public/') . $newPath));
-                unlink(base_path('public/') . $newPath);
-            }
-
-            $upload->extension = $extension;
-            $upload->file_name = $newPath;
-            $upload->user_id = $user->id;
-            $upload->type = $type[$upload->extension];
-            $upload->file_size = $size;
-            $upload->save();
-
-            return response()->json([
-                'result' => true,
-                'message' => translate("Image updated"),
-                'path' => api_asset($upload->id),
-                'upload_id' => $upload->id
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'result' => false,
-                'message' => $e->getMessage(),
-                'path' => "",
-                'upload_id' => 0
-            ]);
-        }
-    }
-
     public function orderList(Request $request){
         $lang = getActiveLanguage();
         $user_id = (!empty(auth()->user())) ? auth()->user()->id : '';
@@ -389,7 +165,74 @@ class ProfileController extends Controller
 
     public function getUserAddressInfo(){
         $lang = getActiveLanguage();
-        $addresses = Address::where('user_id', auth()->user()->id)->get();
+        $addresses = Address::where('user_id', auth()->user()->id)->orderBy('id','desc')->get();
         return view('pages.my-address', compact('addresses','lang'));
+    }
+
+    public function addAddress(){
+        $lang = getActiveLanguage();
+        return view('pages.add-address', compact('lang'));
+    }
+
+    public function saveAddress(Request $request){
+        $validate = $request->validate([
+            'name' => 'required',
+            'address' => 'required',
+            'city' => 'required',
+            'state' => 'required',
+            'country' => 'required'
+        ]);
+
+        $user_id = (!empty(auth()->user())) ? auth()->user()->id : '';
+
+        if($user_id != ''){
+            if($request->address_id != ''){
+                $address                = Address::find($request->address_id);
+            }else{
+                $address                = new Address;
+            }
+            
+            $address->user_id       = $user_id;
+            $address->address       = $request->address ?? null;
+            $address->name          = $request->name ?? null;
+            $address->city          = $request->city ?? null;
+            $address->state_name    = $request->state ?? null;
+            $address->country_name  = $request->country ?? null;
+            $address->postal_code   = $request->zipcode ?? null;
+            $address->type          = $request->address_type ?? null;
+            $address->set_default   = $request->default ?? 0;
+            $address->save();
+    
+            session()->flash('message', 'Address saved successfully!');
+            session()->flash('alert-type', 'success');
+            return redirect()->route('my-address');
+        }else{
+            session()->flash('message', 'Something went wrong!');
+            session()->flash('alert-type', 'error');
+            return redirect()->back();
+        }
+    }
+
+    public function deleteAddress(Request $request){
+        $user_id = (!empty(auth()->user())) ? auth()->user()->id : '';
+        $address_id = $request->address_id ?? null;
+        if($user_id != '' && $address_id != null){
+            Address::where(['id' => $request->address_id,'user_id' => $user_id])->delete();
+            return response()->json([
+                'status' => true,
+                'message' => trans('messages.address').' '.trans('messages.deleted_msg')
+            ]);
+        }else{
+            return response()->json([
+                'status' => false,
+                'message' => trans('messages.something_went_wrong')
+            ]);
+        }
+    }
+
+    public function editAddress($id){
+        $lang = getActiveLanguage();
+        $address = Address::find($id);
+        return view('pages.add-address', compact('address','lang'));
     }
 }

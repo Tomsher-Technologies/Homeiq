@@ -12,7 +12,7 @@
         </h2>
 
 
-        <a href="#" class=" w-52 ml-auto rounded-md  px-4 py-2 flex justify-center items-center duration-200  bg-[#41b6e8] group hover:bg-[#41b6e8] hover:text-white" data-drawer-target="drawer-right-example" data-drawer-show="drawer-right-example" data-drawer-placement="right" aria-controls="drawer-right-example">
+        <a href="{{ route('add-address') }}" class=" w-52 ml-auto rounded-md  px-4 py-2 flex justify-center items-center duration-200  bg-[#41b6e8] group hover:bg-[#41b6e8] hover:text-white">
             <svg class="w-[20px] fill-dark group-hover:fill-white pr-1" viewBox="0 0 426.66667 426.66667"
                 xmlns="http://www.w3.org/2000/svg" id="fi_1828925">
                 <path
@@ -35,13 +35,41 @@
                                         d="M187.74,0c9.63,1.8,19.46,2.9,28.86,5.54,26.51,7.45,48.3,22.4,65.64,43.76,12.87,15.85,21.65,33.83,25.95,53.8,7.51,34.89,2.51,68-16.57,98.23-32.96,52.23-66.53,104.07-99.84,156.08-.5.78-.99,1.58-1.52,2.35-5.73,8.33-15.44,8.38-21.02-.07-6.23-9.44-12.23-19.04-18.33-28.57-27.47-42.94-55.08-85.8-82.37-128.86-17.91-28.27-24.2-59.16-18.54-92.19C59.34,55.69,99.25,14.33,153.29,2.72,159.36,1.41,165.6.89,171.77,0,177.09,0,182.41,0,187.74,0ZM239.62,131.85c-.09-33.02-27.18-59.99-60.12-59.84-32.81.15-59.59,27.08-59.62,59.94-.03,33.01,26.98,60.07,59.92,60.04,32.95-.03,59.91-27.13,59.82-60.14Z"
                                         style="fill: #000; stroke-width: 0px;"></path>
                                 </svg>
-                                Address #{{$key+1}}
+                                Address #{{ $key + 1 }}
                             </p>
-                            <a href="#" class="px-3 py-2 text-sm font-bold text-center text-[#41b6e8] border border-[#41b6e8] transition-all duration-200 hover:text-[#41b6e8]  hover:bg-[#41b6e8]" data-drawer-target="drawer-right-example" data-drawer-show="drawer-right-example" data-drawer-placement="right" aria-controls="drawer-right-example">Edit
+                            @if ($address->set_default == 1)
+                                <span class="px-3 py-1 rounded-full text-sm text-[#bf6d00] bg-orange-100 ml-5">
+                                    Default
+                                </span>
+                            @endif
+                            <span class="px-3 py-1 rounded-full text-sm text-[#48a839] bg-green-100 ml-5">
+                                {{ ucfirst($address->type) }}
+                            </span>
+
+                            <a href="{{ route('edit-address',['id'=> $address->id]) }}"
+                                class="px-3 py-2 text-sm font-bold text-center text-[#41b6e8] border border-[#41b6e8] transition-all duration-200 hover:text-[#ffffff]  hover:bg-[#41b6e8]">Edit
                                 Address</a>
-                            
-                            <button type="button" class="w-[50px] h-[50px] flex justify-center items-center duration-200 group bg-[#41b6e8] hover:bg-[#41b6e8]">
-                                <svg class="w-[25px] fill-[#fff] group-hover:fill-white" id="fi_3096673" enable-background="new 0 0 512 512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><g><path d="m424 64h-88v-16c0-26.467-21.533-48-48-48h-64c-26.467 0-48 21.533-48 48v16h-88c-22.056 0-40 17.944-40 40v56c0 8.836 7.164 16 16 16h8.744l13.823 290.283c1.221 25.636 22.281 45.717 47.945 45.717h242.976c25.665 0 46.725-20.081 47.945-45.717l13.823-290.283h8.744c8.836 0 16-7.164 16-16v-56c0-22.056-17.944-40-40-40zm-216-16c0-8.822 7.178-16 16-16h64c8.822 0 16 7.178 16 16v16h-96zm-128 56c0-4.411 3.589-8 8-8h336c4.411 0 8 3.589 8 8v40c-4.931 0-331.567 0-352 0zm313.469 360.761c-.407 8.545-7.427 15.239-15.981 15.239h-242.976c-8.555 0-15.575-6.694-15.981-15.239l-13.751-288.761h302.44z"></path><path d="m256 448c8.836 0 16-7.164 16-16v-208c0-8.836-7.164-16-16-16s-16 7.164-16 16v208c0 8.836 7.163 16 16 16z"></path><path d="m336 448c8.836 0 16-7.164 16-16v-208c0-8.836-7.164-16-16-16s-16 7.164-16 16v208c0 8.836 7.163 16 16 16z"></path><path d="m176 448c8.836 0 16-7.164 16-16v-208c0-8.836-7.164-16-16-16s-16 7.164-16 16v208c0 8.836 7.163 16 16 16z"></path></g></svg>
+
+                            <button type="button"
+                                class="w-[50px] h-[50px] flex justify-center items-center duration-200 group bg-[#41b6e8] hover:bg-[#41b6e8] delete-address-btn" data-address-id="{{ $address->id }}">
+                                <svg class="w-[25px] fill-[#fff] group-hover:fill-white" id="fi_3096673"
+                                    enable-background="new 0 0 512 512" viewBox="0 0 512 512"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <g>
+                                        <path
+                                            d="m424 64h-88v-16c0-26.467-21.533-48-48-48h-64c-26.467 0-48 21.533-48 48v16h-88c-22.056 0-40 17.944-40 40v56c0 8.836 7.164 16 16 16h8.744l13.823 290.283c1.221 25.636 22.281 45.717 47.945 45.717h242.976c25.665 0 46.725-20.081 47.945-45.717l13.823-290.283h8.744c8.836 0 16-7.164 16-16v-56c0-22.056-17.944-40-40-40zm-216-16c0-8.822 7.178-16 16-16h64c8.822 0 16 7.178 16 16v16h-96zm-128 56c0-4.411 3.589-8 8-8h336c4.411 0 8 3.589 8 8v40c-4.931 0-331.567 0-352 0zm313.469 360.761c-.407 8.545-7.427 15.239-15.981 15.239h-242.976c-8.555 0-15.575-6.694-15.981-15.239l-13.751-288.761h302.44z">
+                                        </path>
+                                        <path
+                                            d="m256 448c8.836 0 16-7.164 16-16v-208c0-8.836-7.164-16-16-16s-16 7.164-16 16v208c0 8.836 7.163 16 16 16z">
+                                        </path>
+                                        <path
+                                            d="m336 448c8.836 0 16-7.164 16-16v-208c0-8.836-7.164-16-16-16s-16 7.164-16 16v208c0 8.836 7.163 16 16 16z">
+                                        </path>
+                                        <path
+                                            d="m176 448c8.836 0 16-7.164 16-16v-208c0-8.836-7.164-16-16-16s-16 7.164-16 16v208c0 8.836 7.163 16 16 16z">
+                                        </path>
+                                    </g>
+                                </svg>
                             </button>
 
                         </div>
@@ -55,7 +83,7 @@
                                         </td> --}}
                                         <td class="text-base text-black">{{ $address->name }}</td>
                                     </tr>
-                                    
+
                                     <tr class="mb-5">
                                         {{-- <td class="text-sm w-[250px] mb-5">
                                             <div>Address :</div>
@@ -71,11 +99,11 @@
                                         <td class="text-base text-black"> {{ $address->city }}</td>
                                     </tr>
                                     <!-- <tr class="mb-5">
-                                        <td class="text-sm w-[150px] mb-5">
-                                            <div>Emirate :</div>
-                                        </td>
-                                        <td class="text-base text-black">Dubai</td>
-                                    </tr> -->
+                                            <td class="text-sm w-[150px] mb-5">
+                                                <div>Emirate :</div>
+                                            </td>
+                                            <td class="text-base text-black">Dubai</td>
+                                        </tr> -->
                                     <tr class="mb-5">
                                         {{-- <td class="text-sm w-[250px] mb-5">
                                             <div>Zip :</div>
@@ -99,91 +127,47 @@
 
                                 </tbody>
                             </table>
-
-
-
-
-
                         </div>
                     </div>
                 @endforeach
             @endif
         </div>
-
-
     </div>
 
+@endsection
 
+@section('script')
 
-    <!-- add address drawer component -->
- <div id="drawer-right-example" class="fixed top-0 right-0 z-40 h-screen p-4 overflow-y-auto transition-transform translate-x-full bg-white w-[500px] z-[999]" tabindex="-1" aria-labelledby="drawer-right-label">
-    <h5 id="drawer-right-label" class="inline-flex items-center mb-4 text-base text-gray-500">Add New Address</h5>
-    <button type="button" data-drawer-hide="drawer-right-example" aria-controls="drawer-right-example" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 absolute top-2.5 end-2.5 inline-flex items-center justify-center">
-       <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-       </svg>
-       <span class="sr-only">Close menu</span>
-    </button>
-    <div class="p-4 bg-gray-100  mt-3">
-       <div class="mb-4 md:flex  flex-col">
-          <div class="w-full mb-2">
-             <label class="block mb-1 font-medium text-gray-800 capitalize">First Name *</label>
-             <input type="text" name="first-name" class="w-full bg-gray-50 py-4 ps-6 rounded-lg border border-gray-300" placeholder="Enter your first name" required="">
-          </div>
-          <div class="w-full ">
-             <label class="block mb-1 font-medium text-gray-800 capitalize">Last Name *</label>
-             <input type="text" name="last-name" class="w-full bg-gray-50 py-4 ps-6 rounded-lg border border-gray-300" placeholder="Enter your last name" required="">
-          </div>
-       </div>
-       <div class="w-full mb-4">
-          <label class="block mb-1 font-medium text-gray-800 capitalize">Country / Region *</label>
-          <select name="country" class="w-full bg-gray-50 py-4 ps-6 rounded-lg border border-gray-300" required="">
-             <option value="">Select a country</option>
-             <option value="usa">United States</option>
-             <option value="canada">Canada</option>
-             <!-- Add more countries as needed -->
-          </select>
-       </div>
-       <div class="w-full mb-4 ">
-          <label class="block mb-1 font-medium text-gray-800 capitalize">Street Address *</label>
-          <input type="text" name="street-address" class="w-full bg-gray-50 py-4 ps-6 rounded-lg border border-gray-300" placeholder="House number and street name" required="">
-       </div>
-       <div class="w-full mb-4 ">
-          <label class="block mb-1 font-medium text-gray-800 capitalize">Town / City *</label>
-          <input type="text" name="city" class="w-full bg-gray-50 py-4 ps-6 rounded-lg border border-gray-300" placeholder="Enter your town/city" required="">
-       </div>
-       <div class="w-full mb-4 ">
-          <label class="block mb-1 font-medium text-gray-800 capitalize">State *</label>
-          <select name="state" class="w-full bg-gray-50 py-4 ps-6 rounded-lg border border-gray-300" required="">
-             <option value="">Select a state</option>
-             <option value="california">California</option>
-             <option value="texas">Texas</option>
-             <!-- Add more states as needed -->
-          </select>
-       </div>
-       <div class="w-full mb-4 ">
-          <label class="block mb-1 font-medium text-gray-800 capitalize">ZIP Code *</label>
-          <input type="text" name="zip-code" class="w-full bg-gray-50 py-4 ps-6 rounded-lg border border-gray-300" placeholder="Enter your ZIP code" required="">
-       </div>
-       <div class="mb-5">
-          <div class="flex items-center gap-4 mb-5">
-             <div class="flex items-center">
-                <input id="work" type="radio" name="address-type" class="w-5 h-5 text-[#41b6e8] border-gray-300 focus:ring-blue-500">
-                <label for="work" class="ml-2 text-md  text-gray-700">Work</label>
-             </div>
-             <div class="flex items-center">
-                <input id="home" type="radio" name="address-type" class="w-5 h-5 text-[#41b6e8] border-gray-300 focus:ring-blue-500">
-                <label for="home" class="ml-2 text-md  text-gray-700">Home</label>
-             </div>
-          </div>
-          <label class="flex items-center space-x-2 cursor-pointer">
-          <input type="checkbox" class="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
-          <span class="text-gray-700">Set as Default Address</span>
-          </label>
-       </div>
-    </div>
-    <div class="grid grid-cols-2 gap-4">
-       <a href="#" class="flex w-full mt-3 items-center justify-center rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 bg-[#41b6e8] py-4">Save address</a>
-    </div>
- </div>
+<script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", function() {
+        $(document).on('click', '.delete-address-btn', function() {
+            let addressId = $(this).data('address-id');
+            let confirmation = confirm('Are you sure you want to delete this address?');
+
+            if (confirmation) {
+                $.ajax({
+                    url: '/address/delete',
+                    type: 'DELETE',
+                    data: {
+                        address_id: addressId,
+                        _token: $('meta[name="csrf-token"]').attr('content') // Include CSRF token
+                    },
+                    success: function(response) {
+                        if (response.status == true) {
+                            toastr.success(response.message, "{{trans('messages.success')}}");
+                            setTimeout(function() {
+                                window.location.reload();
+                            }, 2000);
+                        } else {
+                            toastr.error(response.message, "{{trans('messages.error')}}");
+                        }
+                    },
+                    error: function(xhr) {
+                        toastr.error(response.message, "Failed to delete");
+                    }
+                });
+            }
+        });
+    });
+</script>
 @endsection

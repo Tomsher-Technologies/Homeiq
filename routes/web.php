@@ -83,19 +83,9 @@ Route::get('/faq', [FrontendController::class, 'faq'])->name('faq');
 
 
 
- Route::view('/my-profile', 'pages.my-profile')->name('my-profile');
-
-
-
-
-
-
-
 Route::post('/recently-viewed', [CommonController::class, 'addRecentlyViewed']);
 Route::get('/recently-viewed', [CommonController::class, 'getRecentlyViewed']);
 Route::get('related-products', [ProductController::class, 'relatedProducts'])->name('related.products');
-
-Route::post('/language_change', [FrontendController::class, 'changeLanguage'])->name('language.change');
 
 Route::get('/category/{category_slug}', [SearchController::class, 'listingByCategory'])->name('products.category');
 
@@ -130,6 +120,10 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/change-password', [ProfileController::class, 'changePassword'])->name('account.changePassword');
 
     Route::get('my-address', [ProfileController::class, 'getUserAddressInfo'])->name('my-address');
+    Route::get('add-address', [ProfileController::class, 'addAddress'])->name('add-address');
+    Route::post('save-address', [ProfileController::class, 'saveAddress'])->name('save-address');
+    Route::delete('/address/delete', [ProfileController::class, 'deleteAddress'])->name('address.delete');
+    Route::get('edit-address/{id}', [ProfileController::class, 'editAddress'])->name('edit-address');
 });
 
 Route::post('/subscribe', [FrontendController::class, 'subscribe'])->name('newsletter.subscribe');

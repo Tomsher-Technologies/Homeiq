@@ -14,8 +14,9 @@
                     <span class="text-gray-500 line-through"> &nbsp;{{ env('DEFAULT_CURRENCY').' '.$priceData['original_price'] }}</span>
                 @endif
             </span>
-
-            <x-buttons.add_to_cart :slug="$product->slug" :sku="$product->sku"/>
+            
+                <x-buttons.add_to_cart :slug="$product->slug" :sku="$product->sku"/>
+           
         </div>
         
         <a href="{{ route('products.show',['slug' => $product->slug]) }}">

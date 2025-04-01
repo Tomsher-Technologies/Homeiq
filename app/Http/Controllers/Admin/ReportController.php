@@ -69,8 +69,7 @@ class ReportController extends Controller
         if(Session::has('sales_report_filter')){
             $data = Session::get('sales_report_filter');
         }
-       
-        $shop = (isset($data['shop_search']) && $data['shop_search'] != '') ? $data['shop_search'] : null;
+    
         $keyword = (isset($data['search']) && $data['search'] != '') ? $data['search'] : null;
         $date = (isset($data['date']) && $data['date'] != '') ? $data['date'] : null;
         $delivery_status = (isset($data['delivery_status']) && $data['delivery_status'] != '') ? $data['delivery_status'] : null;
@@ -82,7 +81,7 @@ class ReportController extends Controller
         }
         
         
-        return Excel::download(new OrdersExport($shop, $keyword, $from_date, $to_date, $delivery_status), 'sales_report_'. now()->format('Y-m-d_H-i-s') . '.xlsx');
+        return Excel::download(new OrdersExport($keyword, $from_date, $to_date, $delivery_status), 'sales_report_'. now()->format('Y-m-d_H-i-s') . '.xlsx');
     }
     
     public function stock_report(Request $request)

@@ -6,17 +6,18 @@
         </a>
 
         <!-- Search Bar -->
-        <div class="hidden md:flex items-center bg-gray-100 px-2 py-1 rounded-full w-96 shadow-sm hover:shadow-md transition-shadow duration-300">
-            <input type="text" 
-                   placeholder="Search products.." 
-                   class="bg-transparent py-1 w-full text-gray-700 placeholder-gray-500 border-none outline-none focus:ring-0">
-            <button class="bg-primary text-white p-3 rounded-full hover:bg-secondary transition-colors duration-300">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-[20px] h-[20px]">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m1.35-5.65a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-            </button>
-        </div>
-
+        <form class="search-popup__form" action="{{ route('products.index') }}" method="get">
+            <div class="hidden md:flex items-center bg-gray-100 px-2 py-1 rounded-full w-96 shadow-sm hover:shadow-md transition-shadow duration-300">
+                <input type="text"  name="search"
+                    placeholder="Search products.." 
+                    class="bg-transparent py-1 w-full text-gray-700 placeholder-gray-500 border-none outline-none focus:ring-0">
+                <button class="bg-primary text-white p-3 rounded-full hover:bg-secondary transition-colors duration-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-[20px] h-[20px]">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m1.35-5.65a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </button>
+            </div>
+        </form>
         <!-- Navigation Links -->
         <nav class="hidden md:flex space-x-6 text-secondary font-medium">
             <a href="{{ route('home') }}" class="hover:text-primary transition-colors duration-300">Home</a>

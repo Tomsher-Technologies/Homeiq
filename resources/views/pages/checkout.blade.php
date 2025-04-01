@@ -60,23 +60,7 @@
                                             </div>
                                         @endforeach
                                     @endif
-                                    @if (auth()->check())
-                                        <div class="border border-gray-300 bg-gray-50 p-4 rounded-lg flex items-center justify-center flex-1">
-                                            <a href="#" class="text-dark flex flex-col items-center justify-center gap-3 text-center" data-drawer-target="drawer-right-example"  data-drawer-show="drawer-right-example" data-drawer-placement="right"  aria-controls="drawer-right-example">
-                                                <svg class="w-[30px]" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"
-                                                    id="fi_2997933">
-                                                    <g id="_03_Login" data-name="03 Login">
-                                                        <path
-                                                            d="m256 512a25 25 0 0 1 -25-25v-462a25 25 0 0 1 50 0v462a25 25 0 0 1 -25 25z">
-                                                        </path>
-                                                        <path d="m487 281h-462a25 25 0 0 1 0-50h462a25 25 0 0 1 0 50z"></path>
-                                                    </g>
-                                                </svg>
-                                                <span>Add New Address</span>
-                                            </a>
-                                        </div>
-                                    @endif
-                                    
+                                   
                                 </div>
                                 
                                 <div id="address-field" class="p-4 bg-gray-100 mt-3">
