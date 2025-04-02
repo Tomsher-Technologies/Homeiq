@@ -40,13 +40,23 @@ class HomeSlider extends Model
     {
         if ($this->link_ref == 'product' && $this->link_ref_id !== null) {
             $product = Product::where('id', $this->link_ref_id)->select('slug')->first()->slug;
-            return route('product', [
+            return route('products.show', [
                 'slug' => $product
             ]);
         } elseif ($this->link_ref == 'category' && $this->link_ref_id !== null) {
-            $product = Category::where('id', $this->link_ref_id)->select('slug')->first()->slug;
-            return route('products.category', [
-                'category_slug' => $product
+            $product = CategoryTranslation::where('category_id', $this->link_ref_id)->select('slug')->first()->slug;
+            return route('products.index', [
+                'category' => $product
+            ]);
+        } elseif ($this->link_ref == 'brand' && $this->link_ref_id !== null) {
+            $product = BrandTranslation::where('brand_id', $this->link_ref_id)->select('slug')->first()->slug;
+            return route('products.index', [
+                'brand' => $product
+            ]);
+        } elseif ($this->link_ref == 'service' && $this->link_ref_id !== null) {
+            $product = Service::where('id', $this->link_ref_id)->select('slug')->first()->slug;
+            return route('services.show', [
+                'slug' => $product
             ]);
         } elseif ($this->link_ref == 'external' && $this->link !== null) {
             return $this->link;

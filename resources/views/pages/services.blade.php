@@ -29,9 +29,11 @@
                         <!-- Service Image (Only Show if Image Exists) -->
                         <div class="relative w-full h-48 overflow-hidden rounded-lg">
                             @if($service->image != NULL)
-                                <img src="{{ uploaded_asset($service->image) }}" 
-                                    alt="{{ $service->getTranslation('name', $lang) }}" 
-                                    class="w-full h-full object-cover rounded-lg transition duration-300 transform group-hover:scale-105">
+                                <a href="{{ route('services.show', ['slug' => $service->slug]) }}">
+                                    <img src="{{ uploaded_asset($service->image) }}" 
+                                        alt="{{ $service->getTranslation('name', $lang) }}" 
+                                        class="w-full h-full object-cover rounded-lg transition duration-300 transform group-hover:scale-105">
+                                </a>
                             @else
                                 <div class="w-full h-full flex items-center justify-center bg-gray-200 rounded-lg">
                                     <span class="text-gray-500">No Image Available</span>

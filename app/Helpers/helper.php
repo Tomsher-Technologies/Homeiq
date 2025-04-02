@@ -8,7 +8,7 @@ use App\Models\AttributeValue;
 use App\Models\ProductStock;
 use App\Models\Category;
 use App\Models\Brand;
-use App\Models\Occasion;
+use App\Models\Service;
 use App\Models\Page;
 use App\Models\Wishlist;
 use App\Models\Cart;
@@ -22,6 +22,28 @@ use Illuminate\Support\Facades\Request;
 function setGuestToken(){
     $guestToken = Cookie::get('guest_token', Str::uuid());
     Cookie::queue('guest_token', $guestToken, 60 * 24 * 7); // 7 days
+}
+
+function getFooter(){
+    $data['footer_categories'] = Cache::rememberForever('footer_categories', function () {
+        $categories = get_setting('footer_categories');
+        if ($categories) {
+            $details = Category::whereIn('id', json_decode($categories))->where('is_active', 1)
+                ->get();
+            return $details;
+        }
+    });
+
+    $data['footer_services'] = Cache::rememberForever('footer_services', function () {
+        $occasions = get_setting('footer_services');
+        if ($occasions) {
+            $details = Service::whereIn('id', json_decode($occasions))->where('status', 1)
+                ->get();
+            return $details;
+        }
+    });
+
+    return $data;
 }
 
 function trackRecentlyViewed($productId)

@@ -21,7 +21,7 @@
                 @foreach($categories as $category)
                     <div class="swiper-slide flex flex-col items-center group">
                         <!-- Image Wrapper with Hover Border -->
-                        <a href="{{ route('products.category',['category_slug' => $category->getTranslation('slug', $lang)]) }}">
+                        <a href="{{ route('products.index',['category' => $category->getTranslation('slug', $lang)]) }}">
                             <div class="relative rounded-full p-[5px] bg-transparent transition-all duration-300 border-[3px] border-gray-300 group-hover:border-[#41B6E8]">
                                 <img src="{{ uploaded_asset($category->getTranslation('icon', $lang)) }}" 
                                     class="w-[100px] h-[100px] rounded-full object-cover transition-transform duration-300 group-hover:scale-105" 

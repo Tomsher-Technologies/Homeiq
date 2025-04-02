@@ -156,12 +156,12 @@
                                 <span class="aiz-side-nav-text">Products wishlist</span>
                             </a>
                         </li>
-                        <li class="aiz-side-nav-item">
+                        {{-- <li class="aiz-side-nav-item">
                             <a href="{{ route('user_search_report.index') }}"
                                 class="aiz-side-nav-link {{ areActiveRoutes(['user_search_report.index']) }}">
                                 <span class="aiz-side-nav-text">User Searches</span>
                             </a>
-                        </li>
+                        </li> --}}
                         <li class="aiz-side-nav-item">
                             <a href="{{ route('abandoned-cart.index') }}"
                                 class="aiz-side-nav-link {{ areActiveRoutes(['abandoned-cart.index','abandoned-cart.view']) }}">
@@ -323,11 +323,11 @@
                         <span class="aiz-side-nav-arrow"></span>
                     </a>
                     <ul class="aiz-side-nav-list level-2">
-                        <li class="aiz-side-nav-item">
+                        {{-- <li class="aiz-side-nav-item">
                             <a href="{{ route('website.header') }}" class="aiz-side-nav-link">
                                 <span class="aiz-side-nav-text">Header</span>
                             </a>
-                        </li>
+                        </li> --}}
                         {{-- <li class="aiz-side-nav-item">
                             <a href="{{ route('website.menu') }}" class="aiz-side-nav-link">
                                 <span class="aiz-side-nav-text">Menus</span>
@@ -364,7 +364,7 @@
 
                         <li class="aiz-side-nav-item">
                             <a href="{{ route('shipping_configuration.index') }}" class="aiz-side-nav-link">
-                                <span class="aiz-side-nav-text">Shipping and Return</span>
+                                <span class="aiz-side-nav-text">General Settings</span>
                             </a>
                         </li>
                         {{-- <li class="aiz-side-nav-item">

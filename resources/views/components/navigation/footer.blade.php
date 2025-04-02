@@ -136,34 +136,39 @@
                 </p>
             </div>
 
+            @php
+                $details = getFooter();
+            @endphp
+
             <!-- Smart Solutions -->
             <div>
-                <h3 class="text-gray-300 font-semibold text-sm">Smart Solutions</h3>
+                <h3 class="text-gray-300 font-semibold text-sm">{{ get_setting('footer_category_title_2') }}</h3>
                 <ul class="text-gray-400 text-sm mt-3 space-y-2">
-                    <li><a href="#" class="hover:text-white">Home Automation</a></li>
-                    <li><a href="#" class="hover:text-white">Security Systems</a></li>
-                    <li><a href="#" class="hover:text-white">Energy Management</a></li>
-                    <li><a href="#" class="hover:text-white">Smart Lightning</a></li>
-                    <li><a href="#" class="hover:text-white">Climate Control</a></li>
+                    @if(!empty($details['footer_categories']))
+                        @foreach($details['footer_categories'] as $footer_categories)
+                            <li><a href="{{ route('products.index',['category' => $footer_categories->getTranslation('slug', $lang)]) }}"  class="hover:text-white">{{ $footer_categories->getTranslation('name', $lang) }}</a></li>
+                        @endforeach
+                    @endif  
                 </ul>
             </div>
 
             <!-- Shop -->
             <div>
-                <h3 class="text-gray-300 font-semibold text-sm">Shop</h3>
+                <h3 class="text-gray-300 font-semibold text-sm">{{ get_setting('footer_category_title_1') }}</h3>
                 <ul class="text-gray-400 text-sm mt-3 space-y-2">
-                    <li><a href="#" class="hover:text-white">All Products</a></li>
-                    <li><a href="#" class="hover:text-white">Smart Packages</a></li>
-                    <li><a href="#" class="hover:text-white">Installation Services</a></li>
-                    <li><a href="#" class="hover:text-white">New Arrivals</a></li>
-                    <li><a href="#" class="hover:text-white">Special Offers</a></li>
+                    
+                    @if(!empty($details['footer_services']))
+                        @foreach($details['footer_services'] as $footer_services)
+                            <li><a href="{{ route('services.show',['slug' => $footer_services->slug]) }}"  class="hover:text-white">{{ $footer_services->getTranslation('name', $lang) }}</a></li>
+                        @endforeach
+                    @endif  
                 </ul>
             </div>
 
            
             <!-- Resources & Company -->
             <div>
-                <h3 class="text-gray-300 font-semibold text-sm">Resources</h3>
+                <h3 class="text-gray-300 font-semibold text-sm">{{ get_setting('footer_category_title_3') }}</h3>
                 <ul class="text-gray-400 text-sm mt-3 space-y-2">
                     <li><a href="{{ route('faq') }}" class="hover:text-white">FAQ</a></li>
                     <li><a href="{{ route('blog') }}" class="hover:text-white">Blog</a></li>
@@ -175,7 +180,7 @@
             </div>
 
             <div>
-                <h3 class="text-gray-300 font-semibold text-sm">Company</h3>
+                <h3 class="text-gray-300 font-semibold text-sm">{{ get_setting('footer_category_title_4') }}</h3>
                 <ul class="text-gray-400 text-sm mt-3 space-y-2">
                     <li><a href="{{ route('about-us') }}" class="hover:text-white">About Us</a></li>
                     <li><a href="{{ route('brand-listing') }}" class="hover:text-white">Partners</a></li>

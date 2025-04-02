@@ -6,7 +6,9 @@
                 <!-- Slide 1 -->
                 @foreach($slider as $sd)
                     <div class="swiper-slide flex justify-center items-center h-full">
-                        <img src="{{ uploaded_asset($sd->image) }}"  data-src="{{ uploaded_asset($sd->image) }}"  class="swiper-lazy w-full h-full object-cover rounded-lg"  alt="Smart Camera" loading="lazy">
+                        <a href="{{ $sd->getALink() }}" target="_blank">
+                            <img src="{{ uploaded_asset($sd->image) }}"  data-src="{{ uploaded_asset($sd->image) }}"  class="swiper-lazy w-full h-full object-cover rounded-lg"  alt="Smart Camera" loading="lazy">
+                        </a>
                         <div class="swiper-lazy-preloader"></div>
                     </div>
                 @endforeach

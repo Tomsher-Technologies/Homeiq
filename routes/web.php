@@ -42,7 +42,7 @@ Route::post('/subscribe', [FrontendController::class, 'subscribe'])->name('newsl
 
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 Route::get('/load-more-products', [ProductController::class, 'loadMoreProducts'])->name('product.loadMore');
-Route::get('/product-detail/{slug}', [ProductController::class, 'productDetails'])->name('products.show');
+Route::get('/product/{slug}', [ProductController::class, 'productDetails'])->name('products.show');
 
 Route::get('/terms-conditions', [FrontendController::class, 'terms'])->name('terms-conditions');
 Route::get('/privacy-policy', [FrontendController::class, 'privacy'])->name('privacy-policy');

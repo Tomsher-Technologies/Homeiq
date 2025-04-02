@@ -20,6 +20,8 @@
             </li>
         @endforeach --}}
     </ul>
+
+    
     <div class="card">
         <div class="card-header">
             <h6 class="fw-600 mb-0">Footer Widget</h6>
@@ -246,6 +248,193 @@
             </div>
         </div>
     </div>
+
+    <div class="col-md-12 ">
+		<div class="card">
+			<div class="card-header">
+				<h6 class="mb-0">Footer Menu Setting</h6>
+			</div>
+			<div class="card-body">
+				<form action="{{ route('business_settings.update') }}" method="POST" enctype="multipart/form-data">
+					@csrf
+					
+					<div class="">
+                        <div class="form-group row">
+							<label class="col-md-3 col-from-label">Shop by Category Title</label>
+							<div class="col-md-8">
+								<div class="form-group">
+									<input type="hidden" name="types[]" value="footer_category_title_1">
+									<input type="text" class="form-control" placeholder="Shop by Category Title" name="footer_category_title_1" value="{{ get_setting('footer_category_title_1') }}">
+								</div>
+							</div>
+						</div>
+                    </div>
+
+					<div class="form-group ">
+						<label>Categories (Max 6)</label>
+						<div class="new_collection-categories-target">
+							<input type="hidden" name="types[]" value="footer_categories">
+							<input type="hidden" name="page_type" value="new_collection">
+							
+							@if (get_setting('footer_categories') != null && get_setting('footer_categories') != 'null')
+								@foreach (json_decode(get_setting('footer_categories'), true) as $key => $value)
+									<div class="row gutters-5">
+										<div class="col">
+											<div class="form-group">
+												<select class="form-control aiz-selectpicker" name="footer_categories[]" data-live-search="true" data-selected={{ $value }}
+													required>
+													<option value="">Select Category</option>
+													@foreach ($categories as $category)
+														<option value="{{ $category->id }}">{{ $category->name }}
+														</option>
+														@foreach ($category->childrenCategories as $childCategory)
+															@include('backend.categories.child_category', [
+																'child_category' => $childCategory,
+															])
+														@endforeach
+													@endforeach
+												</select>
+											</div>
+										</div>
+										<div class="col-auto">
+											<button type="button"
+												class="mt-1 btn btn-icon btn-circle btn-soft-danger"
+												data-toggle="remove-parent" data-parent=".row">
+												<i class="las la-times"></i>
+											</button>
+										</div>
+									</div>
+								@endforeach
+							@endif
+						</div>
+						<button type="button" class="btn btn-soft-secondary" data-toggle="add-more"
+							data-content='<div class="row gutters-5">
+							<div class="col">
+								<div class="form-group">
+									<select class="form-control aiz-selectpicker" name="footer_categories[]" data-live-search="true" required>
+										<option value="">Select Category</option>
+										@foreach ($categories as $key => $category)
+										<option value="{{ $category->id }}">{{ $category->name }}</option>
+										@foreach ($category->childrenCategories as $childCategory)
+										@include('backend.categories.child_category', [
+											'child_category' => $childCategory,
+										])
+										@endforeach
+										@endforeach
+									</select>
+								</div>
+							</div>
+							<div class="col-auto">
+								<button type="button" class="mt-1 btn btn-icon btn-circle btn-soft-danger" data-toggle="remove-parent" data-parent=".row">
+									<i class="las la-times"></i>
+								</button>
+							</div>
+						</div>'
+							data-target=".new_collection-categories-target">
+							Add New
+						</button>
+					</div>
+
+
+					<div class="">
+                        <div class="form-group row">
+							<label class="col-md-3 col-from-label">Shop by Service Title</label>
+							<div class="col-md-8">
+								<div class="form-group">
+									<input type="hidden" name="types[]" value="footer_category_title_2">
+									<input type="text" class="form-control" placeholder="Enter" name="footer_category_title_2" value="{{ get_setting('footer_category_title_2') }}">
+								</div>
+							</div>
+						</div>
+                    </div>
+
+					<div class="form-group">
+						<label>Services (Max 6)</label>
+						<div class="home-brands-target">
+							<input type="hidden" name="types[]" value="footer_services">
+							<input type="hidden" name="page_type" value="footer_services">
+							
+							@if (get_setting('footer_services') != null && get_setting('footer_services') != 'null') 
+								@foreach (json_decode(get_setting('footer_services'), true) as $key => $value)
+									<div class="row gutters-5">
+										<div class="col">
+											<div class="form-group">
+												<select class="form-control aiz-selectpicker" name="footer_services[]"
+													data-live-search="true"  title="Select " data-selected={{ $value }}
+													required>
+												
+													@foreach ($services as $serv)
+														<option value="{{ $serv->id }}">{{ $serv->name }}
+														</option>
+													@endforeach
+												</select>
+											</div>
+										</div>
+										<div class="col-auto">
+											<button type="button"
+												class="mt-1 btn btn-icon btn-circle btn-soft-danger"
+												data-toggle="remove-parent" data-parent=".row">
+												<i class="las la-times"></i>
+											</button>
+										</div>
+									</div>
+								@endforeach
+							@endif
+						</div>
+						<button type="button" class="btn btn-soft-secondary" data-toggle="add-more"
+							data-content='<div class="row gutters-5">
+							<div class="col">
+								<div class="form-group">
+									<select class="form-control aiz-selectpicker" name="footer_services[]" data-live-search="true"  title="Select " required>
+										
+										@foreach ($services as $key => $serv)
+										<option value="{{ $serv->id }}">{{ $serv->name }}</option>
+										@endforeach
+									</select>
+								</div>
+							</div>
+							<div class="col-auto">
+								<button type="button" class="mt-1 btn btn-icon btn-circle btn-soft-danger" data-toggle="remove-parent" data-parent=".row">
+									<i class="las la-times"></i>
+								</button>
+							</div>
+						</div>'
+							data-target=".home-brands-target">
+							Add New
+						</button>
+					</div>
+
+					<div class="">
+                        <div class="form-group row">
+							<label class="col-md-3 col-from-label">Resources Title</label>
+							<div class="col-md-8">
+								<div class="form-group">
+									<input type="hidden" name="types[]" value="footer_category_title_3">
+									<input type="text" class="form-control" placeholder="Enter.." name="footer_category_title_3" value="{{ get_setting('footer_category_title_3') }}">
+								</div>
+							</div>
+						</div>
+                    </div>
+
+                    <div class="">
+                        <div class="form-group row">
+							<label class="col-md-3 col-from-label">Company Title</label>
+							<div class="col-md-8">
+								<div class="form-group">
+									<input type="hidden" name="types[]" value="footer_category_title_4">
+									<input type="text" class="form-control" placeholder="Enter.." name="footer_category_title_4" value="{{ get_setting('footer_category_title_4') }}">
+								</div>
+							</div>
+						</div>
+                    </div>
+					
+					<div class="text-right">
+						<button type="submit" class="btn btn-primary">Update</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
 
     <div class="card">
         <div class="card-header">
