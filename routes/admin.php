@@ -203,6 +203,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/shipping_configuration/free_shipping', [BusinessSettingsController::class, 'freeshipping_settings'])->name('shipping_configuration.free_shipping');
     Route::post('/configuration/return', [BusinessSettingsController::class, 'return_settings'])->name('configuration.return_settings');
 
+    Route::post('/configuration/service', [BusinessSettingsController::class, 'service_settings'])->name('configuration.service_settings');
+
      //Reports
      Route::get('/stock_report', [ReportController::class, 'stock_report'])->name('stock_report.index');
      Route::get('/export-stock-report', [ReportController::class, 'exportStockReport'])->name('export.stock_report');

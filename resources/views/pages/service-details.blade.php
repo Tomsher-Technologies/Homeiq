@@ -26,11 +26,7 @@
                         ← Back to Services
                     </a>
                     
-                    <a href="#" class="px-6 py-3 bg-gray-800 text-white rounded-lg shadow-md text-lg font-medium hover:bg-gray-900 transition duration-300">
-                        📅 Book an Appointment
-                    </a>
-
-                    <a href="https://wa.me/971551234567" 
+                    <a href="https://wa.me/{{get_setting('default_service_whatsapp')}}" 
                        class="px-6 py-3 bg-green-500 text-white rounded-lg shadow-md text-lg font-medium hover:bg-green-600 transition duration-300">
                         💬 Chat with Us on WhatsApp
                     </a>

@@ -287,4 +287,18 @@ class BusinessSettingsController extends Controller
         Artisan::call('cache:clear');
         return back();
     }
+
+    public function service_settings(Request $request)
+    {
+        BusinessSetting::updateOrCreate([
+            'type' => 'default_service_whatsapp'
+        ], [
+            'value' => $request->default_service_whatsapp ?? NULL
+        ]);
+
+        flash('Settings updated successfully')->success();
+
+        Artisan::call('cache:clear');
+        return back();
+    }
 }
