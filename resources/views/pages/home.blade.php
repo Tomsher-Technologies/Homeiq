@@ -37,6 +37,5 @@
     @endif
 
     {{-- ✅ JavaScript --}}
-    <script type="module" src="{{ mix('js/app.js') }}"></script>
-    
+    <script type="module" src="{{ asset('dist/assets/app-06b0ec71.js') }}"></script>
 @endsection

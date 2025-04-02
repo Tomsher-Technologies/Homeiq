@@ -7,7 +7,9 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'HOME_IQ')</title>
     {!! SEO::generate() !!}
-    @vite(['resources/css/app.css','resources/js/app.js'])
+    <link href="{{ asset('dist/assets/app-0660b8cf.css') }}" rel="stylesheet">
+    <link href="{{ asset('dist/assets/app-afc193cb.css') }}" rel="stylesheet">
+    <script type="module" src="{{ asset('dist/assets/app-06b0ec71.js') }}"></script>
     @yield('style')
     <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
