@@ -2,7 +2,7 @@
     <div class="container mx-auto px-6 py-4 flex justify-between items-center">
         <!-- Logo -->
         <a href="{{ route('home') }}" class="flex items-center">
-            <img src="{{ asset('images/logo.svg') }}" alt="HOME_IQ Logo" class="h-[50px]">
+            <img src="{{ asset('images/logo.svg') }}" alt="{{env('APP_NAME')}} Logo" class="h-[50px]">
         </a>
 
         <!-- Search Bar -->

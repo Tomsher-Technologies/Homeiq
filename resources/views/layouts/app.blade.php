@@ -5,8 +5,10 @@
     <meta name="robots" content="noindex, nofollow">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'HOME_IQ')</title>
+    <link rel="icon" type="image/svg" href="{{ asset('assets/img/favicon.ico') }}">
+    <title>@yield('title', env('APP_NAME'))</title>
     {!! SEO::generate() !!}
+    {{-- @vite(['resources/css/app.css','resources/js/app.js']) --}}
     <link href="{{ asset('dist/assets/app-0660b8cf.css') }}" rel="stylesheet">
     <link href="{{ asset('dist/assets/app-afc193cb.css') }}" rel="stylesheet">
     <script type="module" src="{{ asset('dist/assets/app-06b0ec71.js') }}"></script>

@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Faq - HOME_IQ')
+@section('title', 'Faq - '.env('APP_NAME'))
 @section('content')
 <div class="container mx-auto py-12 px-6 lg:px-12">
    <h1 class="text-3xl font-bold text-center mb-8">{{ $page->getTranslation('title',$lang) }}</h1>

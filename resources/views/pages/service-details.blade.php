@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $service->getTranslation('name', $lang) . ' - HOME_IQ')
+@section('title', $service->getTranslation('name', $lang) . ' - '.env('APP_NAME'))
 
 @section('content')
 <section class="py-12 bg-gray-50">

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $blog->name . ' - HOME_IQ')
+@section('title', $blog->name . ' - '.env('APP_NAME'))
 
 @section('content')
     <div class="container mx-auto py-12 max-w-3xl">

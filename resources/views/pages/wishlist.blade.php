@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Wishlist - HOME_IQ')
+@section('title', 'Wishlist - '.env('APP_NAME'))
 
 @section('content')
 

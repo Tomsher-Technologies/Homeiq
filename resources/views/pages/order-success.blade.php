@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Order Success - ' . env('APP_NAME', 'HOME_IQ'))
+@section('title', 'Order Success - ' . env('APP_NAME', ''.env('APP_NAME')))
 @section('content')
     <div class="container mx-auto py-12 px-6 lg:px-12">
         <div class="bg-white rounded-lg shadow-lg p-3 lg:p-6 max-w-md mx-auto ">

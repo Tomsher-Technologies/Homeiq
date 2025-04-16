@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Login - HOME_IQ')
+@section('title', 'Login - '.env('APP_NAME'))
 
 @section('content')
 

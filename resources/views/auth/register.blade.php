@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Register - HOME_IQ')
+@section('title', 'Register - '.env('APP_NAME'))
 @section('content')
 
 <div class="container mx-auto py-12 px-6 lg:px-12">

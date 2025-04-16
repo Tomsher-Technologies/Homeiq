@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $response['name'] . ' - HOME_IQ')
+@section('title', $response['name'] . ' - '.env('APP_NAME'))
 
 
 
