@@ -109,7 +109,11 @@ class CartController extends Controller
                             $shipping += $cartItem['shipping_cost'] ;
                         }
 
-                        $sum = $subtotal + $tax + $shipping;
+//                         echo 'subtotal  =  '.$subtotal;
+//                         echo '<br>tax   ==  '.$tax;
+//                         echo '<br>shipping  == '.$shipping;
+// die;
+                        $sum = $subtotal + $tax ;
 
                         if ($sum >= $coupon_details->min_buy) {
                             if ($coupon->discount_type == 'percent') {
@@ -134,6 +138,12 @@ class CartController extends Controller
                                     'coupon_applied' => 1
                                 ]);
                             }
+                        }else{
+                            Cart::where('user_id', $user_id)->update([
+                                'discount' => 0.00,
+                                'coupon_code' => NULL,
+                                'coupon_applied' => 0
+                            ]);
                         }
                     }elseif ($coupon->type == 'product_base') {
                         $coupon_discount = 0;
@@ -148,19 +158,35 @@ class CartController extends Controller
                                 }
                             }
                         }
-
-                        if($user['users_id_type'] == 'temp_user_id'){
-                            Cart::where('temp_user_id', $temp_user_id)->update([
-                                'discount' => $coupon_discount / count($carts),
-                                'coupon_code' => $coupon_code,
-                                'coupon_applied' => 1
-                            ]);
+                        if($coupon_discount != 0){
+                            if($user['users_id_type'] == 'temp_user_id'){
+                                Cart::where('temp_user_id', $temp_user_id)->update([
+                                    'discount' => $coupon_discount / count($carts),
+                                    'coupon_code' => $coupon_code,
+                                    'coupon_applied' => 1
+                                ]);
+                            }else{
+                                Cart::where('user_id', $user_id)->update([
+                                    'discount' => $coupon_discount / count($carts),
+                                    'coupon_code' => $coupon_code,
+                                    'coupon_applied' => 1
+                                ]);
+                            }
                         }else{
-                            Cart::where('user_id', $user_id)->update([
-                                'discount' => $coupon_discount / count($carts),
-                                'coupon_code' => $coupon_code,
-                                'coupon_applied' => 1
-                            ]);
+
+                            if($user['users_id_type'] == 'temp_user_id'){
+                                Cart::where('temp_user_id', $temp_user_id)->update([
+                                    'discount' => 0.00,
+                                    'coupon_code' => NULL,
+                                    'coupon_applied' => 0
+                                ]);
+                            }else{
+                                Cart::where('user_id', $user_id)->update([
+                                    'discount' => 0.00,
+                                    'coupon_code' => NULL,
+                                    'coupon_applied' => 0
+                                ]);
+                            }
                         }
                     }
                 }else{
@@ -369,23 +395,30 @@ class CartController extends Controller
             $product_stock_id   = $variantProduct['id'] ?? null;
           
             $current_Stock      = $variantProduct['qty'] ?? 0;
-            if ($current_Stock < $quantity) {
-                return response()->json([
-                    'status' => false,
-                    'message' => trans('messages.product_outofstock_msg').'!',
-                    'cart_count' => $this->cartCount()
-                ], 200);
-            }
-
+            
             $carts = Cart::where([
                 $users_id_type =>  ($users_id_type == 'user_id') ? $userId  : $guestToken,
                 'product_id' => $product_id,
                 'product_stock_id' => $product_stock_id
             ])->first();
 
+            // Calculate the total quantity to check against stock
+            $totalQuantityInCart = $quantity;
+
             $priceData = getProductPrice($variantProduct);
             $tax = 0;
             if ($carts) {
+
+                $totalQuantityInCart += $carts->quantity;
+
+                if ($current_Stock < $totalQuantityInCart) {
+                    return response()->json([
+                        'status' => false,
+                        'message' => trans('messages.product_outofstock_msg').'!',
+                        'cart_count' => $this->cartCount()
+                    ], 200);
+                }
+    
                 if($variantProduct->product->vat != 0){
                     $new_quantity = $carts->quantity + $quantity;
                     $tax = (($carts->offer_price * $new_quantity)/100) * $variantProduct->product->vat;

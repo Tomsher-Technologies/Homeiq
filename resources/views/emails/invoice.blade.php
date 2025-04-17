@@ -81,7 +81,7 @@
                 <tr>
                     <td>
                         <a href="{{ env('APP_URL') }}">
-                            <img loading="lazy" src="{{ asset('assets/img/logo.svg') }}" height="75" style="display:inline-block;"/>
+                            <img loading="lazy" src="{{ asset('assets/img/logo.png') }}" height="75" style="display:inline-block;"/>
                         </a>
                     </td>
                 </tr>

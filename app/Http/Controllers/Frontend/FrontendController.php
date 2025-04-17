@@ -55,7 +55,7 @@ class FrontendController extends Controller
         OpenGraph::setUrl(URL::full());
         OpenGraph::addProperty('locale', 'en_US');
         OpenGraph::addProperty('type', $model['og_type'] ?? 'website');
-        OpenGraph::addImage($model['og_image'] ?? URL::to(asset('assets/img/logo.svg')));
+        OpenGraph::addImage($model['og_image'] ?? URL::to(asset('assets/img/logo.png')));
         
         JsonLd::setTitle($model['meta_title']);
         JsonLd::setDescription($model['meta_description']);
