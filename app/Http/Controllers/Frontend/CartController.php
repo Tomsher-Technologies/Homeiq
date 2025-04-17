@@ -313,6 +313,8 @@ class CartController extends Controller
             }
         }
 
+        $total_shipping = ($overall_subtotal != 0) ? $total_shipping : 0;
+
         $cart_total = ($overall_subtotal + $total_shipping + $total_tax) - ($total_discount + $cart_coupon_discount);
 
         // $total_discount = $total_discount + $cart_coupon_discount;

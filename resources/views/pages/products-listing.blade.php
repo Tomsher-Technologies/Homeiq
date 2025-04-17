@@ -140,11 +140,13 @@
                     </div>
                 @endforeach
             @endif
+
         </div>
 
         <div id="load-more-trigger" class="h-10"></div>
        
-        <div id="loading-indicator"  style="display: none;" class="fixed inset-0 flex flex-col items-center justify-center bg-white bg-opacity-70 z-50">
+        <!-- Loading Spinner (Positioned Below Product List) -->
+        <div id="loading-indicator" style="display: none;" class="flex flex-col items-center justify-center w-full mt-6">
             <p class="text-gray-700 text-lg font-semibold mb-2">Loading...</p>
             <img src="{{ asset('assets/images/spinner.gif') }}" alt="Loading" class="w-20 h-20"/>
         </div>

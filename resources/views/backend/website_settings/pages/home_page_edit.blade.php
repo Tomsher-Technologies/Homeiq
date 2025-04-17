@@ -144,7 +144,7 @@
                             <div class="col-md-10">
                                 <input type="hidden" name="types[]" value="home_products">
                                 <input type="hidden" name="page_type" value="home_products">
-                                <select name="home_products[]" class="form-control aiz-selectpicker" multiple data-actions-box="true" data-live-search="true" title="Select Products" data-selected="{{ get_setting('home_products') }}">
+                                <select name="home_products[]" class="form-control aiz-selectpicker" multiple  data-max-options="10" data-actions-box="true" data-live-search="true" title="Select Products" data-selected="{{ get_setting('home_products') }}">
                                     {{-- <option disabled value=""></option> --}}
                                     @foreach ($products as $key => $prod)
                                         <option value="{{ $prod->id }}">{{ $prod->name }}</option>
@@ -192,7 +192,7 @@
                             <div class="col-md-10">
                                 <input type="hidden" name="types[]" value="home_services">
                                 <input type="hidden" name="page_type" value="home_services">
-                                <select name="home_services[]" class="form-control aiz-selectpicker" multiple
+                                <select name="home_services[]" class="form-control aiz-selectpicker" multiple  data-max-options="6" 
                                     data-live-search="true" title="Select Services" data-selected="{{ get_setting('home_services') }}">
                                     {{-- <option disabled value=""></option> --}}
                                     @foreach ($services as $serv)

@@ -31,17 +31,24 @@
         <div class="mt-6 flex justify-center">
 
             <a href="https://www.facebook.com/sharer/sharer.php?u={{ $url }}" target="_blank" class="mr-4">
-                <i class="fab fa-facebook text-lg text-blue-500"></i> 
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
+                    <path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 5 3.66 9.14 8.43 9.88v-6.99h-2.54v-2.89h2.54V9.31c0-2.51 1.49-3.89 3.77-3.89 1.09 0 2.23.19 2.23.19v2.45h-1.26c-1.24 0-1.63.77-1.63 1.56v1.88h2.78l-.44 2.89h-2.34v6.99C18.34 21.14 22 17 22 12z"/>
+                </svg>
                 {{-- <span>Facebook</span> --}}
             </a>
 
             <a href="https://twitter.com/intent/tweet?url={{ $url }}&text={{ $title }}" target="_blank" class="mr-4">
-                <i class="fab fa-twitter text-lg text-blue-500"></i> 
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-6">
+                    <path d="M20.19 2H23L14.56 10.98L24 22H16.92L10.9 15.02L3.33 22H0.48L9.47 12.36L0 2H7.32L12.79 8.42L20.19 2ZM18.9 20H21.1L7.04 4H4.67L18.9 20Z"/>
+                </svg>
                 {{-- <span>Twitter</span> --}}
             </a>
 
             <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ $url }}"  target="_blank" class="mr-4">
-                <i class="fab fa-linkedin text-lg text-blue-500"></i> 
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-5">
+                    <path d="M4.98 3.5C4.98 4.88 3.88 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1 4.98 2.12 4.98 3.5zM0 8h5v16H0V8zm7.5 0h4.8v2.2h.07c.67-1.26 2.3-2.6 4.73-2.6 5.06 0 5.99 3.33 5.99 7.66V24h-5v-7.55c0-1.8-.03-4.12-2.51-4.12-2.52 0-2.9 1.97-2.9 4v7.67h-5V8z"/>
+                </svg>
+                
                 {{-- <span>LinkedIn</span> --}}
             </a>
         </div>

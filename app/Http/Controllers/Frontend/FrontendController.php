@@ -398,11 +398,11 @@ class FrontendController extends Controller
     {
         // Validate input
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|min:3|max:255',
             'email' => 'required|email|max:255',
             'phone' => 'required|regex:/^[0-9\-\+\s\(\)]{10,15}$/',
-            'subject' => 'required|string|max:255',
-            'message' => 'required|string',
+            'subject' => 'required|string|min:5|max:255',
+            'message' => 'required|string|min:10',
         ]);
 
         $con                = new Contacts;

@@ -26,7 +26,7 @@
                         ← Back to Services
                     </a>
                     
-                    <a href="https://wa.me/{{get_setting('default_service_whatsapp')}}" 
+                    <a href="https://wa.me/{{get_setting('default_service_whatsapp')}}"  target="_blank"
                        class="px-6 py-3 bg-green-500 text-white rounded-lg shadow-md text-lg font-medium hover:bg-green-600 transition duration-300">
                         💬 Chat with Us on WhatsApp
                     </a>
