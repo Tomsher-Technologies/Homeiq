@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Order Details- HOME_IQ')
+@section('title', 'Order Details- '.env('APP_NAME'))
 @section('content')
     <section class="container mx-auto py-12 px-6 lg:px-12">
         <div class="flex justify-center items-center">

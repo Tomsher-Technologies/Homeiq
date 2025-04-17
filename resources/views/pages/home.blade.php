@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Home - HOME_IQ')
+@section('title', 'Home - '.env('APP_NAME'))
 
 @section('content')
     <x-home.hero :slider="$slider"/>
@@ -38,4 +38,5 @@
 
     {{-- ✅ JavaScript --}}
     <script type="module" src="{{ asset('dist/assets/app-06b0ec71.js') }}"></script>
+    {{-- <script type="module" src="{{ mix('js/app.js') }}"></script> --}}
 @endsection

@@ -55,7 +55,7 @@ class FrontendController extends Controller
         OpenGraph::setUrl(URL::full());
         OpenGraph::addProperty('locale', 'en_US');
         OpenGraph::addProperty('type', $model['og_type'] ?? 'website');
-        OpenGraph::addImage($model['og_image'] ?? URL::to(asset('assets/img/logo.svg')));
+        OpenGraph::addImage($model['og_image'] ?? URL::to(asset('assets/img/logo.png')));
         
         JsonLd::setTitle($model['meta_title']);
         JsonLd::setDescription($model['meta_description']);
@@ -398,11 +398,11 @@ class FrontendController extends Controller
     {
         // Validate input
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|min:3|max:255',
             'email' => 'required|email|max:255',
             'phone' => 'required|regex:/^[0-9\-\+\s\(\)]{10,15}$/',
-            'subject' => 'required|string|max:255',
-            'message' => 'required|string',
+            'subject' => 'required|string|min:5|max:255',
+            'message' => 'required|string|min:10',
         ]);
 
         $con                = new Contacts;

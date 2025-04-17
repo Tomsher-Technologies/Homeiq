@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Contact Us - HOME_IQ')
+@section('title', 'Contact Us - '.env('APP_NAME'))
 
 @section('content')
 <div class="container mx-auto py-12 px-6 lg:px-12">
@@ -21,15 +21,15 @@
         <form action="{{ route('contact.submit') }}" method="POST" class="space-y-5">
             @csrf
             <div>
-                <label class="block text-gray-700 font-medium mb-2">Full Name</label>
-                <input type="text" name="name" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary outline-none" value="{{ old('name') }}">
+                <label class="block text-gray-700 font-medium mb-2">Full Name <span class="text-red-500">*</span></label>
+                <input type="text" name="name" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary outline-none" value="{{ old('name') }}"  minlength="3">
                 @error('name')
                     <div class="text-red-600">{{ $message }}</div>
                 @enderror
             </div>
 
             <div>
-                <label class="block text-gray-700 font-medium mb-2">Email Address</label>
+                <label class="block text-gray-700 font-medium mb-2">Email Address <span class="text-red-500">*</span></label>
                 <input type="email" name="email" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary outline-none" value="{{ old('email') }}">
                 @error('email')
                     <div class="text-red-600">{{ $message }}</div>
@@ -37,7 +37,7 @@
             </div>
 
             <div>
-                <label class="block text-gray-700 font-medium mb-2">Phone Number</label>
+                <label class="block text-gray-700 font-medium mb-2">Phone Number <span class="text-red-500">*</span></label>
                 <input type="tel" name="phone" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary outline-none" value="{{ old('phone') }}">
                 @error('phone')
                     <div class="text-red-600">{{ $message }}</div>
@@ -45,16 +45,16 @@
             </div>
 
             <div>
-                <label class="block text-gray-700 font-medium mb-2">Subject</label>
-                <input type="text" name="subject" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary outline-none" value="{{ old('subject') }}">
+                <label class="block text-gray-700 font-medium mb-2">Subject <span class="text-red-500">*</span></label>
+                <input type="text" name="subject" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary outline-none" value="{{ old('subject') }}"  minlength="5">
                 @error('subject')
                     <div class="text-red-600">{{ $message }}</div>
                 @enderror
             </div>
 
             <div>
-                <label class="block text-gray-700 font-medium mb-2">Message</label>
-                <textarea name="message" rows="5" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary outline-none">{{ old('message') }}</textarea>
+                <label class="block text-gray-700 font-medium mb-2">Message <span class="text-red-500">*</span></label>
+                <textarea name="message" rows="5" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary outline-none"  minlength="10">{{ old('message') }}</textarea>
                 @error('message')
                     <div class="text-red-600">{{ $message }}</div>
                 @enderror
@@ -68,8 +68,15 @@
         <!-- Contact Information -->
         <div class="mt-8 text-center">
             <p class="text-gray-700">{{ $page->getTranslation('heading2',$lang) }}</p>
-            <p class="text-gray-600 mt-2"><strong>Email:</strong> {{ $page->getTranslation('heading4',$lang) }}</p>
-            <p class="text-gray-600"><strong>Phone:</strong> {{ $page->getTranslation('heading3',$lang) }}</p>
+            <p class="text-gray-600 mt-2"><strong>Email:</strong> 
+                <a href="mailto:{{ $page->getTranslation('heading4',$lang) }}">
+                    {{ $page->getTranslation('heading4',$lang) }}
+                </a>
+            </p>
+            <p class="text-gray-600"><strong>Phone:</strong> 
+                <a href="tel:{{ $page->getTranslation('heading3',$lang) }}">{{ $page->getTranslation('heading3',$lang) }}
+                </a>
+            </p>
             <p class="text-gray-600"><strong>Address:</strong> {{ $page->getTranslation('content',$lang) }}</p>
         </div>
     </div>

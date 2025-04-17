@@ -27,7 +27,8 @@ class AuthController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'phone' => ['required', 'regex:/^[0-9]+$/', 'min:10', 'max:15', 'unique:users'], // Allow only numbers
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'password' => ['required', 'string', 'min:8'],
+            'password_confirmation' => ['required_with:password', 'same:password'],
         ]);
 
         if ($validator->fails()) {

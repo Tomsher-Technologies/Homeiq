@@ -209,7 +209,7 @@
                                             <tr>
                                                 <td align="center" valign="middle">
                                                     <a href="{{ env('APP_URL') }}">
-                                                        <img src="{{ asset('assets/img/logo.svg') }}"
+                                                        <img src="{{ asset('assets/img/logo.png') }}"
                                                             height="100" alt="{{ env('APP_NAME') }}">
                                                     </a>
                                                 </td>

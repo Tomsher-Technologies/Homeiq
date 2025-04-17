@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Faq - HOME_IQ')
+@section('title', 'Faq - '.env('APP_NAME'))
 @section('content')
 <div class="container mx-auto py-12 px-6 lg:px-12">
    <h1 class="text-3xl mb-8 text-center">Change Password</h1>
@@ -12,26 +12,77 @@
                     <div class="input-item flex space-x-2.5 mb-5 mt-3">
 
                         <div class="w-full h-full">
-                            <div class="w-full h-full input-com"><label class="input-label capitalize block  mb-2 text-gray text-[13px] font-normal">{{ trans('messages.current_password') }}</label>
-                                <div class="relative w-full h-full overflow-hidden border input-wrapper !border-gray-300 !dark:border-gray-400">
-                                    <input placeholder="**********" type="password" id="current_password" name="current_password" class="input-field placeholder:text-sm text-sm px-5 text-dark-gray w-full font-normal bg-white focus:ring-0 focus:outline-none h-[40px]" pattern="^\S*$" value="{{old('current_password')}}">
-                                    
+                            <div x-data="{ show: false }" class="mb-4">
+                                <label for="password" class="block text-gray-700 font-medium mb-1">{{ trans('messages.current_password') }}</label>
+                            
+                                <div class="relative">
+                                    <!-- Password Input -->
+                                    <input :type="show ? 'text' : 'password'" placeholder="Enter password.." id="current_password" name="current_password" autocomplete="new-password" class="w-full p-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm" value="{{old('current_password')}}">
+                            
+                                    <!-- Toggle Icon Inside Input on the Right -->
+                                    <button type="button" @click="show = !show" class="absolute inset-y-0 right-5 flex items-center text-gray-500 hover:text-gray-700 focus:outline-none">
+                                        <!-- Show Icon -->
+                                        <svg x-show="!show" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
+                                             viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                        </svg>
+                            
+                                        <!-- Hide Icon -->
+                                        <svg x-show="show" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
+                                             viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                  d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.964 9.964 0 012.184-3.293m1.43-1.43A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.542 7a9.969 9.969 0 01-4.138 5.132M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                  d="M3 3l18 18" />
+                                        </svg>
+                                    </button>
                                 </div>
+                            
                                 @error('current_password')
-                                    <div class="text-red-500">{{ $message }}</div>
+                                    <span class="text-red-600">{{ $message }}</span>
                                 @enderror
                             </div>
+
                         </div>
                     </div>
 
                     <div class="input-item flex space-x-2.5 mb-5 mt-5">
                         <div class="w-full h-full">
-                            <div class="w-full h-full input-com"><label class="input-label capitalize block  mb-2 text-qgray text-[13px] font-normal">{{ trans('messages.new_password') }}</label>
-                                <div class="relative w-full h-full overflow-hidden border input-wrapper border-gray-border ">
-                                    <input type="password" id="new_password" name="new_password" class="input-field placeholder:text-sm text-sm px-5 text-dark-gray w-full font-normal bg-white focus:ring-0 focus:outline-none h-[40px]" placeholder="**********"  pattern="^\S*$" title="{{trans('messages.password_spaces')}}">
+                            
+                            <div x-data="{ show: false }" class="mb-4">
+                                <label for="password" class="block text-gray-700 font-medium mb-1">{{ trans('messages.new_password') }}</label>
+                            
+                                <div class="relative">
+                                    <!-- Password Input -->
+                                    <input :type="show ? 'text' : 'password'" placeholder="Enter password.." id="new_password" name="new_password" autocomplete="new-password" class="w-full p-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm" value="{{old('new_password')}}">
+                            
+                                    <!-- Toggle Icon Inside Input on the Right -->
+                                    <button type="button" @click="show = !show" class="absolute inset-y-0 right-5 flex items-center text-gray-500 hover:text-gray-700 focus:outline-none">
+                                        <!-- Show Icon -->
+                                        <svg x-show="!show" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
+                                             viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                        </svg>
+                            
+                                        <!-- Hide Icon -->
+                                        <svg x-show="show" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
+                                             viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                  d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.964 9.964 0 012.184-3.293m1.43-1.43A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.542 7a9.969 9.969 0 01-4.138 5.132M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                  d="M3 3l18 18" />
+                                        </svg>
+                                    </button>
                                 </div>
+                            
                                 @error('new_password')
-                                    <div class="text-red-500">{{ $message }}</div>
+                                    <span class="text-red-600">{{ $message }}</span>
                                 @enderror
                             </div>
                         </div>
@@ -40,12 +91,38 @@
                     <div class="input-item flex space-x-2.5 mb-5 mt-5">
 
                         <div class="w-full h-full">
-                            <div class="w-full h-full input-com"><label class="input-label capitalize block  mb-2 text-qgray text-[13px] font-normal">{{ trans('messages.confirm_new_password') }}</label>
-                                <div class="relative w-full h-full overflow-hidden border input-wrapper border-gray-border ">
-                                    <input type="password" id="new_password_confirmation" name="new_password_confirmation" class="input-field placeholder:text-sm text-sm px-5 text-dark-gray w-full font-normal bg-white focus:ring-0 focus:outline-none h-[40px]" placeholder="**********"  pattern="^\S*$" title="{{trans('messages.password_spaces')}}">
+                        
+                            <div x-data="{ show: false }" class="mb-4">
+                                <label for="password" class="block text-gray-700 font-medium mb-1">{{ trans('messages.confirm_new_password') }}</label>
+                            
+                                <div class="relative">
+                                    <!-- Password Input -->
+                                    <input :type="show ? 'text' : 'password'" placeholder="Enter password.." id="new_password_confirmation" name="new_password_confirmation" autocomplete="new-password" class="w-full p-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm" value="{{old('new_password_confirmation')}}">
+                            
+                                    <!-- Toggle Icon Inside Input on the Right -->
+                                    <button type="button" @click="show = !show" class="absolute inset-y-0 right-5 flex items-center text-gray-500 hover:text-gray-700 focus:outline-none">
+                                        <!-- Show Icon -->
+                                        <svg x-show="!show" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
+                                             viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                        </svg>
+                            
+                                        <!-- Hide Icon -->
+                                        <svg x-show="show" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
+                                             viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                  d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.964 9.964 0 012.184-3.293m1.43-1.43A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.542 7a9.969 9.969 0 01-4.138 5.132M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                  d="M3 3l18 18" />
+                                        </svg>
+                                    </button>
                                 </div>
+                            
                                 @error('new_password_confirmation')
-                                    <div class="text-red-500">{{ $message }}</div>
+                                    <span class="text-red-600">{{ $message }}</span>
                                 @enderror
                             </div>
                         </div>

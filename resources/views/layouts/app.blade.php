@@ -5,8 +5,10 @@
     <meta name="robots" content="noindex, nofollow">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'HOME_IQ')</title>
+    <link rel="icon" type="image/svg" href="{{ asset('assets/img/favicon.ico') }}">
+    <title>@yield('title', env('APP_NAME'))</title>
     {!! SEO::generate() !!}
+    {{-- @vite(['resources/css/app.css','resources/js/app.js']) --}}
     <link href="{{ asset('dist/assets/app-0660b8cf.css') }}" rel="stylesheet">
     <link href="{{ asset('dist/assets/app-afc193cb.css') }}" rel="stylesheet">
     <script type="module" src="{{ asset('dist/assets/app-06b0ec71.js') }}"></script>
@@ -14,6 +16,14 @@
     <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
    
+    <style>
+        .menu-active{
+            color: rgb(65 182 232 / var(--tw-text-opacity, 1));
+        }
+        .text-danger{
+            color: red;
+        }
+    </style>
 </head>
 <body class="bg-gray-50">
 
@@ -29,7 +39,24 @@
     @yield('script')
 
     <script>
+        
          document.addEventListener("DOMContentLoaded", function() {
+            toastr.options = {
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": false,
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "preventDuplicates": true,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "5000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            };
 
             $.ajaxSetup({
                 headers: {
@@ -97,25 +124,27 @@
                         $('.canvasCartcount').text(response.cart_count);
                         if (response.status == true) {
                             toastr.success(response.message, "success");
+                            // Check if #detailsCartButton exists on the page
+                            if ($('#detailsCartButton').length) {
+                                $('#detailsCartButton').html(`<a href="{{ route('cart') }}" class="bg-primary whitespace-nowrap text-white px-6 py-3 rounded-lg text-lg font-medium hover:bg-secondary transition-all w-[70%] lg:w-[50%] text-center">
+                                    Go to Cart
+                                </a>`);
+                            }
+                            
+                            let parentElement = btn.closest(".cart_button_edit");
+
+                            if (parentElement) {
+                                $(parentElement).html(`<button class="w-[35px] h-[35px] flex items-center justify-center bg-[#22a914] hover:bg-[#41B6E8] text-white hover:text-white rounded-full shadow-md transition duration-[300ms]" aria-label="Add to Cart">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="white">
+                                            <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/>
+                                        </svg>
+                                    </button>`);
+                            }
+
                         } else {
                             toastr.error(response.message, "error");
                         }
-                        // Check if #detailsCartButton exists on the page
-                        if ($('#detailsCartButton').length) {
-                            $('#detailsCartButton').html(`<a href="{{ route('cart') }}" class="bg-primary whitespace-nowrap text-white px-6 py-3 rounded-lg text-lg font-medium hover:bg-secondary transition-all w-[70%] lg:w-[50%] text-center">
-                                Go to Cart
-                            </a>`);
-                        }
                         
-                        let parentElement = btn.closest(".cart_button_edit");
-
-                        if (parentElement) {
-                            $(parentElement).html(`<button class="w-[35px] h-[35px] flex items-center justify-center bg-[#22a914] hover:bg-[#41B6E8] text-white hover:text-white rounded-full shadow-md transition duration-[300ms]" aria-label="Add to Cart">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="white">
-                                        <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/>
-                                    </svg>
-                                </button>`);
-                        }
                         
                     },
                     error: function (xhr, status, error) {

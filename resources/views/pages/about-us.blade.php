@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'About Us - HOME_IQ')
+@section('title', 'About Us - '.env('APP_NAME'))
 
 @section('content')
 <div class="bg-gray-100 py-16">

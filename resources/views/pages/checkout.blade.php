@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Checkout - HOME_IQ')
+@section('title', 'Checkout - '.env('APP_NAME'))
 @section('content')
     <section class="container mx-auto py-12 px-6 lg:px-12">
         <div class="mx-auto px-4 2xl:px-0">
@@ -290,6 +290,18 @@
 
                         <button id="submitCheckout" class="flex w-full items-center justify-center rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 bg-[#41b6e8] py-4">Place
                                 Order</button>
+
+                        <div class="flex items-center justify-center gap-2">
+                            <span class="text-sm font-normal text-gray-500 dark:text-gray-400"> or </span>
+                            <a href="{{ route('products.index') }}" title="" class="inline-flex items-center gap-2 text-sm font-medium text-primary-700 underline hover:no-underline dark:text-primary-500">
+                                Continue Shopping
+                                    <svg class="h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                        fill="none" viewBox="0 0 24 24">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                            stroke-width="2" d="M19 12H5m14 0-4 4m4-4-4-4" />
+                                    </svg>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>

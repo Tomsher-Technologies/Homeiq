@@ -2,13 +2,13 @@
     <div class="container mx-auto px-6 py-4 flex justify-between items-center">
         <!-- Logo -->
         <a href="{{ route('home') }}" class="flex items-center">
-            <img src="{{ asset('images/logo.svg') }}" alt="HOME_IQ Logo" class="h-[50px]">
+            <img src="{{ asset('images/logo.svg') }}" alt="{{env('APP_NAME')}} Logo" class="h-[50px]">
         </a>
 
         <!-- Search Bar -->
         <form class="search-popup__form" action="{{ route('products.index') }}" method="get">
             <div class="hidden md:flex items-center bg-gray-100 px-2 py-1 rounded-full w-96 shadow-sm hover:shadow-md transition-shadow duration-300">
-                <input type="text"  name="search"
+                <input type="text"  name="search" value="{{ request()->get('search') ?? '' }}"
                     placeholder="Search products.." 
                     class="bg-transparent py-1 w-full text-gray-700 placeholder-gray-500 border-none outline-none focus:ring-0">
                 <button class="bg-primary text-white p-3 rounded-full hover:bg-secondary transition-colors duration-300">
@@ -20,17 +20,17 @@
         </form>
         <!-- Navigation Links -->
         <nav class="hidden md:flex space-x-6 text-secondary font-medium">
-            <a href="{{ route('home') }}" class="hover:text-primary transition-colors duration-300">Home</a>
+            <a href="{{ route('home') }}" class="{{ is_active('home') }} hover:text-primary transition-colors duration-300">Home</a>
 
 
-                <!-- About Us Link -->
-                <a href="{{ route('about-us') }}" class="hover:text-primary transition-colors duration-300">About Us</a>
+            <!-- About Us Link -->
+            <a href="{{ route('about-us') }}" class="{{ is_active('about-us') }} hover:text-primary transition-colors duration-300">About Us</a>
 
 
             <!-- Products Mega Menu -->
             <div x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false" class="relative">
                 <a href="{{ route('products.index') }}" 
-                class="hover:text-primary transition-colors duration-300 flex items-center space-x-2">
+                class="{{ is_active(['products.index','products.show']) }} hover:text-primary transition-colors duration-300 flex items-center space-x-2">
                     <span>Products</span>
                     <!-- <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path>
@@ -40,11 +40,11 @@
             </div>
 
 
-            <a href="{{ route('services.index') }}" class="hover:text-primary transition duration-300">Services</a>
+            <a href="{{ route('services.index') }}" class="{{ is_active(['services.index','services.show']) }} hover:text-primary transition duration-300">Services</a>
 
 
-            <a href="{{ route('blog') }}" class="hover:text-primary transition-colors duration-300">Blog</a>
-            <a href="{{ route('contact') }}" class="hover:text-primary transition-colors duration-300">Contact Us</a>
+            <a href="{{ route('blog') }}" class="{{ is_active(['blog','blog.details']) }} hover:text-primary transition-colors duration-300">Blog</a>
+            <a href="{{ route('contact') }}" class="{{ is_active('contact') }} hover:text-primary transition-colors duration-300">Contact Us</a>
         </nav>
      
         <!-- Wishlist, Cart, Login/Register -->

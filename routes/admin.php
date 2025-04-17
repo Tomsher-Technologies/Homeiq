@@ -30,7 +30,19 @@ use App\Http\Controllers\Admin\BlogController;
 use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\AbandonedCartController;
+use App\Http\Controllers\Admin\NotificationController;
 
+
+Route::get('/admin/notifications', function () {
+    $admin = auth()->user();
+    return $admin->unreadNotifications;
+})->middleware('auth');
+
+Route::post('/admin/notifications/mark-as-read', function () {
+    $admin = auth()->user();
+    $admin->unreadNotifications->markAsRead();
+    return response()->json(['success' => true]);
+})->middleware('auth');
 
 Route::group(['middleware' => ['guest']], function () {
     Route::get('login', [AuthController::class, 'showLoginForm'])->name('admin.login');
@@ -111,6 +123,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/aiz-uploader/get_uploaded_files', [AizUploadController::class, 'get_uploaded_files']);
     Route::post('/aiz-uploader/get_file_by_ids', [AizUploadController::class, 'get_preview_files']);
     Route::get('/aiz-uploader/download/{id}', [AizUploadController::class, 'attachment_download'])->name('download_attachment');
+
+    //Notifications
+    Route::get('/all-notification', [NotificationController::class, 'index'])->name('admin.all-notification');
 
     // Categories
     Route::get('/generate-slug', [CategoryController::class, 'generateSlug'])->name('generate-slug');

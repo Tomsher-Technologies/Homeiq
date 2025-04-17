@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $response['name'] . ' - HOME_IQ')
+@section('title', $response['name'] . ' - '.env('APP_NAME'))
 
 
 
@@ -47,9 +47,16 @@
                             Go to Cart
                         </a>
                     @else
-                        <a href="#" class="add-to-cart-btn  bg-primary whitespace-nowrap text-white px-6 py-3 rounded-lg text-lg font-medium hover:bg-secondary transition-all w-[70%] lg:w-[50%] text-center"   data-product-slug="{{$product->slug}}" data-product-sku="{{ $product->sku}}">
-                            Add to Cart
-                        </a>
+                        @if ($response['quantity'] != 0)
+                            <a href="#" class="add-to-cart-btn  bg-primary whitespace-nowrap text-white px-6 py-3 rounded-lg text-lg font-medium hover:bg-secondary transition-all w-[70%] lg:w-[50%] text-center"   data-product-slug="{{$product->slug}}" data-product-sku="{{ $product->sku}}">
+                                Add to Cart
+                            </a>
+                        @else
+                            <span class=" text-xl text-danger" >
+                                Out Of Stock
+                            </span>
+                        @endif
+                        
                     @endif
                 
                 </div>

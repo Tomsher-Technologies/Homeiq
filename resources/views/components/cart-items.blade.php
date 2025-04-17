@@ -75,4 +75,10 @@
             </div>
         </div>
     @endforeach
+@else
+<div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm   md:p-6">
+    <div class="space-y-4 md:flex md:items-center md:justify-between text-center md:gap-6 md:space-y-0">
+        <img src="{{ asset('assets/images/cart.png') }}"/>
+    </div>
+</div>
 @endif

@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Cart - HOME_IQ')
+@section('title', 'Cart - '.env('APP_NAME'))
 @section('content')
     <section class="container mx-auto py-12 px-6 lg:px-12">
         <div class="mx-auto px-4 2xl:px-0">

@@ -126,8 +126,11 @@
             <!-- Contact & Address (Left Side) with Right Border -->
             <div class="col-span-1 border-r border-gray-600 pr-6">
                 <h3 class="text-gray-300 font-semibold text-sm">{{ get_setting('footer_contact_title') }}</h3>
-                <p class="text-gray-400 text-sm mt-1">{{ get_setting('footer_phone') }}</p>
-                <a href="mailto:info@homeiq.ae"
+                <a href="tel:{{ get_setting('footer_phone') }}" class="text-gray-400 text-sm mt-1">
+                    {{ get_setting('footer_phone') }}
+                </a>
+                <br>
+                <a href="mailto:{{ get_setting('footer_email') }}"
                     class="text-[#41B6E8] text-sm font-medium hover:underline">{{ get_setting('footer_email') }}</a>
 
                 <h3 class="text-gray-300 font-semibold text-sm mt-6">{{ get_setting('footer_address_title') }}</h3>
@@ -142,7 +145,7 @@
 
             <!-- Smart Solutions -->
             <div>
-                <h3 class="text-gray-300 font-semibold text-sm">{{ get_setting('footer_category_title_2') }}</h3>
+                <h3 class="text-gray-300 font-semibold text-sm">{{ get_setting('footer_category_title_1') }}</h3>
                 <ul class="text-gray-400 text-sm mt-3 space-y-2">
                     @if(!empty($details['footer_categories']))
                         @foreach($details['footer_categories'] as $footer_categories)
@@ -154,7 +157,7 @@
 
             <!-- Shop -->
             <div>
-                <h3 class="text-gray-300 font-semibold text-sm">{{ get_setting('footer_category_title_1') }}</h3>
+                <h3 class="text-gray-300 font-semibold text-sm">{{ get_setting('footer_category_title_2') }}</h3>
                 <ul class="text-gray-400 text-sm mt-3 space-y-2">
                     
                     @if(!empty($details['footer_services']))
@@ -175,7 +178,6 @@
                     <li><a href="{{ route('privacy-policy') }}" class="hover:text-white">Privacy Policy</a></li>
                     <li><a href="{{ route('terms-conditions') }}" class="hover:text-white">Terms of Service</a></li>
                     <li><a href="{{ route('return-policy') }}" class="hover:text-white">Return Policy</a></li>
-                    
                 </ul>
             </div>
 
@@ -193,7 +195,7 @@
         <div
             class="mt-7 border-t border-gray-600 pt-4 flex flex-col md:flex-row md:items-center md:justify-between text-sm text-gray-400 space-y-2 md:space-y-0">
             <p class="text-center md:text-left">
-                {{ str_replace('{year}', date('Y'), get_setting('frontend_copyright_text', null, $lang)) }} Designed by
+                {{ str_replace('{year}', date('Y'), get_setting('frontend_copyright_text', null, $lang)) }} | Website by
                 <a href="https://www.tomsher.com/" target="_blank">Tomsher</a></p>
             <div class="flex flex-wrap justify-center md:justify-end space-x-4 md:space-x-6">
                 <a href="{{ route('privacy-policy') }}" class="hover:text-white">Privacy Policy</a>

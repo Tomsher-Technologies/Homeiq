@@ -18,6 +18,12 @@ use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Request;
 // use DB;
 
+function is_active($route, $output = 'menu-active') {
+    if (is_array($route)) {
+        return in_array(Route::currentRouteName(), $route) ? $output : '';
+    }
+    return Route::currentRouteName() === $route ? $output : '';
+}
 
 function setGuestToken(){
     $guestToken = Cookie::get('guest_token', Str::uuid());
@@ -594,11 +600,26 @@ function getUser()
 
 function cartCount()
 {
+    $guest_token = request()->cookie('guest_token') ?? uniqid('guest_', true);
+    if (auth()->user()) {
+        $user_id = auth()->user()->id;
+        if ($guest_token) {
+            Cart::where('temp_user_id', $guest_token)
+                ->update([
+                        'user_id' => $user_id,
+                        'temp_user_id' => null
+                ]);
+        }
+    } 
     $user = getUser();
+    $count = 0;
+    if($user['users_id'] != ''){
+        $count = Cart::where([
+            $user['users_id_type'] => $user['users_id']
+        ])->count();
+    }
 
-    return Cart::where([
-        $user['users_id_type'] => $user['users_id']
-    ])->count();
+    return $count;
 }
 
 function wishlistCount()

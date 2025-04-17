@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Return Policy - HOME_IQ')
+@section('title', 'Return Policy - '.env('APP_NAME'))
 
 @section('content')
 

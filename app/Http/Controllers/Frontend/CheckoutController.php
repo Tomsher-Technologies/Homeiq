@@ -98,10 +98,13 @@ class CheckoutController
                 foreach ($cart_items as $key => $cartItem) {
                     $subtotal += $cartItem['offer_price'] * $cartItem['quantity'];
                     $tax += $cartItem['tax'];
-                    $shipping += $cartItem['shipping'];
+                    $shipping += $cartItem['shipping_cost'];
                 }
-                $sum = $subtotal + $tax + $shipping;
-
+                $sum = $subtotal + $tax ;
+                // echo 'subtotal  =  '.$subtotal;
+                // echo '<br>tax   ==  '.$tax;
+                // echo '<br>shipping  == '.$shipping;
+                // die;
                 if ($sum >= $coupon_details->min_buy) {
                     if ($coupon->discount_type == 'percent') {
                         $coupon_discount = ($sum * $coupon->discount) / 100;
@@ -143,16 +146,23 @@ class CheckoutController
                     }
                 }
 
-                Cart::where($user['users_id_type'], $user['users_id'])->update([
-                    'discount' => $coupon_discount / $cartCount,
-                    'coupon_code' => $request->coupon,
-                    'coupon_applied' => 1
-                ]);
-
-                return response()->json([
-                    'success' => true,
-                    'message' => trans('messages.coupon_applied')
-                ], 200);
+                if($coupon_discount != 0){
+                    Cart::where($user['users_id_type'], $user['users_id'])->update([
+                        'discount' => $coupon_discount / $cartCount,
+                        'coupon_code' => $request->coupon,
+                        'coupon_applied' => 1
+                    ]);
+    
+                    return response()->json([
+                        'success' => true,
+                        'message' => trans('messages.coupon_applied')
+                    ], 200);
+                }else{
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'Sorry, this coupon cannot be applied to this order'
+                    ], 200);
+                }
             }
         }else{
             return response()->json([

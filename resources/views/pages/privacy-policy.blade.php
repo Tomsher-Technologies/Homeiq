@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Privacy Policy - HOME_IQ')
+@section('title', 'Privacy Policy - '.env('APP_NAME'))
 
 @section('content')
 
