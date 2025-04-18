@@ -53,7 +53,7 @@ class ProductController extends Controller
                             $q->where('tags', 'like', '%' . $sort_search . '%')->orWhere('name', 'like', '%' . $sort_search . '%');
                         });
 
-                    })->limit(5)
+                    })->where('published', 1)->limit(5)
                     ->get();
 
         return response()->json($products);
