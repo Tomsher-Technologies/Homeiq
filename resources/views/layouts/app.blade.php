@@ -354,10 +354,10 @@
                                             
                                             <button class="remove-cart-item text-red-500 hover:text-red-700 focus:outline-none"  data-id="${product.id}">
                                                 <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                width="24" height="24" fill="none" viewBox="0 0 24 24">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M6 18 17.94 6M18 18 6.06 6" />
-            </svg>
+                                                    width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M6 18 17.94 6M18 18 6.06 6" />
+                                                </svg>
                                             </button>
                                         </div>`;
                         
@@ -422,9 +422,57 @@
                 });
             });
 
+            let typingTimer;
+            let doneTypingInterval = 300;
+
+            $('input[name="search"]').on('keyup', function () {
+                clearTimeout(typingTimer);
+                const query = $(this).val();
+
+                if (query.length > 1) {
+                    typingTimer = setTimeout(function () {
+                        $.ajax({
+                            url: '{{ route("search.suggestions") }}',
+                            data: { search: query },
+                            success: function (response) {
+                                let suggestionList = $('#suggestion-list');
+                                suggestionList.empty();
+
+                                if (response.length > 0) {
+                                    response.forEach(function (product) {
+                                        var prodUrl = '{{ route("products.show", ":slug") }}'.replace(':slug', product.slug);
+                                        let imageUrl = "{{ asset('/') }}/" + product.thumbnail_img;
+                                        suggestionList.append(`
+                                            <li class="flex items-center gap-2 p-2 hover:bg-gray-100 cursor-pointer border-b">
+                                                <a href="${prodUrl}" class="flex">
+                                                    <img src="${imageUrl}" class="w-10 h-10 object-cover rounded" alt="${product.name}">
+                                                    <span>${product.name}</span>
+                                                </a>
+                                            </li>
+                                        `);
+                                    });
+                                    suggestionList.removeClass('hidden');
+                                } else {
+                                    suggestionList.addClass('hidden');
+                                }
+                            }
+                        });
+                    }, doneTypingInterval);
+                } else {
+                    $('#suggestion-list').addClass('hidden');
+                }
+            });
+
+            // Hide when clicking outside
+            $(document).on('click', function (e) {
+                if (!$(e.target).closest('.search-popup__form, #suggestion-list').length) {
+                    $('#suggestion-list').addClass('hidden');
+                }
+            });
+
         });
 
-            
+      
     </script>
 </body>
 </html>

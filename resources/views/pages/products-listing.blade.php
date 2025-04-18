@@ -188,7 +188,8 @@
                     sort_by : $('#sort_by').val(),
                     category : $('#category').val(),
                     brand : $('#brand').val(),
-                    price_range : $('#price_range').val()
+                    price_range : $('#price_range').val(),
+                    search : $('#search-input').val()
                 },
                 beforeSend: function() {
                     $('#loading-indicator').show(); // Show loading icon

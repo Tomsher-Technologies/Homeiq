@@ -4,20 +4,23 @@
         <a href="{{ route('home') }}" class="flex items-center">
             <img src="{{ asset('images/logo.svg') }}" alt="{{env('APP_NAME')}} Logo" class="h-[50px]">
         </a>
-
-        <!-- Search Bar -->
-        <form class="search-popup__form" action="{{ route('products.index') }}" method="get">
-            <div class="hidden md:flex items-center bg-gray-100 px-2 py-1 rounded-full w-96 shadow-sm hover:shadow-md transition-shadow duration-300">
-                <input type="text"  name="search" value="{{ request()->get('search') ?? '' }}"
-                    placeholder="Search products.." 
-                    class="bg-transparent py-1 w-full text-gray-700 placeholder-gray-500 border-none outline-none focus:ring-0">
-                <button class="bg-primary text-white p-3 rounded-full hover:bg-secondary transition-colors duration-300">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-[20px] h-[20px]">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m1.35-5.65a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                </button>
-            </div>
-        </form>
+        <div class="relative hidden md:flex w-96 flex-col">
+            <!-- Search Bar -->
+            <form class="search-popup__form w-full" action="{{ route('products.index') }}" method="get">
+                <div class="flex items-center bg-gray-100 px-2 py-1 rounded-full w-full shadow-sm hover:shadow-md transition-shadow duration-300">
+                    <input type="text" name="search" id="search-input" value="{{ request()->get('search') ?? '' }}" placeholder="Search products.." class="bg-transparent py-1 w-full text-gray-700 placeholder-gray-500 border-none outline-none focus:ring-0">
+                    <button class="bg-primary text-white p-3 rounded-full hover:bg-secondary transition-colors duration-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-[20px] h-[20px]">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m1.35-5.65a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                    </button>
+                </div>
+            </form>
+           <!-- Suggestion List -->
+           <ul id="suggestion-list" class="absolute left-0 top-full mt-16 w-full bg-white rounded-md shadow-lg z-50 hidden max-h-80 overflow-y-auto">
+           <!-- Dynamic results via JS -->
+            </ul>
+        </div>
         <!-- Navigation Links -->
         <nav class="hidden md:flex space-x-6 text-secondary font-medium">
             <a href="{{ route('home') }}" class="{{ is_active('home') }} hover:text-primary transition-colors duration-300">Home</a>
