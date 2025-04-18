@@ -22,17 +22,13 @@ class InvoiceController extends Controller
 
         set_time_limit(300);
 
-       
-
-        $pdf = Pdf::setOptions([
-                    'enable_autolink' => false, // 👈 disables automatic mailto: links
-                ])->loadView('backend.invoices.invoice', [
+        $pdf = Pdf::loadView('backend.invoices.invoice', [
                     'order' => $order,
                     'font_family' => $font_family,
                     'direction' => $direction,
                     'text_align' => $text_align,
                     'not_text_align' => $not_text_align,
-                    'imagePath' => asset('/assets/img/logo.png')
+                    'imagePath' => 'file://' . public_path('assets/img/logo.png')
                 ]);
         
         return $pdf->download('order-' . $order->code . '.pdf');

@@ -119,7 +119,7 @@
 <body>
     <div class="invoice">
         <div class="invoice-header">
-            <img width="140" src="{{ $imagePath }}" alt="Logo" class="invoice-logo">
+            <img width="140" src="{{ $imagePath }}" alt="{{ env('APP_NAME') }}" class="invoice-logo">
             <h1>Invoice</h1>
         </div>
 

@@ -234,24 +234,38 @@ class CheckoutController
         $billing_address['zipcode']     = $request->billing_zipcode;
         $billing_address['city']        = $request->billing_city;
         $billing_address['state']       = $request->billing_state;
-        $billing_address['country']        = $request->billing_country;
+        $billing_address['country']     = $request->billing_country;
         $billing_address['phone']       = $request->billing_phone;
 
         if ($billing_shipping_same != 'on') {
-            $shipping_address['name']        = $request->shipping_name;
+            $shipping_address['name']        = $request->shipping_name ?? $request->billing_name;
             $shipping_address['email']       = $request->billing_email;
-            $shipping_address['address']     = $request->shipping_address;
-            $shipping_address['zipcode']     = $request->shipping_zipcode;
-            $shipping_address['city']        = $request->shipping_city;
-            $shipping_address['state']       = $request->shipping_state;
-            $shipping_address['country']     = $request->shipping_country;
-            $shipping_address['phone']       = $request->shipping_phone;
+            $shipping_address['address']     = $request->shipping_address ?? $request->billing_address;
+            $shipping_address['zipcode']     = $request->shipping_zipcode ?? $request->billing_zipcode;
+            $shipping_address['city']        = $request->shipping_city ?? $request->billing_city;
+            $shipping_address['state']       = $request->shipping_state ?? $request->billing_state;
+            $shipping_address['country']     = $request->shipping_country ?? $request->billing_country;;
+            $shipping_address['phone']       = $request->shipping_phone ?? $request->billing_phone;
         } else {
             $shipping_address = $billing_address;
         }
 
         $shipping_address_json = json_encode($billing_address);  // check forntend billing section changed to shipping section 
         $billing_address_json = json_encode($shipping_address);
+
+        if(auth()->user() && $request->address_id == ''){
+            $addressNew                = new Address;
+            $addressNew->user_id       = auth()->user()->id;
+            $addressNew->address       = $request->billing_address ?? null;
+            $addressNew->name          = $request->billing_name ?? null;
+            $addressNew->city          = $request->billing_city ?? null;
+            $addressNew->state_name    = $request->billing_state ?? null;
+            $addressNew->country_name  = $request->billing_country ?? null;
+            $addressNew->postal_code   = $request->billing_zipcode ?? null;
+            $addressNew->type          = 'other';
+            $addressNew->phone         = $request->billing_phone;
+            $addressNew->save();
+        }
 
         if (auth()->user()) {
             $user_id = auth()->user()->id;
