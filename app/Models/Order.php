@@ -47,4 +47,9 @@ class Order extends Model
     {
         return $this->hasMany(OrderTransfers::class);
     }
+
+    public function orderReturns()
+    {
+        return $this->hasMany(OrderReturn::class)->orderBy('id', 'asc');
+    }
 }

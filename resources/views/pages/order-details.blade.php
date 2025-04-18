@@ -113,7 +113,7 @@
                                             <a href="{{ route('products.show', ['slug' => $orderDetail->product->slug]) }}"
                                                 class="text-base font-medium text-gray-900 hover:underline text-black">{{ $orderDetail->product->getTranslation('name', $lang) }}</a>
                                             x {{ $orderDetail->quantity }}
-                                            @if ($order->delivery_status == 'delivered')
+                                            {{-- @if ($order->delivery_status == 'delivered')
                                                 @if ($returnRequest)
                                                     <p>Return Status: 
                                                         <span class="text-sm
@@ -126,7 +126,7 @@
                                                 @else
                                                     <p>No return request for this product.</p>
                                                 @endif
-                                            @endif
+                                            @endif --}}
                                         </div>
                                         <div class="flex items-center justify-between md:order-3 md:justify-end ">
                                             <div class="text-end md:order-4 md:w-32">
@@ -268,6 +268,75 @@
                     </div>
 
 
+                    @if ($order->orderReturns->count() > 0)
+                    <div class="card border-t">
+                        <div class="card-header">
+                            <h2 class="text-xl font-semibold mb-4">Order Return Requests Details</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="mt-8">
+                                <table class="w-full border-collapse border text-sm">
+                                    <thead class="bg-gray-100">
+                                        <tr>
+                                            <th class="p-2 border text-left">#</th>
+                                            <th class="p-2 border text-left">Product</th>
+                                            <th class="p-2 border text-center">Return Qty</th>
+                                            <th class="p-2 border text-left">Reason</th>
+                                            <th class="p-2 border text-left">Date</th>
+                                            <th class="p-2 border text-center">Status</th>
+                                            <th class="p-2 border text-center">Balance Qty</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($order->orderReturns as $key => $return)
+                                            @php
+                                                $orderDetail = $return->orderDetail;
+                                                $orderedQty = $orderDetail->quantity ?? 0;
+            
+                                                // Calculate total returned up to this return request (including current one)
+                                                $totalReturnedUpToNow = $orderDetail->returns()
+                                                    ->where('id', '<=', $return->id) // Assumes auto-increment ID is sequential
+                                                    ->sum('return_qty');
+            
+                                                $balanceAtThisReturn = $orderedQty - $totalReturnedUpToNow;
+                                            @endphp
+                                            <tr class="border">
+                                                <td class="p-2 border">
+                                                    {{ $key+1 }}
+                                                </td>
+                                                <td class="p-2 border">
+                                                    {{ $return->product->name ?? 'Product not found' }}
+                                                </td>
+                                                <td class="p-2 border text-center">
+                                                    {{ $return->return_qty }}
+                                                </td>
+                                                <td class="p-2 border">
+                                                    {{ $return->return_reason }}
+                                                </td>
+                                                <td class="p-2 border">
+                                                    {{ date('d M, Y H:i A', strtotime($return->created_at)) }}
+                                                </td>
+                                                <td class="p-2 border text-center">
+                                                    <span class="inline-block px-2 py-1 rounded-full text-white 
+                                                        {{ 
+                                                            $return->status === 'pending' ? 'bg-orange-500' : 
+                                                            ($return->status === 'approved' ? 'bg-green-500' : 
+                                                            'bg-red-500') 
+                                                        }}">
+                                                        {{ $return->status }}
+                                                    </span>
+                                                </td>
+                                                <td class="p-2 border text-center text-blue-600 font-semibold">
+                                                    {{ $balanceAtThisReturn }} left
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                @endif
                     <!-- Footer -->
                 @endif
             </div>
@@ -297,24 +366,35 @@
                                 @endphp
                                 @foreach ($order->orderDetails as $orderDetail)
                                     
-                                    @if ($orderDetail->product->return_refund == 1 && $orderDetail->returns->isEmpty())
+                                    @php
+                                        $totalReturnedQty = $orderDetail->returns->sum('return_qty');
+                                        $remainingQty = $orderDetail->quantity - $totalReturnedQty;
+                                    @endphp
+
+                                    {{-- @if ($orderDetail->product->return_refund == 1 && $orderDetail->returns->isEmpty()) --}}
+                                    @if ($orderDetail->product->return_refund == 1 && $remainingQty > 0)
                                         @php
                                             $productsAvailableForReturn = true;
                                         @endphp
                                         <tr class="border">
                                             <td class="p-2 text-center">
-                                                <input type="checkbox" class="return-modal-checkbox"
-                                                    data-id="{{ $orderDetail->id }}" data-max="{{ $orderDetail->quantity }}">
+                                                <input type="checkbox" class="return-modal-checkbox" data-id="{{ $orderDetail->id }}" data-max="{{ $remainingQty }}">
                                             </td>
                                             <td class="p-2">
-                                                {{ $orderDetail->product->getTranslation('name', $lang) }}
+                                                <div class="font-medium">
+                                                    {{ $orderDetail->product->getTranslation('name', $lang) }}
+                                                </div>
+                                                <div class="text-xs text-gray-500 mt-1">
+                                                    Already returned: {{ $totalReturnedQty }}<br>
+                                                    Remaining: {{ $remainingQty }}
+                                                </div>
                                             </td>
                                             <td class="p-2 text-center">
                                                 {{ $orderDetail->quantity }}
                                             </td>
                                             <td class="p-2 text-center">
                                                 <input type="number" class="border px-2 py-1 w-20 return-qty"
-                                                    name="return_qty[{{ $orderDetail->id }}]" min="1" max="{{ $orderDetail->quantity }}" 
+                                                    name="return_qty[{{ $orderDetail->id }}]" min="1" max="{{ $remainingQty }}" 
                                                     value="1" disabled>
                                             </td>
                                         </tr>
