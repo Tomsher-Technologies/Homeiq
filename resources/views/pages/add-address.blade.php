@@ -61,7 +61,7 @@
         
                         <div class="w-full mb-4">
                             <label class="block mb-1 font-medium text-gray-800 capitalize">Country *</label>
-                            <input type="text"  id="country" name="country" class="w-full bg-gray-50 py-4 ps-6 rounded-lg border border-gray-300" value="{{ old('country', $address->country_name ?? '') }}"
+                            <input type="text"  id="country" name="country" class="w-full bg-gray-50 py-4 ps-6 rounded-lg border border-gray-300" value="{{ old('country', $address->country_name ?? 'United Arab Emirates') }}"
                                 placeholder="Enter your country" >
                             @error('country')
                                 <div class="text-red-500">{{ $message }}</div>
@@ -74,6 +74,15 @@
                             <label class="block mb-1 font-medium text-gray-800 capitalize">ZIP Code</label>
                             <input type="text" id="zipcode" name="zipcode" class="w-full bg-gray-50 py-4 ps-6 rounded-lg border border-gray-300" placeholder="Enter your ZIP code"  value="{{ old('zipcode', $address->postal_code ?? '') }}">
                         </div>
+
+                        <div class="w-full mb-4 ">
+                            <label class="block mb-1 font-medium text-gray-800 capitalize">Phone Number *</label>
+                            <input type="text" id="phone" name="phone" class="w-full bg-gray-50 py-4 ps-6 rounded-lg border border-gray-300" placeholder="Enter your phone"  value="{{ old('phone', $address->phone ?? '') }}">
+                            @error('phone')
+                                <div class="text-red-500">{{ $message }}</div>
+                            @enderror
+                        </div>
+
                         <div class="mb-5">
                             <div class="flex items-center gap-4 mb-5">
                                 <div class="flex items-center">

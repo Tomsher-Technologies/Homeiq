@@ -142,7 +142,7 @@ class ProfileController extends Controller
                         $temp = array();
                         $temp['id'] = $value->id;
                         $temp['status'] = $value->status;
-                        $temp['date'] = date("d-m-Y H:i a", strtotime($value->status_date));
+                        $temp['date'] = date("d-m-Y h:i A", strtotime($value->status_date));
                         $track_list[] = $temp;
                     }
                 }    
@@ -176,11 +176,15 @@ class ProfileController extends Controller
 
     public function saveAddress(Request $request){
         $validate = $request->validate([
-            'name' => 'required',
+            'name' => 'required|regex:/^[a-zA-Z\s]+$/u',
             'address' => 'required',
             'city' => 'required',
             'state' => 'required',
-            'country' => 'required'
+            'country' => 'required',
+            'phone' => ['required', 'regex:/^\+?[0-9]{7,15}$/']
+        ], [
+            'name.regex' => 'Only alphabets and spaces are allowed in the name field.',
+            'phone.regex' => 'Please enter a valid phone number (numbers only, 7-15 digits).'
         ]);
 
         $user_id = (!empty(auth()->user())) ? auth()->user()->id : '';
@@ -190,6 +194,9 @@ class ProfileController extends Controller
                 $address                = Address::find($request->address_id);
             }else{
                 $address                = new Address;
+            }
+            if($request->default == 1){
+                Address::where('user_id', $user_id)->update(['set_default' => 0]);
             }
             
             $address->user_id       = $user_id;
@@ -201,6 +208,7 @@ class ProfileController extends Controller
             $address->postal_code   = $request->zipcode ?? null;
             $address->type          = $request->address_type ?? null;
             $address->set_default   = $request->default ?? 0;
+            $address->phone         = $request->phone;
             $address->save();
     
             session()->flash('message', 'Address saved successfully!');

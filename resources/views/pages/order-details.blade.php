@@ -104,7 +104,7 @@
                                     <div class="space-y-4 md:flex md:items-center md:justify-between md:gap-6 md:space-y-0">
                                         <a href="{{ route('products.show', ['slug' => $orderDetail->product->slug]) }}"
                                             class="shrink-0 md:order-1">
-                                            <img class="h-10 w-10 dark:block rounded-md"
+                                            <img class="h-20 w-20 dark:block rounded-md"
                                                 src="{{ get_product_image($orderDetail->product->thumbnail_img, '300') }}"
                                                 alt="imac image" />
                                         </a>
@@ -131,11 +131,11 @@
                                         <div class="flex items-center justify-between md:order-3 md:justify-end ">
                                             <div class="text-end md:order-4 md:w-32">
                                                 <p class="text-base text-lg font-semibold text-gray-900 text-black">
-                                                    @if ($orderDetail->og_price != $orderDetail->price)
+                                                    @if (($orderDetail->og_price * $orderDetail->quantity) != $orderDetail->price)
                                                         <span class="text-gray-500 line-through text-xs">
-                                                            {{ single_price($orderDetail->og_price) }}</span> <br>
+                                                            {{ single_price($orderDetail->og_price * $orderDetail->quantity) }}</span> <br>
                                                     @endif
-                                                    {{ single_price($orderDetail->price / $orderDetail->quantity) }}
+                                                    {{ single_price($orderDetail->price) }}
                                                 </p>
                                             </div>
                                         </div>
@@ -151,27 +151,30 @@
 
                         <div class="flex justify-between text-gray-600 mb-3">
                             <p>Sub Total</p>
-                            <p>{{ single_price($order->orderDetails->sum('price')) }}</p>
-                        </div>
-
-                        <div class="flex justify-between text-gray-800 mb-3">
-                            <p>Shipping Charges</p>
-                            <p>{{ single_price($order->orderDetails->sum('shipping_cost')) }}</p>
+                            <p>{{ single_price($order->sub_total) }}</p>
                         </div>
 
                         <div class="flex justify-between text-gray-800 mb-3">
                             <p>VAT</p>
                             <p>{{ single_price($order->orderDetails->sum('tax')) }}</p>
                         </div>
+                        @if ($order->offer_discount != 0)
+                            <div class="flex justify-between text-gray-600 mb-3">
+                                <p>Discount</p>
+                                <p>- {{ single_price($order->offer_discount) }}</p>
+                            </div>
+                        @endif
 
-                        <div class="flex justify-between text-gray-600 mb-3">
-                            <p>Discount</p>
-                            <p>- {{ single_price($order->offer_discount) }}</p>
-                        </div>
+                        @if ($order->coupon_discount != 0)
+                            <div class="flex justify-between text-gray-600 mb-3">
+                                <p>Coupon Discount</p>
+                                <p>- {{ single_price($order->coupon_discount) }}</p>
+                            </div>
+                        @endif
 
-                        <div class="flex justify-between text-gray-600 mb-3">
-                            <p>Coupon Discount</p>
-                            <p>- {{ single_price($order->coupon_discount) }}</p>
+                        <div class="flex justify-between text-gray-800 mb-3">
+                            <p>Shipping Charges</p>
+                            <p>{{ single_price($order->orderDetails->sum('shipping_cost')) }}</p>
                         </div>
 
                         <hr>
@@ -192,6 +195,17 @@
                                 @endif
                             </p>
                         </div>
+
+                        @if ($order->order_notes != '')
+                            <!-- Order notes -->
+                            <div class="mt-3 border-t border-gray-200 pt-4">
+                                <h2 class="text-xl font-semibold mb-4">Order Note</h2>
+                                <p class="text-gray-600">
+                                    {{ $order->order_notes }}
+                                </p>
+                            </div>
+                        @endif
+                        
                     </div>
 
                     <div class="mb-4 flex">
@@ -208,6 +222,7 @@
                                 <p class="text-gray-600">{{ $billing_address->city }}, {{ $billing_address->state }}</p>
                                 <p class="text-gray-600">{{ $billing_address->country }} - {{ $billing_address->zipcode }}
                                 </p>
+                                <p class="text-gray-600">{{ $billing_address->email }}, {{ $billing_address->phone }}</p>
                             @endif
                         </div>
 
@@ -225,6 +240,7 @@
                                 <p class="text-gray-600">{{ $shipping_address->city }}, {{ $shipping_address->state }}</p>
                                 <p class="text-gray-600">{{ $shipping_address->country }} -
                                     {{ $shipping_address->zipcode }}</p>
+                                <p class="text-gray-600">{{ $billing_address->phone }}</p>
                             @endif
                         </div>
                     </div>
@@ -239,7 +255,7 @@
                                         <div
                                             class="absolute w-3 h-3 bg-[#41b6e8] rounded-full mt-1.5 -start-1.5 border border-white">
                                         </div>
-                                        <time class="mb-1 text-lg font-normal leading-none font-semibold text-black">
+                                        <time class="mb-1 text-md font-normal leading-none font-semibold text-black">
                                             {{ ucfirst(str_replace('_', ' ', $dStat['status'])) }}
                                         </time>
                                         <h3 class="mb-1 text-md text-gray-500">{{ $dStat['date'] }}</h3>

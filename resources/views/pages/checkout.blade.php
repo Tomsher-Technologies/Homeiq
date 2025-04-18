@@ -37,16 +37,18 @@
                             </div>
                         </div>
                     @endif
-                    
+                    @php
+                         $default_name = $default_address = $default_city = $default_state = $default_country = $default_zipcode = $default_phone ='';
+                    @endphp
                     <div class="max-w-7xl mx-auto">
                         <form id="checkoutForm" action="{{ route('checkout.process') }}" method="POST">
                             @csrf
                             <div id="delivery-section" class="bg-white shadow-md border rounded-lg p-2 lg:p-4 my-3">
-                                <h1 class="text-xl mb-4">Billing Address</h1>
+                                <h1 class="text-xl mb-4">Shipping Address</h1>
                                 <div class="flex flex-col w lg:flex-row space-y-4 lg:space-y-0 lg:space-x-4 mb-5">
                                     @if (!empty($addresses[0]))
                                         @foreach ($addresses as $key => $address)
-                                            <div class="addressSelect cursor-pointer p-4 rounded-lg flex-1 mb-0 border @if (old('address_id') == $address->id) border-green-300 @endif"
+                                            <div class="addressSelect cursor-pointer p-4 rounded-lg flex-1 mb-0 border @if ((old('address_id') == $address->id) || $address->set_default == 1) border-green-300 @endif"
                                                 id="address-{{ $address->id }}" data-id="{{ $address->id }}"
                                                 data-name="{{ $address->name }}" data-address="{{ $address->address }}"
                                                 data-city="{{ $address->city }}" data-state="{{ $address->state_name }}"  data-country="{{ $address->country_name }}"
@@ -58,6 +60,18 @@
                                                 <p class="mt-2">{{ $address->phone }}</p>
 
                                             </div>
+                                           
+                                            @php
+                                                if($address->set_default == 1){
+                                                    $default_name = $address->name;
+                                                    $default_address = $address->address;
+                                                    $default_city = $address->city;
+                                                    $default_state = $address->state_name;
+                                                    $default_country = $address->country_name;
+                                                    $default_zipcode = $address->postal_code;
+                                                    $default_phone = $address->phone;
+                                                }
+                                            @endphp
                                         @endforeach
                                     @endif
                                    
@@ -67,7 +81,7 @@
                                     
                                     <div class="w-full mb-4">
                                         <label class="block mb-1 font-medium text-gray-800 capitalize">{{trans('messages.full_name')}} *</label>
-                                        <input type="text" class="w-full bg-gray-50 py-4 ps-6 rounded-lg border border-gray-300" id="billing_name" name="billing_name" placeholder="Enter your full name"  value="{{ old('billing_name') }}">
+                                        <input type="text" class="w-full bg-gray-50 py-4 ps-6 rounded-lg border border-gray-300" id="billing_name" name="billing_name" placeholder="Enter your full name"  value="{{ old('billing_name', $default_name) }}">
                                         @if ($errors->has('billing_name'))
                                             <div class="text-red-600 mt-2">{{ $errors->first('billing_name') }}</div>
                                         @endif
@@ -76,7 +90,7 @@
                                     <div class="w-full mb-4">
                                         <label class="block mb-1 font-medium text-gray-800 capitalize">Address
                                             *</label>
-                                        <textarea placeholder="{{trans('messages.address')}} *" id="billing_address" name="billing_address" class="w-full bg-gray-50 py-4 ps-6 rounded-lg border border-gray-300" rows="4">{{ old('billing_address') }}</textarea>
+                                        <textarea placeholder="{{trans('messages.address')}} *" id="billing_address" name="billing_address" class="w-full bg-gray-50 py-4 ps-6 rounded-lg border border-gray-300" rows="4">{{ old('billing_address',$default_address) }}</textarea>
                                         @if ($errors->has('billing_address'))
                                             <div class="text-red-600 mt-2">{{ $errors->first('billing_address') }}</div>
                                         @endif
@@ -86,14 +100,14 @@
                                         <div class="w-full mb-4 md:w-1/3">
                                             <label class="block mb-1 font-medium text-gray-800 capitalize">Town / City
                                                 *</label>
-                                            <input type="text"  id="billing_city" name="billing_city" placeholder="{{trans('messages.town_city')}} *" class="w-full bg-gray-50 py-4 ps-6 rounded-lg border border-gray-300" value="{{ old('billing_city') }}">
+                                            <input type="text"  id="billing_city" name="billing_city" placeholder="{{trans('messages.town_city')}} *" class="w-full bg-gray-50 py-4 ps-6 rounded-lg border border-gray-300" value="{{ old('billing_city', $default_city) }}">
                                             @if ($errors->has('billing_city'))
                                                 <div class="text-red-600 mt-2">{{ $errors->first('billing_city') }}</div>
                                             @endif
                                         </div>
                                         <div class="w-full mb-4 md:w-1/3">
                                             <label class="block mb-1 font-medium text-gray-800 capitalize">State *</label>
-                                            <input type="text"  id="billing_state" name="billing_state" placeholder="Enter state *" class="w-full bg-gray-50 py-4 ps-6 rounded-lg border border-gray-300" value="{{ old('billing_state') }}">
+                                            <input type="text"  id="billing_state" name="billing_state" placeholder="Enter state *" class="w-full bg-gray-50 py-4 ps-6 rounded-lg border border-gray-300" value="{{ old('billing_state',$default_state) }}">
                                             @if ($errors->has('billing_state'))
                                                 <div class="text-red-600 mt-2">{{ $errors->first('billing_state') }}</div>
                                             @endif
@@ -113,24 +127,18 @@
                                         
                                         <div class="w-full mb-4 md:w-1/3">
                                             <label class="block mb-1 font-medium text-gray-800 capitalize">ZIP Code</label>
-                                            <input type="text" placeholder="{{trans('messages.zip')}}"  id="billing_zipcode" name="billing_zipcode" class="w-full bg-gray-50 py-4 ps-6 rounded-lg border border-gray-300" value="{{ old('billing_zipcode') }}">
+                                            <input type="text" placeholder="{{trans('messages.zip')}}"  id="billing_zipcode" name="billing_zipcode" class="w-full bg-gray-50 py-4 ps-6 rounded-lg border border-gray-300" value="{{ old('billing_zipcode',$default_zipcode) }}">
                                         </div>
 
                                         <div class="w-full mb-4 md:w-1/3">
                                             <label class="block mb-1 font-medium text-gray-800 capitalize">Phone *</label>
-                                            <input type="tel" placeholder="{{trans('messages.phone')}} *"  id="billing_phone" name="billing_phone" maxlength="15" class="w-full bg-gray-50 py-4 ps-6 rounded-lg border border-gray-300" value="{{ old('billing_phone') }}">
+                                            <input type="tel" placeholder="{{trans('messages.phone')}} *"  id="billing_phone" name="billing_phone" maxlength="15" class="w-full bg-gray-50 py-4 ps-6 rounded-lg border border-gray-300" value="{{ old('billing_phone', $default_phone) }}">
                                             @if ($errors->has('billing_phone'))
                                                 <div class="text-red-600 mt-2">{{ $errors->first('billing_phone') }}</div>
                                             @endif
                                         </div>
 
                                         <div class="w-full mb-4 md:w-1/3">
-                                            <label class="block mb-1 font-medium text-gray-800 capitalize">Email *</label>
-                                            <input type="text"  id="billing_email" name="billing_email" placeholder="{{trans('messages.email')}} *" class="w-full bg-gray-50 py-4 ps-6 rounded-lg border border-gray-300" value="{{ old('billing_email',auth()->user()?->email) }}">
-                                            @if ($errors->has('billing_email'))
-                                                <div class="text-red-600 mt-2">{{ $errors->first('billing_email') }}</div>
-                                            @endif
-
                                         </div>
                                     </div>
                                 </div>
@@ -139,18 +147,18 @@
                         
                             
                             <div id="billing-section" class="bg-white  border rounded-lg p-2 lg:p-4 my-3">
-                                <h1 class="text-xl mb-4">Shipping Details</h1>
+                                <h1 class="text-xl mb-4">Billing Details</h1>
 
                                 <label class="inline-flex items-center  pe-6">
                                     <input type="checkbox" id="checkbox2" name="same_as_billing" class="form-radio h-5 w-5 text-[#41b6e8]" @if(old('same_as_billing') == 'on') checked @endif/>
-                                    <span class="ml-2 text-md text-gray-700">Ship to the same address</span>
+                                    <span class="ml-2 text-md text-gray-700">Same as shipping address</span>
                                 </label>
 
                                 <!-- Default Address Fields -->
                                 <div id="address-fields" class="p-4 bg-gray-100 mt-3 shipping-address">
                                     <div class="w-full mb-4">
                                         <label class="block mb-1 font-medium text-gray-800 capitalize">{{trans('messages.full_name')}} *</label>
-                                        <input type="text" class="w-full bg-gray-50 py-4 ps-6 rounded-lg border border-gray-300" id="shipping_name" name="shipping_name" placeholder="Enter your full name"  value="{{ old('shipping_name') }}" @if(old('same_as_billing') == 'on') readonly @endif>
+                                        <input type="text" class="w-full bg-gray-50 py-4 ps-6 rounded-lg border border-gray-300" id="shipping_name" name="shipping_name" placeholder="Enter your full name"  value="{{ old('shipping_name',auth()->user()?->name) }}" @if(old('same_as_billing') == 'on') readonly @endif>
                                         @if ($errors->has('shipping_name'))
                                             <div class="text-red-600 mt-2">{{ $errors->first('shipping_name') }}</div>
                                         @endif
@@ -201,13 +209,19 @@
 
                                         <div class="w-full mb-4 md:w-1/3">
                                             <label class="block mb-1 font-medium text-gray-800 capitalize">Phone *</label>
-                                            <input type="tel" placeholder="{{trans('messages.phone')}} *"  id="shipping_phone" name="shipping_phone" maxlength="15" class="w-full bg-gray-50 py-4 ps-6 rounded-lg border border-gray-300" value="{{ old('shipping_phone') }}"  @if(old('same_as_billing') == 'on') readonly @endif>
+                                            <input type="tel" placeholder="{{trans('messages.phone')}} *"  id="shipping_phone" name="shipping_phone" maxlength="15" class="w-full bg-gray-50 py-4 ps-6 rounded-lg border border-gray-300" value="{{ old('shipping_phone', auth()->user()?->phone) }}"  @if(old('same_as_billing') == 'on') readonly @endif>
                                             @if ($errors->has('shipping_phone'))
                                                 <div class="text-red-600 mt-2">{{ $errors->first('shipping_phone') }}</div>
                                             @endif
                                         </div>
 
                                         <div class="w-full mb-4 md:w-1/3">
+                                            <label class="block mb-1 font-medium text-gray-800 capitalize">Email *</label>
+                                            <input type="text"  id="billing_email" name="billing_email" placeholder="{{trans('messages.email')}} *" class="w-full bg-gray-50 py-4 ps-6 rounded-lg border border-gray-300" value="{{ old('billing_email',auth()->user()?->email) }}">
+                                            @if ($errors->has('billing_email'))
+                                                <div class="text-red-600 mt-2">{{ $errors->first('billing_email') }}</div>
+                                            @endif
+
                                         </div>
                                     </div>
                                 </div>
@@ -433,7 +447,7 @@
                 $('.shipping-address input').prop('readonly', true);
                 $('.shipping-address textarea').prop('readonly', true);
             } else {
-                $('.shipping-address textarea').val('');
+                $('.shipping-address textarea').val('').prop('readonly', false);
                 $('.shipping-address input').val('').prop('readonly', false);
             }
         });
@@ -484,18 +498,19 @@
             });
             sessionStorage.setItem('checkout_form_data', JSON.stringify(formData));
         });
-
-        // Restore form data when page loads
-        let savedData = sessionStorage.getItem('checkout_form_data');
-        if (savedData) {
-            savedData = JSON.parse(savedData);
-            $('#checkoutForm :input').each(function () {
-                let name = $(this).attr('name');
-                if (name && savedData[name]) {
-                    $(this).val(savedData[name]);
-                }
-            });
-        }
+        @if ($errors->any())
+            // Restore form data when page loads
+            let savedData = sessionStorage.getItem('checkout_form_data');
+            if (savedData) {
+                savedData = JSON.parse(savedData);
+                $('#checkoutForm :input').each(function () {
+                    let name = $(this).attr('name');
+                    if (name && savedData[name]) {
+                        $(this).val(savedData[name]);
+                    }
+                });
+            }
+        @endif
     });
  </script>
 @endsection
