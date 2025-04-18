@@ -259,7 +259,7 @@
             </div>
             <div class="card-body">
                 <div class="mt-8">
-                    <table class="w-full border-collapse border text-sm">
+                    <table class=" table aiz-table ">
                         <thead class="bg-gray-100">
                             <tr>
                                 <th class="p-2 border text-left">#</th>
