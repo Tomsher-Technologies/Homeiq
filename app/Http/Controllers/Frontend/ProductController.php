@@ -43,6 +43,23 @@ class ProductController extends Controller
         $this->frontController = $frontController;
     }
 
+    public function searchSuggestions(Request $request)
+    {
+        $sort_search = $request->get('search');
+        $products = Product::where(function ($query) use($sort_search) {
+                        $query->orWhereHas('stocks', function ($q) use ($sort_search) {
+                            $q->where('sku', 'like', '%' . $sort_search . '%');
+                        })->orWhereHas('product_translations', function ($q) use ($sort_search) {
+                            $q->where('tags', 'like', '%' . $sort_search . '%')->orWhere('name', 'like', '%' . $sort_search . '%');
+                        });
+
+                    })->limit(5)
+                    ->get();
+
+        return response()->json($products);
+    }
+
+
     public function index(Request $request)
     {
         $price = $request->price_range;
