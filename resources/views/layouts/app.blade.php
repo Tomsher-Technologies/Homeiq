@@ -200,7 +200,7 @@
                     quantity = currentValue - 1;
                 }
                
-                inputField.val(quantity);
+                
                 updateButtonState(cartItemId, maxQuantity);
 
                 $.ajax({
@@ -214,6 +214,7 @@
                     success: function(response) {
                         if (response.status === true) {
                             // Optionally, you can update the cart summary here
+                            inputField.val(quantity);
                             toastr.success(response.message, "{{trans('messages.success')}}");
                             window.location.reload();
                         } else {

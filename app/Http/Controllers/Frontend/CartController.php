@@ -109,10 +109,10 @@ class CartController extends Controller
                             $shipping += $cartItem['shipping_cost'] ;
                         }
 
-//                         echo 'subtotal  =  '.$subtotal;
-//                         echo '<br>tax   ==  '.$tax;
-//                         echo '<br>shipping  == '.$shipping;
-// die;
+                //                         echo 'subtotal  =  '.$subtotal;
+                //                         echo '<br>tax   ==  '.$tax;
+                //                         echo '<br>shipping  == '.$shipping;
+                // die;
                         $sum = $subtotal + $tax ;
 
                         if ($sum >= $coupon_details->min_buy) {
@@ -430,6 +430,14 @@ class CartController extends Controller
                 $carts->offer_tag       = $priceData['offer_tag'] ?? NULL;
                 $carts->save();
             }else {
+
+                if ($current_Stock < $quantity) {
+                    return response()->json([
+                        'status' => false,
+                        'message' => trans('messages.product_outofstock_msg').'!',
+                        'cart_count' => $this->cartCount()
+                    ], 200);
+                }
                
                 if($variantProduct->product->vat != 0){
                     $tax = (($priceData['discounted_price'] * ($quantity ?? 1))/100) * $variantProduct->product->vat;
