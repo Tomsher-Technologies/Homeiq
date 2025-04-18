@@ -68,10 +68,17 @@
                                     $now = \Carbon\Carbon::now();
                                     $isReturnEligible = $now->lessThanOrEqualTo($returnDeadline);
 
-                                    // Check if all products are already requested for return
+                                    // // Check if all products are already requested for return
+                                    // $allReturned = $order->orderDetails->every(function ($orderDetail) {
+                                    //     return $orderDetail->returns()->exists(); // Check if this product has a return request
+                                    // });
+
                                     $allReturned = $order->orderDetails->every(function ($orderDetail) {
-                                        return $orderDetail->returns()->exists(); // Check if this product has a return request
-                                    });
+                                            $orderedQty = $orderDetail->quantity;
+                                            $returnedQty = $orderDetail->returns->sum('return_qty'); // sum of return_qty from related returns
+
+                                            return $returnedQty >= $orderedQty;
+                                        });
                                     
                                 @endphp
 
