@@ -186,7 +186,7 @@
                                    
                                     <td class="text-center">{{ $orderDetail->quantity }}</td>
                                     <td class="text-center">
-                                        @if ($orderDetail->og_price != $orderDetail->price)
+                                        @if ($orderDetail->og_price != $orderDetail->offer_price)
                                             <del>{{ single_price($orderDetail->og_price) }}</del> <br>
                                         @endif
                                         {{ single_price($orderDetail->price / $orderDetail->quantity) }}

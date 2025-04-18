@@ -202,21 +202,25 @@
                     <tr>
                         <th class="gry-color text-left">Sub Total</th>
                         <td class="currency">
-                            {{ single_price($order->orderDetails->sum('price')) }}
+                            {{ single_price($order->sub_total) }}
                         </td>
                     </tr>
                     <tr>
                         <th class="gry-color text-left">
-                            Tax
+                            VAT
                         </th>
                         <td class="currency">
                             {{ single_price($order->orderDetails->sum('tax')) }}
                         </td>
                     </tr>
-                    <tr>
-                        <th class="gry-color text-left">Shipping Cost</th>
-                        <td class="currency">{{ single_price($order->shipping_cost) }}</td>
-                    </tr>
+
+                    @if ($order->offer_discount)
+                        <tr class="border-bottom">
+                            <th class="gry-color text-left">Discount</th>
+                            <td class="currency">{{ single_price($order->offer_discount) }}</td>
+                        </tr>
+                    @endif
+
                     @if ($order->coupon_discount)
                         <tr class="border-bottom">
                             <th class="gry-color text-left">Coupon Discount</th>
@@ -227,12 +231,12 @@
                             <td class="currency">{{ $order->coupon_code }}</td>
                         </tr>
                     @endif
-                    @if ($order->offer_discount)
-                        <tr class="border-bottom">
-                            <th class="gry-color text-left">Discount</th>
-                            <td class="currency">{{ single_price($order->offer_discount) }}</td>
-                        </tr>
-                    @endif
+
+                    <tr>
+                        <th class="gry-color text-left">Shipping Cost</th>
+                        <td class="currency">{{ single_price($order->shipping_cost) }}</td>
+                    </tr>
+                   
                     <tr>
                         <th class="text-left strong">Grand Total</th>
                         <td class="currency">{{ single_price($order->grand_total) }}</td>

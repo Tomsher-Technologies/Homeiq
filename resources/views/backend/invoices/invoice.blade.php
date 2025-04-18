@@ -134,7 +134,7 @@
             </div>
 
             <div class="invoice-info-right">
-                <strong>Date:</strong> {{ date('d M Y, h:i:a', $order->date) }} <br>
+                <strong>Date:</strong> {{ date('d M Y, h:i A', $order->date) }} <br>
                 <hr style="border: 0.5px solid #eee">
                 <strong>Delivery Status:</strong>
                 {{ ucfirst(str_replace('_', ' ', $order->delivery_status)) }} <br>
@@ -220,9 +220,16 @@
         </table>
 
         <div class="invoice-total">
-            <p><strong>Subtotal:</strong> {{ single_price($order->orderDetails->sum('price')) }}</p>
-            <p><strong>Tax:</strong> {{ single_price($order->orderDetails->sum('tax')) }}</p>
-            <p><strong>Discount:</strong> {{ single_price($order->coupon_discount) }}</p>
+            <p><strong>Subtotal:</strong> {{ single_price($order->sub_total) }}</p>
+            <p><strong>VAT:</strong> {{ single_price($order->orderDetails->sum('tax')) }}</p>
+            @if ($order->offer_discount != 0)
+                <p><strong>Discount:</strong> {{ single_price($order->offer_discount) }}</p>
+            @endif
+            
+            @if ($order->coupon_discount != 0)
+                <p><strong>Coupon Discount:</strong> {{ single_price($order->coupon_discount) }}</p>
+            @endif
+            
             <p><strong>Shipping Charge:</strong> {{ single_price($order->shipping_cost) }}</p>
             <p><strong>Grand Total:</strong> {{ single_price($order->grand_total) }}</p>
         </div>

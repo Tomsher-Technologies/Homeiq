@@ -17,7 +17,7 @@
                     <tr>
                         <th scope="col" class="text-center px-6 py-3">#</th>
                         <th scope="col" class="text-center px-6 py-3">Order Code</th>
-                        {{-- <th scope="col" class="px-6 py-3">Product Name</th> --}}
+                        <th scope="col" class="text-center px-6 py-3">Total Products</th>
                         <th scope="col" class="text-center px-6 py-3">Date</th>
                         <th scope="col" class="text-center px-6 py-3">Status</th>
                         <th scope="col" class="text-center px-6 py-3">Price</th>
@@ -31,6 +31,9 @@
                                 <th scope="row" class="text-center px-6 py-2 font-normal whitespace-nowrap">{{$key+1}}</th>
                                 <td class="text-center px-6 py-2 font-medium text-gray-900 whitespace-nowrap leading-4">
                                     {{$order->code}}
+                                </td>
+                                <td class="text-center px-6 py-2 font-normal text-gray-900 whitespace-nowrap">
+                                    {{ count($order->orderDetails) }}
                                 </td>
                                 <td class="text-center px-6 py-2 font-normal text-gray-900 whitespace-nowrap">
                                     {{ date('d-m-Y H:i A',strtotime($order->created_at))}}

@@ -26,7 +26,7 @@
             @if (!empty($addresses[0]))
                 @foreach ($addresses as $key => $address)
                     <!-- address -->
-                    <div class="flex-1 duration-150 border hover:shadow-lg">
+                    <div class="flex-1 duration-150 border hover:shadow-lg" id="address_div_{{ $address->id }}">
                         <div class="flex items-center justify-between border-b">
                             <p class="flex items-center gap-2 pl-3 text-base font-medium text-nowrap">
                                 <svg width="18px" id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg"
@@ -137,36 +137,47 @@
 @endsection
 
 @section('script')
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script type="text/javascript">
     document.addEventListener("DOMContentLoaded", function() {
         $(document).on('click', '.delete-address-btn', function() {
             let addressId = $(this).data('address-id');
-            let confirmation = confirm('Are you sure you want to delete this address?');
-
-            if (confirmation) {
-                $.ajax({
-                    url: '/address/delete',
-                    type: 'DELETE',
-                    data: {
-                        address_id: addressId,
-                        _token: $('meta[name="csrf-token"]').attr('content') // Include CSRF token
-                    },
-                    success: function(response) {
-                        if (response.status == true) {
-                            toastr.success(response.message, "{{trans('messages.success')}}");
-                            setTimeout(function() {
-                                window.location.reload();
-                            }, 2000);
-                        } else {
-                            toastr.error(response.message, "{{trans('messages.error')}}");
+            
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "This action cannot be undone.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '/address/delete',
+                        type: 'DELETE',
+                        data: {
+                            address_id: addressId,
+                            _token: $('meta[name="csrf-token"]').attr('content') // Include CSRF token
+                        },
+                        success: function(response) {
+                            if (response.status == true) {
+                                toastr.success(response.message, "{{trans('messages.success')}}");
+                                $('#address_div_'+addressId).hide();
+                                setTimeout(function() {
+                                    window.location.reload();
+                                }, 2000);
+                            } else {
+                                toastr.error(response.message, "{{trans('messages.error')}}");
+                            }
+                        },
+                        error: function(xhr) {
+                            toastr.error(response.message, "Failed to delete");
                         }
-                    },
-                    error: function(xhr) {
-                        toastr.error(response.message, "Failed to delete");
-                    }
-                });
-            }
+                    });
+                }
+            });
         });
     });
 </script>

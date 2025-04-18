@@ -195,13 +195,13 @@ class CheckoutController
             'billing_city' => 'required|string|max:255',
             'billing_state' => 'required|string|max:255',
             'billing_country' => 'required|string|max:255',
-            'billing_zipcode' => 'nullable|string|max:10',
+            'billing_zipcode' => 'nullable|string',
             'billing_phone' => 'required|string|max:15',  // Add phone validation
             'billing_email' => 'required|email|max:255', // Add email validation
             'shipping_name' => 'nullable|string|max:255',
             'shipping_address' => 'nullable|string|max:255',
             'shipping_city' => 'nullable|string|max:255',
-            'shipping_zipcode' => 'nullable|string|max:10',
+            'shipping_zipcode' => 'nullable|string',
             'shipping_phone' => 'nullable|string|max:15', 
             'shipping_state' => 'nullable|string|max:255',
             'shipping_country' => 'nullable|string|max:255', 
@@ -250,8 +250,8 @@ class CheckoutController
             $shipping_address = $billing_address;
         }
 
-        $shipping_address_json = json_encode($shipping_address);
-        $billing_address_json = json_encode($billing_address);
+        $shipping_address_json = json_encode($billing_address);  // check forntend billing section changed to shipping section 
+        $billing_address_json = json_encode($shipping_address);
 
         if (auth()->user()) {
             $user_id = auth()->user()->id;
