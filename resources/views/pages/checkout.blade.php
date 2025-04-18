@@ -38,7 +38,7 @@
                         </div>
                     @endif
                     @php
-                         $default_name = $default_address = $default_city = $default_state = $default_country = $default_zipcode = $default_phone ='';
+                         $default_name = $default_address = $default_city = $default_state = $default_country = $default_zipcode = $default_phone = $address_id = '';
                     @endphp
                     <div class="max-w-7xl mx-auto">
                         <form id="checkoutForm" action="{{ route('checkout.process') }}" method="POST">
@@ -48,7 +48,7 @@
                                 <div class="flex flex-col w lg:flex-row space-y-4 lg:space-y-0 lg:space-x-4 mb-5">
                                     @if (!empty($addresses[0]))
                                         @foreach ($addresses as $key => $address)
-                                            <div class="addressSelect cursor-pointer p-4 rounded-lg flex-1 mb-0 border @if ((old('address_id') == $address->id) || $address->set_default == 1) border-green-300 @endif"
+                                            <div class="addressSelect cursor-pointer p-4 rounded-lg flex-1 mb-0 border @if ((old('address_id') == $address->id) || $address->set_default == 1) active border-green-300 @endif"
                                                 id="address-{{ $address->id }}" data-id="{{ $address->id }}"
                                                 data-name="{{ $address->name }}" data-address="{{ $address->address }}"
                                                 data-city="{{ $address->city }}" data-state="{{ $address->state_name }}"  data-country="{{ $address->country_name }}"
@@ -63,6 +63,7 @@
                                            
                                             @php
                                                 if($address->set_default == 1){
+                                                    $address_id = $address->id;
                                                     $default_name = $address->name;
                                                     $default_address = $address->address;
                                                     $default_city = $address->city;
@@ -78,7 +79,7 @@
                                 </div>
                                 
                                 <div id="address-field" class="p-4 bg-gray-100 mt-3">
-                                    
+                                    <input type="hidden" id="address_id" name="address_id" value="{{ $address_id }}">
                                     <div class="w-full mb-4">
                                         <label class="block mb-1 font-medium text-gray-800 capitalize">{{trans('messages.full_name')}} *</label>
                                         <input type="text" class="w-full bg-gray-50 py-4 ps-6 rounded-lg border border-gray-300" id="billing_name" name="billing_name" placeholder="Enter your full name"  value="{{ old('billing_name', $default_name) }}">
@@ -453,33 +454,60 @@
         });
 
         $(document).on('click', '.addressSelect', function () {
-            $('.addressSelect').removeClass('border-green-300');
-            $(this).addClass('border-green-300');
-            let id = $(this).data('id');
-            let name = $(this).data('name');
-            let address = $(this).data('address');
-            let phone = $(this).data('phone');
-            let city = $(this).data('city');
-            let state = $(this).data('state');
-            let country = $(this).data('country');
-            let zipcode = $(this).data('zipcode');
+            if ($(this).hasClass('active')) {
+                // If already active, unselect and clear all fields
+                $(this).removeClass('border-green-300 active');
 
-            $('#address_id').val(id);
-            $('#billing_address').val(address);
-            $('#billing_name').val(name);
-            $('#billing_phone').val(phone);
-            $('#billing_city').val(city);
-            $('#billing_state').val(state);
-            $('#billing_country').val(country);
-            $('#billing_zipcode').val(zipcode);
-            if ($('#checkbox2').is(':checked')) {
-                $('#shipping_name').val(name);
-                $('#shipping_address').val(address);
-                $('#shipping_city').val(city);
-                $('#shipping_state').val(state);
-                $('#shipping_country').val(country);
-                $('#shipping_zipcode').val(zipcode);
-                $('#shipping_phone').val(phone);
+                $('#address_id').val('');
+                $('#billing_address').val('');
+                $('#billing_name').val('');
+                $('#billing_phone').val('');
+                $('#billing_city').val('');
+                $('#billing_state').val('');
+                $('#billing_country').val('');
+                $('#billing_zipcode').val('');
+
+                if ($('#checkbox2').is(':checked')) {
+                    $('#shipping_name').val('');
+                    $('#shipping_address').val('');
+                    $('#shipping_city').val('');
+                    $('#shipping_state').val('');
+                    $('#shipping_country').val('');
+                    $('#shipping_zipcode').val('');
+                    $('#shipping_phone').val('');
+                }
+            } else {
+                // Make this one active and fill fields
+                $('.addressSelect').removeClass('border-green-300 active');
+                $(this).addClass('border-green-300 active');
+
+                let id = $(this).data('id');
+                let name = $(this).data('name');
+                let address = $(this).data('address');
+                let phone = $(this).data('phone');
+                let city = $(this).data('city');
+                let state = $(this).data('state');
+                let country = $(this).data('country');
+                let zipcode = $(this).data('zipcode');
+
+                $('#address_id').val(id);
+                $('#billing_address').val(address);
+                $('#billing_name').val(name);
+                $('#billing_phone').val(phone);
+                $('#billing_city').val(city);
+                $('#billing_state').val(state);
+                $('#billing_country').val(country);
+                $('#billing_zipcode').val(zipcode);
+
+                if ($('#checkbox2').is(':checked')) {
+                    $('#shipping_name').val(name);
+                    $('#shipping_address').val(address);
+                    $('#shipping_city').val(city);
+                    $('#shipping_state').val(state);
+                    $('#shipping_country').val(country);
+                    $('#shipping_zipcode').val(zipcode);
+                    $('#shipping_phone').val(phone);
+                }
             }
         });
 

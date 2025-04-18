@@ -99,7 +99,7 @@
                                 <div class="flex items-center">
                                     <input id="address_type" type="radio" name="address_type" value="other" @if(old('address_type',$address->type ?? 'other') == 'other') checked @endif
                                         class="w-5 h-5 text-[#41b6e8] border-gray-300 focus:ring-blue-500">
-                                    <label for="home" class="ml-2 text-md  text-gray-700">Other</label>
+                                    <label for="other" class="ml-2 text-md  text-gray-700">Other</label>
                                 </div>
                             </div>
                             <label class="flex items-center space-x-2 cursor-pointer">

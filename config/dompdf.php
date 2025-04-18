@@ -296,6 +296,7 @@ return [
          */
         'enable_html5_parser' => true,
         'enable_autolink' => false,
+        'remote_enabled' => true
     ],
 
 ];
