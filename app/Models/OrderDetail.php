@@ -45,4 +45,6 @@ class OrderDetail extends Model
     {
         return $this->hasMany(OrderReturn::class, 'order_detail_id');
     }
+
+    
 }

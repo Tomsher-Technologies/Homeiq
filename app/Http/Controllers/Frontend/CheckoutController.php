@@ -454,7 +454,10 @@ class CheckoutController
             foreach ($request->return_qty as $orderDetailId => $qty) {
                 $orderDetail = OrderDetail::find($orderDetailId);
 
-                if ($orderDetail && $qty <= $orderDetail->quantity) {
+                $alreadyReturnedQty = $orderDetail->returns->sum('return_qty');
+                $remainingQty = $orderDetail->quantity - $alreadyReturnedQty;
+
+                if ($orderDetail && $qty <= $remainingQty) {
                     OrderReturn::create([
                         'order_id' => $order->id,
                         'order_detail_id' => $orderDetail->id,

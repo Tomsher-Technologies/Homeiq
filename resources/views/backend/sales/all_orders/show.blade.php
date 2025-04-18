@@ -169,7 +169,7 @@
                                             <strong>Product Unavailable</strong>
                                         @endif
                                         @if ($order->delivery_status == 'delivered')
-                                            @if ($returnRequest)
+                                            {{-- @if ($returnRequest)
                                                 <p><br><b>Return Status</b>: 
                                                     <span class="badge badge-lg badge-inline 
                                                         @if($returnRequest->status == 'pending') bg-warning
@@ -180,7 +180,7 @@
                                                 </p>
                                             @else
                                                 <br><p>No return request for this product.</p>
-                                            @endif
+                                            @endif --}}
                                         @endif
                                     </td>
                                    
@@ -251,6 +251,76 @@
 
         </div>
     </div>
+
+    @if ($order->orderReturns->count() > 0)
+        <div class="card">
+            <div class="card-header">
+                <h1 class="h2 fs-16 mb-0">Order Return Requests Details</h1>
+            </div>
+            <div class="card-body">
+                <div class="mt-8">
+                    <table class="w-full border-collapse border text-sm">
+                        <thead class="bg-gray-100">
+                            <tr>
+                                <th class="p-2 border text-left">#</th>
+                                <th class="p-2 border text-left">Product</th>
+                                <th class="p-2 border text-center">Return Qty</th>
+                                <th class="p-2 border text-left">Reason</th>
+                                <th class="p-2 border text-left">Date</th>
+                                <th class="p-2 border text-center">Status</th>
+                                <th class="p-2 border text-center">Balance Qty</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($order->orderReturns as $key => $return)
+                                @php
+                                    $orderDetail = $return->orderDetail;
+                                    $orderedQty = $orderDetail->quantity ?? 0;
+
+                                    // Calculate total returned up to this return request (including current one)
+                                    $totalReturnedUpToNow = $orderDetail->returns()
+                                        ->where('id', '<=', $return->id) // Assumes auto-increment ID is sequential
+                                        ->sum('return_qty');
+
+                                    $balanceAtThisReturn = $orderedQty - $totalReturnedUpToNow;
+                                @endphp
+                                <tr class="border">
+                                    <td class="p-2 border">
+                                        {{ $key+1 }}
+                                    </td>
+                                    <td class="p-2 border">
+                                        {{ $return->product->name ?? 'Product not found' }}
+                                    </td>
+                                    <td class="p-2 border text-center">
+                                        {{ $return->return_qty }}
+                                    </td>
+                                    <td class="p-2 border">
+                                        {{ $return->return_reason }}
+                                    </td>
+                                    <td class="p-2 border">
+                                        {{ date('d M, Y H:i A', strtotime($return->created_at)) }}
+                                    </td>
+                                    <td class="p-2 border text-center">
+                                        <span class="inline-block px-2 py-1 rounded-full text-white 
+                                            {{ 
+                                                $return->status === 'pending' ? 'bg-primary' : 
+                                                ($return->status === 'approved' ? 'bg-success' : 
+                                                'bg-danger') 
+                                            }}">
+                                            {{ $return->status }}
+                                        </span>
+                                    </td>
+                                    <td class="p-2 border text-center text-blue-600 font-semibold">
+                                        {{ $balanceAtThisReturn }} left
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    @endif
 @endsection
 
 @section('script')
