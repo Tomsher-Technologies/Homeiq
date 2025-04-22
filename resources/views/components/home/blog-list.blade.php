@@ -17,7 +17,7 @@
         </p>
 
         <!-- Blog Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10">
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mt-10">
             @foreach($blogs as $blog)
                 <div class="rounded-2xl overflow-hidden bg-white shadow-lg border border-gray-200 group">
                     <!-- Blog Image with Hover Zoom -->

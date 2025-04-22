@@ -22,7 +22,7 @@
             </ul>
         </div>
         <!-- Navigation Links -->
-        <nav class="hidden md:flex space-x-6 text-secondary font-medium">
+        <nav class="hidden md:flex space-x-6 text-secondary font-medium ">
             <a href="{{ route('home') }}" class="{{ is_active('home') }} hover:text-primary transition-colors duration-300">Home</a>
 
 

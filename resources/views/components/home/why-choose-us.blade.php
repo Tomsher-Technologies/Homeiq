@@ -13,7 +13,7 @@
             {{ $page->getTranslation('heading6',$lang) }}
         </p>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 mt-10">
+        <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-12 gap-8 mt-10">
             <!-- Left Side (Styled Circular Images) -->
             <div class="lg:col-span-5 flex flex-wrap justify-center gap-4 lg:gap-6">
                 @php
