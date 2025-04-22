@@ -13,7 +13,7 @@
             {{ $page->getTranslation('heading6',$lang) }}
         </p>
 
-        <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-12 gap-8 mt-10">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 xl:grid-cols-12 gap-8 mt-10">
             <!-- Left Side (Styled Circular Images) -->
             <div class="lg:col-span-5 flex flex-wrap justify-center gap-4 lg:gap-6">
                 @php
@@ -52,7 +52,7 @@
     @foreach($features as $feature)
         <div class=" p-6 rounded-2xl border border-[#41B6E8] bg-[rgba(255,255,255,0.50)] shadow-md backdrop-blur-lg flex flex-col items-start text-left">
             <!-- Icon -->
-            <img src="{{ uploaded_asset($feature['icon']) }}" class="w-[40px] h-[40px] mb-3" alt="{{ $feature['title'] }} Icon">
+            <img src="{{ uploaded_asset($feature['icon']) }}" class="w-[45px] h-[45px] mb-3" alt="{{ $feature['title'] }} Icon">
             <!-- Title -->
             <h3 class="text-lg font-semibold text-gray-800">{{ $feature['title'] }}</h3>
             <!-- Description -->
