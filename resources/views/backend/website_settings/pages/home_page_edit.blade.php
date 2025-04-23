@@ -286,7 +286,7 @@
                                         <div class="input-group-text bg-soft-secondary font-weight-medium">Browse</div>
                                     </div>
                                     <div class="form-control file-amount">Choose File</div>
-                                    <input value="{{ $page->image }}" type="hidden" name="image"  class="selected-files">
+                                    <input value="{{ $page->image9 }}" type="hidden" name="image9"  class="selected-files">
                                 </div>
                                 <div class="file-preview box sm"></div>
                             </div>

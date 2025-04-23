@@ -3,26 +3,26 @@
 @section('content')
 
 <div class="container mx-auto py-12 px-6 lg:px-12">
-    <div class="max-w-2xl m-auto bg-white shadow-2xl rounded-2xl p-8 transform transition duration-300">
+    <div class="max-w-2xl m-auto bg-white shadow-2xl rounded-2xl p-4 xl:p-8 transform transition duration-300">
     <h1 class="text-4xl font-extrabold text-center text-gray-800 mb-6">Register</h1>
         
         <form action="{{ url('register') }}" method="POST" class="space-y-6" autocomplete="off">
             @csrf
             <div>
                 <label for="name" class="block text-gray-700 font-medium mb-1">Full Name</label>
-                <input type="text" id="name"  class="w-full mt-1 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm" name="name" value="{{ old('name') }}" placeholder="Enter name.." pattern="[A-Za-z ]+" title="Only letters and spaces are allowed.">
+                <input type="text" id="name"  class="w-full text-xs xl:text-[16px] mt-1 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm" name="name" value="{{ old('name') }}" placeholder="Enter name.." pattern="[A-Za-z ]+" title="Only letters and spaces are allowed.">
                 @error('name') <span class="text-red-600">{{ $message }}</span> @enderror
             </div>
             
             <div>
                 <label for="email" class="block text-gray-700 font-medium mb-1">Email</label>
-                <input type="email" id="email" placeholder="Enter email.." class="w-full mt-1 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm" autocomplete="off" name="email" value="{{ old('email') }}">
+                <input type="email" id="email" placeholder="Enter email.." class="w-full text-xs xl:text-[16px] mt-1 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm" autocomplete="off" name="email" value="{{ old('email') }}">
                 @error('email') <span class="text-red-600">{{ $message }}</span> @enderror
             </div>
 
             <div>
                 <label class="block text-gray-700 font-medium mb-2">Phone Number</label>
-                <input type="tel" name="phone" id="phone" autocomplete="off" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary outline-none"  value="{{ old('phone') }}" placeholder="Enter phone..">
+                <input type="tel" name="phone" id="phone" autocomplete="off" class="w-full text-xs xl:text-[16px] px-4 py-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary outline-none"  value="{{ old('phone') }}" placeholder="Enter phone..">
                 @error('phone') <span class="text-red-600">{{ $message }}</span> @enderror
             </div>
             
@@ -37,7 +37,7 @@
             
                 <div class="relative">
                     <!-- Password Input -->
-                    <input :type="show ? 'text' : 'password'" id="password" name="password" class="w-full p-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm" placeholder="Enter password" autocomplete="new-password" >
+                    <input :type="show ? 'text' : 'password'" id="password" name="password" class="w-full text-xs xl:text-[16px] p-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm" placeholder="Enter password" autocomplete="new-password" >
             
                     <!-- Toggle Icon Inside Input on the Right -->
                     <button type="button" @click="show = !show" class="absolute inset-y-0 right-5 flex items-center text-gray-500 hover:text-gray-700 focus:outline-none">
@@ -73,7 +73,7 @@
                 <div class="relative">
                     <!-- Password Input -->
                     <input :type="show ? 'text' : 'password'" id="password_confirmation" name="password_confirmation"
-                        class="w-full p-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm" placeholder="Enter confirm password.." autocomplete="new-password" >
+                        class="w-full text-xs xl:text-[16px] p-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm" placeholder="Enter confirm password.." autocomplete="new-password" >
             
                     <!-- Toggle Icon Inside Input on the Right -->
                     <button type="button" @click="show = !show" class="absolute inset-y-0 right-5 flex items-center text-gray-500 hover:text-gray-700 focus:outline-none" >

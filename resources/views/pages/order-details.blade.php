@@ -6,11 +6,11 @@
             <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-6xl">
                 @if (!empty($order))
                     <!-- Header -->
-                    <div class="flex justify-between items-start">
+                    <div class="flex justify-between items-start gap-5 flex-wrap sm:flex-wrap md:flex-nowrap xl:flex-nowrap">
                         <div class="flex items-start">
 
                             <div>
-                                <div class="flex">
+                                <div class="flex flex-wrap sm:flex-wrap md:flex-nowrap xl:flex-nowrap">
                                     <h1 class="text-2xl font-semibold">Order #{{ $order->code }}</h1>
 
                                     @if ($order->delivery_status == 'delivered')
@@ -22,7 +22,7 @@
                                             {{ ucfirst(str_replace('_', ' ', $order->delivery_status)) }}
                                         </span>
                                     @else
-                                        <span class="px-3 py-1 rounded-full text-sm bg-yellow-200 text-yellow-800  ml-5">
+                                        <span class="px-3 py-1 rounded-full text-sm bg-yellow-200 text-yellow-800 my-2 xl:my-0  ml-0 md:ml-5 xl:ml-5">
                                             {{ ucfirst(str_replace('_', ' ', $order->delivery_status)) }}
                                         </span>
                                     @endif
@@ -215,7 +215,7 @@
                         
                     </div>
 
-                    <div class="mb-4 flex">
+                    <div class="mb-4 flex flex-wrap sm:flex-wrap md:flex-nowrap xl:flex-nowrap gap-4">
                         <!-- Billing Address -->
                         <div class="md:w-1/2 mt-6 border-t border-gray-200 pt-4">
                             <h2 class="text-xl font-semibold mb-4">Billing Address</h2>

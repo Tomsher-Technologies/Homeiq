@@ -17,7 +17,7 @@
         </h2>
 
         <div class="flex justify-center items-center">
-            <div class="bg-white rounded-lg shadow-md p-8 w-full max-w-4xl">
+            <div class="bg-white rounded-lg shadow-md p-0 xl:p-8 w-full max-w-4xl">
                 <form id="addressForm" action="{{ route('save-address') }}" method="POST">
                     @csrf
                     <div class="p-4 bg-gray-100  mt-3">
@@ -108,7 +108,7 @@
                             </label>
                         </div>
                     </div>
-                    <div class="grid grid-cols-2 gap-4">
+                    <div class="grid grid-cols-2 gap-4 mt-4">
                         <a class="flex items-center justify-center px-4 py-2.5 text-sm font-bold text-center text-[#41b6e8] border border-[#41b6e8] transition-all duration-200 hover:text-[#41b6e8]  hover:bg-[#d7f0db] " href="{{ route('my-address') }}">Cancel</a>
                         <button class="flex items-center justify-center px-4 py-2.5 text-sm font-bold text-white transition-all border  border-[#41b6e8] duration-200 bg-[#41b6e8]  hover:text-[#41b6e8]  hover:bg-[#d7f0db]" type="submit">Save</button>
                     </div>

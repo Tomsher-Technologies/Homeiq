@@ -3,7 +3,7 @@
 @section('title', $blog->name . ' - '.env('APP_NAME'))
 
 @section('content')
-    <div class="container mx-auto py-12 max-w-3xl">
+    <div class="container mx-auto px-4 sm:x-4 md:x-4 xl:x-0 py-12 max-w-3xl">
         <!-- Featured Image -->
         <img src="{{ uploaded_asset(($blog->image)) }}" class="w-full h-64 object-cover rounded-lg" alt="{{ $blog->name }}" loading="lazy" onerror="this.onerror=null;this.src='{{ asset('images/blogs/default-blog.jpg') }}';">
         

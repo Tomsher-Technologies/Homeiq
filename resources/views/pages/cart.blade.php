@@ -1,13 +1,13 @@
 @extends('layouts.app')
 @section('title', 'Cart - '.env('APP_NAME'))
 @section('content')
-    <section class="container mx-auto py-12 px-6 lg:px-12">
+    <section class="container mx-auto py-4 px-2 lg:px-12">
         <div class="mx-auto px-4 2xl:px-0">
             <!-- Section Title -->
             <h2 class="text-3xl md:text-4xl text-left">
                 My Cart</span>
             </h2>
-            <div class="mt-6 sm:mt-8 md:gap-6 lg:flex lg:items-start xl:gap-8">
+            <div class="mt-6 sm:mt-8 md:gap-6 xl:flex flex-wra lg:items-start xl:gap-8">
                 <div class="mx-auto w-full flex-none lg:max-w-2xl xl:max-w-4xl">
                     <div class="space-y-6">
 

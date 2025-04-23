@@ -18,7 +18,7 @@
         </p>
 
         <!-- Blog Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-10" id="blog-container">
+        <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-3 gap-8 mt-10" id="blog-container">
             @if(!empty($blogs[0]))
                 @foreach($blogs as $blog)
                     <div class="bg-white rounded-2xl shadow-lg border border-gray-200 group overflow-hidden">

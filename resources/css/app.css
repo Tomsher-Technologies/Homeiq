@@ -78,4 +78,8 @@
     transition: transform 0.3s;
   }
 
+
+  .technical_specs table{
+    width: 100%!important;
+  }
   

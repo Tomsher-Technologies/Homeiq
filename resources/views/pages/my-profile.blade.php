@@ -5,7 +5,7 @@
    <h1 class="text-3xl mb-8 text-center">My Profile</h1>
 
    <div class="flex justify-center items-center">
-            <div class="bg-white rounded-lg shadow-md p-8 w-full max-w-4xl">
+            <div class="bg-white rounded-lg shadow-md p-4 xl:p-8 w-full max-w-4xl">
                 
                 <div class="mt-3 flex justify-end items-center">
                     <div class="flex space-x-2">

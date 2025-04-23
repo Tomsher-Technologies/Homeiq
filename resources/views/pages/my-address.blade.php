@@ -27,7 +27,7 @@
                 @foreach ($addresses as $key => $address)
                     <!-- address -->
                     <div class="flex-1 duration-150 border hover:shadow-lg" id="address_div_{{ $address->id }}">
-                        <div class="flex items-center justify-between border-b">
+                        <div class="flex items-center flex-wrap xl:flex-nowrap gap-y-3 justify-between border-b p-3 xl:-p-0">
                             <p class="flex items-center gap-2 pl-3 text-base font-medium text-nowrap">
                                 <svg width="18px" id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 359.31 409.6">

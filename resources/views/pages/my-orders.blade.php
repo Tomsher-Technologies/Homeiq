@@ -28,17 +28,17 @@
                     @if (!empty($orderList[0]))
                         @foreach ($orderList as $key => $order)
                             <tr class="bg-white border-b hover:bg-gray-50">
-                                <th scope="row" class="text-center px-6 py-2 font-normal whitespace-nowrap">{{$key+1}}</th>
-                                <td class="text-center px-6 py-2 font-medium text-gray-900 whitespace-nowrap leading-4">
+                                <th scope="row" class="text-center px-6 py-8 font-normal whitespace-nowrap">{{$key+1}}</th>
+                                <td class="text-center px-6 py-5 font-medium text-gray-900 whitespace-nowrap leading-4">
                                     {{$order->code}}
                                 </td>
-                                <td class="text-center px-6 py-2 font-normal text-gray-900 whitespace-nowrap">
+                                <td class="text-center px-6 py-8 font-normal text-gray-900 whitespace-nowrap">
                                     {{ count($order->orderDetails) }}
                                 </td>
-                                <td class="text-center px-6 py-2 font-normal text-gray-900 whitespace-nowrap">
+                                <td class="text-center px-6 py-8 font-normal text-gray-900 whitespace-nowrap">
                                     {{ date('d-m-Y H:i A',strtotime($order->created_at))}}
                                 </td>
-                                <td class="text-center px-6 py-2 font-normal text-gray-900 whitespace-nowrap">
+                                <td class="text-center px-6 py-8 font-normal text-gray-900 whitespace-nowrap">
                                     @if ($order->delivery_status == 'delivered')
                                         <span class="p-2 text-sm text-[#48a839] bg-green-100 rounded">
                                             {{ ucfirst(str_replace('_', ' ', $order->delivery_status)) }}
@@ -54,10 +54,10 @@
                                     @endif
                                     
                                 </td>
-                                <td class="text-center px-6 py-2 font-normal text-gray-900 whitespace-nowrap">
+                                <td class="text-center px-6 py-8 font-normal text-gray-900 whitespace-nowrap">
                                     {{ env('DEFAULT_CURRENCY') }} {{$order->grand_total}}
                                 </td>
-                                <td class="text-center px-6 py-2 text-center">
+                                <td class="text-center px-6 py-8 text-center">
                                     <a href="{{route('order-details',['code'=> $order->code])}}" class="font-normal text-white bg-[#41b6e8] hover:bg-[#3498db] hover:text-black px-3 py-2 hover:underline"
                                         type="button">View Details</a>
                                 </td>

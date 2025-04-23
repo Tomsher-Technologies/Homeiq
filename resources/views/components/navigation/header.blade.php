@@ -1,10 +1,10 @@
 <header class="bg-white shadow-md w-full fixed top-0 z-50">
-    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+    <div class="mx-auto px-6 py-4 flex justify-between items-center">
         <!-- Logo -->
         <a href="{{ route('home') }}" class="flex items-center">
             <img src="{{ asset('images/logo.svg') }}" alt="{{env('APP_NAME')}} Logo" class="h-[50px]">
         </a>
-        <div class="relative hidden md:flex w-96 flex-col">
+        <div class="relative hidden md:flex w-[25%] flex-col">
             <!-- Search Bar -->
             <form class="search-popup__form w-full" action="{{ route('products.index') }}" method="get">
                 <div class="flex items-center bg-gray-100 px-2 py-1 rounded-full w-full shadow-sm hover:shadow-md transition-shadow duration-300">

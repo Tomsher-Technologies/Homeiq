@@ -7,7 +7,7 @@
    <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="default-tab" data-tabs-toggle="#default-tab-content" role="tablist">
       @foreach ($faq_categories as $key => $category)
          <li class="me-2" role="presentation">
-            <button class="inline-block p-4 border-b-2 text-[#41b6e8] font-bold rounded-t-lg" id="faq-{{$category->slug}}" data-tabs-target="#{{$category->slug}}" type="button" role="tab" aria-controls="{{$category->slug}}" @if($key == 0) aria-selected="true" @else aria-selected="false" @endif>{{$category->name}}</button>
+            <button class="inline-block p-4 border-b-2 text-[#41b6e8] !active:text-[#41b6e8] !hover:text-[#41b6e8] font-bold rounded-t-lg" id="faq-{{$category->slug}}" data-tabs-target="#{{$category->slug}}" type="button" role="tab" aria-controls="{{$category->slug}}" @if($key == 0) aria-selected="true" @else aria-selected="false" @endif>{{$category->name}}</button>
          </li>
       @endforeach
     

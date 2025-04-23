@@ -13,7 +13,7 @@
         <!-- Products Grid -->
         <div class="">
             @if (!empty($result[0]))
-                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-[20px] gap-y-[30px] mt-[40px]">
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-[20px] gap-y-[30px] mt-[40px]">
                     @foreach ($result as $res)
                         @php
                             $checkCartStatus = checkCartProduct($res['product']['sku'], $res['product']['slug']);
@@ -31,7 +31,7 @@
                                 <div class="overflow-hidden rounded-lg">
                                     <img src="{{ $res['product']['thumbnail_image']}}"
                                         alt="{{$res['product']['name']}}"
-                                        class="w-full h-[300px] object-cover rounded-lg transition-transform duration-[400ms] ease-in-out group-hover:scale-[1.05]">
+                                        class="w-full object-cover rounded-lg transition-transform duration-[400ms] ease-in-out group-hover:scale-[1.05]">
                                 </div>
                             </a>
 

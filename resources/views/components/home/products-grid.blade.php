@@ -91,10 +91,8 @@
 </div>
 
 
-
-
         <!-- Products Grid -->
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-[20px] gap-y-[30px] mt-[40px]">
+        <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5 2xl:grid-cols-5 gap-x-[20px] gap-y-[30px] mt-[40px]">
             @foreach ($products as $product)
                 <x-product-card :product="$product" :lang="$lang" />
             @endforeach

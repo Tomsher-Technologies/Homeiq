@@ -266,14 +266,14 @@
                                 @foreach ($response['products'] as $key => $prod)
                                     <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm   md:p-3">
                                         <div
-                                            class="space-y-4 md:flex md:items-center md:justify-between md:gap-6 md:space-y-0">
+                                            class="space-y-4 flex-wrap md:flex md:items-center md:justify-between md:gap-6 md:space-y-0">
                                             <a href="{{ route('products.show', ['slug' => $prod['product']['slug']]) }}"
                                                 class="shrink-0 md:order-1">
                                                 <img class=" h-10 w-10 dark:block rounded-md"
                                                     src="{{ $prod['product']['image'] }}"
                                                     alt=" {{ $prod['product']['name'] }}" />
                                             </a>
-                                            <div class="flex items-center justify-between md:order-3 md:justify-end ">
+                                            <div class="flex flex-wrap items-center justify-between md:order-3 md:justify-end ">
                                                 <div class="text-end md:order-4 md:w-32">
                                                     <p class="text-base text-lg font-semibold text-gray-900 text-black">
                                                         {{ env('DEFAULT_CURRENCY') }} {{ $prod['main_price'] }}

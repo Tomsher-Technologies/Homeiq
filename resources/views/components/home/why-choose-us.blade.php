@@ -13,7 +13,7 @@
             {{ $page->getTranslation('heading6',$lang) }}
         </p>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 xl:grid-cols-12 gap-8 mt-10">
+        <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-12 xl:grid-cols-12 2xl:grid-cols-12 gap-8 mt-10">
             <!-- Left Side (Styled Circular Images) -->
             <div class="lg:col-span-5 flex flex-wrap justify-center gap-4 lg:gap-6">
                 @php
@@ -43,7 +43,7 @@
      style="background: url('{{ asset('images/bg-why-choose.png') }}') center/cover no-repeat;">
     @php
         $features = [
-            ['icon' => $page->image, 'title' => $page->getTranslation('title1', $lang), 'description' => $page->getTranslation('content1', $lang)],
+            ['icon' => $page->image9, 'title' => $page->getTranslation('title1', $lang), 'description' => $page->getTranslation('content1', $lang)],
             ['icon' => $page->image7, 'title' => $page->getTranslation('title2', $lang), 'description' => $page->getTranslation('content2', $lang)],
             ['icon' => $page->image8, 'title' => $page->getTranslation('title3', $lang), 'description' => $page->getTranslation('content3', $lang)],
             ['icon' => $page->image, 'title' => $page->getTranslation('heading7', $lang), 'description' => $page->getTranslation('content4', $lang)]

@@ -5,7 +5,7 @@
 @section('content')
 
 <div class="container mx-auto py-12 px-6 lg:px-12">
-    <div class="max-w-2xl m-auto bg-white shadow-2xl rounded-2xl p-8 transform transition duration-300">
+    <div class="max-w-2xl m-auto bg-white shadow-2xl rounded-2xl p-4 xl:p-8 transform transition duration-300">
         <h1 class="text-4xl font-extrabold text-center text-gray-800 mb-6">Login</h1>
         
         <form action="{{ url('login') }}" method="POST" class="space-y-6">
@@ -52,12 +52,12 @@
             </div>
 
             
-            <div class="flex justify-between items-center">
+            <div class="flex flex-wrap xl:flex-nowrap justify-between items-center">
                 <label class="flex items-center">
                     <input type="checkbox" class="mr-2"  name="remember" id="remember">
                     <span class="text-gray-700 text-sm">Remember me</span>
                 </label>
-                <a href="{{ route('forgot-password') }}" class="text-blue-500 text-sm font-medium hover:underline">Forgot password?</a>
+                <a href="{{ route('forgot-password') }}" class="text-blue-500 text-sm font-medium hover:underline mt-2 xl:mt-0">Forgot password?</a>
             </div>
             
             <button type="submit" class="w-full bg-primary text-white py-4 rounded-full hover:bg-[#3498db] transition-all duration-300 transform hover:scale-105 font-medium text-sm">Login</button>

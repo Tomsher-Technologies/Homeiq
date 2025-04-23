@@ -122,9 +122,9 @@
 
 
         <!-- Middle Section: Contact & Links in One Row -->
-        <div class="grid grid-cols-2 lg:grid-cols-5 gap-4 mt-8 items-start">
+        <div class="grid grid-cols-1  sm:grid-cols-2 lg:grid-cols-5 gap-4 mt-8 items-start">
             <!-- Contact & Address (Left Side) with Right Border -->
-            <div class="col-span-1 border-r border-gray-600 pr-6">
+            <div class="col-span-1 border-0 md:border-r lg:border-r xl:border-r border-gray-600 pr-6 ">
                 <h3 class="text-gray-300 font-semibold text-sm">{{ get_setting('footer_contact_title') }}</h3>
                 <a href="tel:{{ get_setting('footer_phone') }}" class="text-gray-400 text-sm mt-1">
                     {{ get_setting('footer_phone') }}
@@ -144,8 +144,8 @@
             @endphp
 
             <!-- Smart Solutions -->
-            <div>
-                <h3 class="text-gray-300 font-semibold text-sm">{{ get_setting('footer_category_title_1') }}</h3>
+            <div class="ps-0 xl:ps-l">
+                <h3 class="text-gray-300 font-semibold text-sm ">{{ get_setting('footer_category_title_1') }}</h3>
                 <ul class="text-gray-400 text-sm mt-3 space-y-2">
                     @if(!empty($details['footer_categories']))
                         @foreach($details['footer_categories'] as $footer_categories)
@@ -156,7 +156,7 @@
             </div>
 
             <!-- Shop -->
-            <div>
+            <div class="pt-6 sm:pt-6 md:pt-6 lg:pt-0 xl:pt-0 lg:pt-0 xl:pt-0 2xl:pt-0">
                 <h3 class="text-gray-300 font-semibold text-sm">{{ get_setting('footer_category_title_2') }}</h3>
                 <ul class="text-gray-400 text-sm mt-3 space-y-2">
                     
