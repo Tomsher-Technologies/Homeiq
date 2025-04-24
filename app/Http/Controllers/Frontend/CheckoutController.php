@@ -196,13 +196,13 @@ class CheckoutController
             'billing_state' => 'required|string|max:255',
             'billing_country' => 'required|string|max:255',
             'billing_zipcode' => 'nullable|string',
-            'billing_phone' => 'required|string|max:15',  // Add phone validation
+            'billing_phone' => 'required|string|min:10',  // Add phone validation
             'billing_email' => 'required|email|max:255', // Add email validation
             'shipping_name' => 'nullable|string|max:255',
             'shipping_address' => 'nullable|string|max:255',
             'shipping_city' => 'nullable|string|max:255',
             'shipping_zipcode' => 'nullable|string',
-            'shipping_phone' => 'nullable|string|max:15', 
+            'shipping_phone' => 'nullable|string|min:10', 
             'shipping_state' => 'nullable|string|max:255',
             'shipping_country' => 'nullable|string|max:255', 
         ],[
@@ -213,10 +213,11 @@ class CheckoutController
             'billing_country.required' => 'This field is required.',
             'billing_zipcode.required' => 'This field is required.',
             'billing_phone.required' => 'This field is required.',
-            'billing_phone.max' => 'The phone number must not exceed 15 characters.',
+            'billing_phone.min' => 'The phone number must be at least 10 digits.',
             'billing_email.required' => 'This field is required.',
             'billing_email.email' => 'The email address must be a valid email.',
             'billing_email.max' => 'The email address must not exceed 255 characters.',
+            'shipping_phone.min' => 'The phone number must be at least 10 digits.',
         ]);
 
         // $address_id = $request->address_id ?? null;
