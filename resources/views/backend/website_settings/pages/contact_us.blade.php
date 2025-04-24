@@ -80,6 +80,13 @@
                     </div>
                 </div>
 
+                <div class="form-group row">
+                    <label class="col-sm-2 col-from-label" for="sub_heading2">Google Map Link <span
+                            class="text-danger">*</span> </label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" placeholder="Enter.." name="content1" value="{{ $page->getTranslation('content1', $lang) }}">
+                    </div>
+                </div>
                 
             </div>
 
