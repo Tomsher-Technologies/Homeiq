@@ -604,11 +604,30 @@ function cartCount()
     if (auth()->user()) {
         $user_id = auth()->user()->id;
         if ($guest_token) {
-            Cart::where('temp_user_id', $guest_token)
-                ->update([
-                        'user_id' => $user_id,
-                        'temp_user_id' => null
-                ]);
+
+            // Get all guest cart items
+            $guestCartItems = Cart::where('temp_user_id', $guest_token)->get();
+
+            foreach ($guestCartItems as $guestItem) {
+                // Check if the logged-in user already has the same product in the cart
+                $existingItem = Cart::where('user_id', $user_id)
+                    ->where('product_id', $guestItem->product_id)
+                    ->first();
+        
+                if ($existingItem) {
+                    // Update quantity
+                    $existingItem->quantity += $guestItem->quantity;
+                    $existingItem->save();
+        
+                    // Delete the guest cart item
+                    $guestItem->delete();
+                } else {
+                    // Assign to logged-in user
+                    $guestItem->user_id = $user_id;
+                    $guestItem->temp_user_id = null;
+                    $guestItem->save();
+                }
+            }
         }
     } 
     $user = getUser();
