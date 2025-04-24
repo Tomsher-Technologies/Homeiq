@@ -445,11 +445,11 @@
                 $('#shipping_zipcode').val($('#billing_zipcode').val());
                 $('#shipping_phone').val($('#billing_phone').val());
                 
-                $('.shipping-address input').prop('readonly', true);
+                $('.shipping-address input').not('#billing_email').prop('readonly', true);
                 $('.shipping-address textarea').prop('readonly', true);
             } else {
                 $('.shipping-address textarea').val('').prop('readonly', false);
-                $('.shipping-address input').val('').prop('readonly', false);
+                $('.shipping-address input').not('#billing_email').val('').prop('readonly', false);
             }
         });
 
