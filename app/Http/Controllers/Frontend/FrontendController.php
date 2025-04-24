@@ -302,16 +302,16 @@ class FrontendController extends Controller
         ];
         
         $this->loadSEO($seo);
-        $recentBlogs = Blog::where('id', '!=', $blogs->id)
+        $recentBlogs = Blog::where('id', '!=', $blogs->id)->where('status', 1)
                                     ->orderBy('blog_date', 'desc')
                                     ->take(2)
                                     ->get();
-        $previous = Blog::where('id', '<', $blogs->id)
+        $previous = Blog::where('id', '<', $blogs->id)->where('status', 1)
                         ->orderBy('blog_date', 'desc')
                         ->first();
                             
         // Get Next Blog (Newer)
-        $next = Blog::where('id', '>', $blogs->id)
+        $next = Blog::where('id', '>', $blogs->id)->where('status', 1)
                         ->orderBy('blog_date', 'asc')
                         ->first();
         return view('pages.blog-details', ['blog' => $blogs, 'lang' => $lang, 'recentBlogs' => $recentBlogs, 'previousBlog' => $previous, 'nextBlog' => $next]);
