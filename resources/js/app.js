@@ -155,17 +155,18 @@ function toggleFAQ(id, btn) {
         const accountBtn = document.getElementById("accont-btn");
         const accountDrawer = document.getElementById("account-drawer");
         const closeAccount = document.getElementById("close-account"); // Corrected ID
+        
+        if (accountBtn && accountDrawer && closeAccount) {
+            // Open drawer
+            accountBtn.addEventListener("click", function (event) {
+                event.preventDefault();
+                accountDrawer.classList.remove("translate-x-full"); // Slide in
+            });
 
-        // Open drawer
-        accountBtn.addEventListener("click", function (event) {
-            event.preventDefault();
-            accountDrawer.classList.remove("translate-x-full"); // Slide in
-        });
-
-        // Close drawer
-        closeAccount.addEventListener("click", function () {
-            accountDrawer.classList.add("translate-x-full"); // Slide out
-        });
-
+            // Close drawer
+            closeAccount.addEventListener("click", function () {
+                accountDrawer.classList.add("translate-x-full"); // Slide out
+            });
+        }
        
     });

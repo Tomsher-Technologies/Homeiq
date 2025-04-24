@@ -475,6 +475,31 @@
         });
 
       
+        
     </script>
+    <script>
+        const menuButton = document.getElementById('menu-button');
+        const drawerMenu = document.getElementById('drawer-menu');
+        const drawerOverlay = document.getElementById('drawer-overlay');
+        const closeMenuButton = document.getElementById('close-menu');
+    
+        // Open menu
+        menuButton.addEventListener('click', () => {
+          drawerMenu.classList.add('open');
+          drawerOverlay.classList.remove('hidden');
+        });
+    
+        // Close menu
+        closeMenuButton.addEventListener('click', () => {
+          drawerMenu.classList.remove('open');
+          drawerOverlay.classList.add('hidden');
+        });
+    
+        // Close menu when overlay is clicked
+        drawerOverlay.addEventListener('click', () => {
+          drawerMenu.classList.remove('open');
+          drawerOverlay.classList.add('hidden');
+        });
+      </script>
 </body>
 </html>
