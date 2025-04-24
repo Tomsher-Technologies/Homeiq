@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Brand;
-use App\Models\Occasion;
+use App\Models\Service;
 use Cache;
 use Harimayco\Menu\Models\MenuItems;
 use Illuminate\Http\Request;
@@ -23,7 +23,9 @@ class WebsiteController extends Controller
 	public function footer(Request $request)
 	{
 		$lang = $request->lang;
-		return view('backend.website_settings.footer', compact('lang'));
+		$categories = Category::where('is_active',1)->with('childrenCategories')->get();
+		$services = Service::where('status',1)->orderBy('name', 'asc')->get();
+		return view('backend.website_settings.footer', compact('lang','services','categories'));
 	}
 	public function pages(Request $request)
 	{

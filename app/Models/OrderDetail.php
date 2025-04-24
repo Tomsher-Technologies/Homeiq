@@ -40,4 +40,11 @@ class OrderDetail extends Model
     {
         return $this->hasOne(OrderTransfers::class);
     }
+
+    public function returns()
+    {
+        return $this->hasMany(OrderReturn::class, 'order_detail_id');
+    }
+
+    
 }

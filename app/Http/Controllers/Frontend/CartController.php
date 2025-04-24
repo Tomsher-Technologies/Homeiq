@@ -9,6 +9,7 @@ use App\Models\ProductStock;
 use App\Models\Coupon;
 use App\Models\CouponUsage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cookie;
 use Auth;
 
 class CartController extends Controller
@@ -16,10 +17,10 @@ class CartController extends Controller
     public function index()
     {
         $lang = getActiveLanguage();
-        $user_id = '';
+        $user_id = $temp_user_id = '';
         $guest_token = request()->cookie('guest_token') ?? uniqid('guest_', true);
 
-       
+        $user = getUser();
         if (auth()->user()) {
             $user_id = auth()->user()->id;
             if ($guest_token) {
@@ -79,20 +80,23 @@ class CartController extends Controller
                 $can_use_coupon = false;
                 if ($coupon) {               
                     if (strtotime(date('d-m-Y')) >= $coupon->start_date && strtotime(date('d-m-Y')) <= $coupon->end_date) {
-                        if($user_id != ''){
-                            if($coupon->one_time_use == 1){
-                                $coupon_used = CouponUsage::where('user_id', $user_id)->where('coupon_id', $coupon->id)->first();
-                                if ($coupon_used == null) {
-                                    $can_use_coupon = true;
-                                }
+                        if($coupon->one_time_use == 1){
+                            if($temp_user_id != null){
+                                $coupon_used = CouponUsage::where('guest_token', $temp_user_id)->where('coupon_id', $coupon->id)->first();
                             }else{
+                                $coupon_used = CouponUsage::where('user_id', $user_id)->where('coupon_id', $coupon->id)->first();
+                            }
+                            if ($coupon_used == null) {
                                 $can_use_coupon = true;
                             }
+                        }else{
+                            $can_use_coupon = true;
                         }
                     } else {
                         $can_use_coupon = false;
                     }
                 }
+                
                 if ($can_use_coupon) {
                     $coupon_details = json_decode($coupon->details);
                     if ($coupon->type == 'cart_base') {
@@ -105,7 +109,11 @@ class CartController extends Controller
                             $shipping += $cartItem['shipping_cost'] ;
                         }
 
-                        $sum = $subtotal + $tax + $shipping;
+                //                         echo 'subtotal  =  '.$subtotal;
+                //                         echo '<br>tax   ==  '.$tax;
+                //                         echo '<br>shipping  == '.$shipping;
+                // die;
+                        $sum = $subtotal + $tax ;
 
                         if ($sum >= $coupon_details->min_buy) {
                             if ($coupon->discount_type == 'percent') {
@@ -117,13 +125,25 @@ class CartController extends Controller
                                 $coupon_discount = $coupon->discount;
                             }
 
-                            if($user_id != ''){
+                            if($user['users_id_type'] == 'temp_user_id'){
+                                Cart::where('temp_user_id', $temp_user_id)->update([
+                                    'discount' => $coupon_discount / count($carts),
+                                    'coupon_code' => $coupon_code,
+                                    'coupon_applied' => 1
+                                ]);
+                            }else{
                                 Cart::where('user_id', $user_id)->update([
                                     'discount' => $coupon_discount / count($carts),
                                     'coupon_code' => $coupon_code,
                                     'coupon_applied' => 1
                                 ]);
-                            } 
+                            }
+                        }else{
+                            Cart::where('user_id', $user_id)->update([
+                                'discount' => 0.00,
+                                'coupon_code' => NULL,
+                                'coupon_applied' => 0
+                            ]);
                         }
                     }elseif ($coupon->type == 'product_base') {
                         $coupon_discount = 0;
@@ -138,14 +158,64 @@ class CartController extends Controller
                                 }
                             }
                         }
+                        if($coupon_discount != 0){
+                            if($user['users_id_type'] == 'temp_user_id'){
+                                Cart::where('temp_user_id', $temp_user_id)->update([
+                                    'discount' => $coupon_discount / count($carts),
+                                    'coupon_code' => $coupon_code,
+                                    'coupon_applied' => 1
+                                ]);
+                            }else{
+                                Cart::where('user_id', $user_id)->update([
+                                    'discount' => $coupon_discount / count($carts),
+                                    'coupon_code' => $coupon_code,
+                                    'coupon_applied' => 1
+                                ]);
+                            }
+                        }else{
 
-                        if($user_id != ''){
-                            Cart::where('user_id', $user_id)->update([
-                                'discount' => $coupon_discount / count($carts),
-                                'coupon_code' => $coupon_code,
-                                'coupon_applied' => 1
+                            if($user['users_id_type'] == 'temp_user_id'){
+                                Cart::where('temp_user_id', $temp_user_id)->update([
+                                    'discount' => 0.00,
+                                    'coupon_code' => NULL,
+                                    'coupon_applied' => 0
+                                ]);
+                            }else{
+                                Cart::where('user_id', $user_id)->update([
+                                    'discount' => 0.00,
+                                    'coupon_code' => NULL,
+                                    'coupon_applied' => 0
+                                ]);
+                            }
+                        }
+                    }
+                }else{
+                    if($user['users_id_type'] == 'temp_user_id'){
+                        if($temp_user_id != ''){
+                            Cart::where('temp_user_id', $temp_user_id)->update([
+                                'discount' => 0.00,
+                                'coupon_code' => NULL,
+                                'coupon_applied' => 0
                             ]);
                         }
+                    }else{
+                        if($user_id != ''){
+                            Cart::where('user_id', $user_id)->update([
+                                'discount' => 0.00,
+                                'coupon_code' => NULL,
+                                'coupon_applied' => 0
+                            ]);
+                        }
+                    }
+                }
+            }else{
+                if($user['users_id_type'] == 'temp_user_id'){
+                    if($temp_user_id != ''){
+                        Cart::where('temp_user_id', $temp_user_id)->update([
+                            'discount' => 0.00,
+                            'coupon_code' => NULL,
+                            'coupon_applied' => 0
+                        ]);
                     }
                 }else{
                     if($user_id != ''){
@@ -155,14 +225,6 @@ class CartController extends Controller
                             'coupon_applied' => 0
                         ]);
                     }
-                }
-            }else{
-                if($user_id != ''){
-                    Cart::where('user_id', $user_id)->update([
-                        'discount' => 0.00,
-                        'coupon_code' => NULL,
-                        'coupon_applied' => 0
-                    ]);
                 }
                 $coupon_code = '';
                 $coupon_applied = 0;
@@ -189,8 +251,8 @@ class CartController extends Controller
                         'brand' => $datas->product->brand->getTranslation('name', $lang),
                         'slug' => $datas->product->slug,
                         'sku' => $datas->product_stock->sku,
-                        'image' => get_product_image($datas->product->thumbnail_img,'300'),
-                        'attributes' => getProductAttributes($datas->product_stock->attributes)
+                        'max_qty' => $datas->product_stock->qty,
+                        'image' => get_product_image($datas->product->thumbnail_img,'300')
                     ],
                     
                     'stroked_price' => $datas->price ,
@@ -216,6 +278,7 @@ class CartController extends Controller
             $result['products'] = [];
         }
 
+        $cart_coupon_discount = round($cart_coupon_discount);
         $cart_total = ($overall_subtotal + $total_tax) - ($total_discount + $cart_coupon_discount);
 
         $freeShippingStatus = get_setting('free_shipping_status');
@@ -232,27 +295,51 @@ class CartController extends Controller
                         'shipping_type' => 'free',
                         'updated_at' => date('Y-m-d H:i:s')
                     ]);
+                }else{
+                    Cart::where('temp_user_id', $temp_user_id)->update([
+                        'shipping_cost' => 0,
+                        'shipping_type' => 'free',
+                        'updated_at' => date('Y-m-d H:i:s')
+                    ]);
                 }
             }else{
                 $total_shipping = $defaultShippingCharge;
-                if($user_id != '' && $defaultShippingCharge > 0 && $cartCount != 0){
+                if($defaultShippingCharge > 0 && $cartCount != 0){
+                    if($user_id != ''){
+                        Cart::where('user_id', $user_id)->update([
+                            'shipping_cost' => $defaultShippingCharge / $cartCount,
+                            'shipping_type' => 'paid',
+                            'updated_at' => date('Y-m-d H:i:s')
+                        ]);
+                    }else{
+                        Cart::where('temp_user_id', $temp_user_id)->update([
+                            'shipping_cost' => $defaultShippingCharge / $cartCount,
+                            'shipping_type' => 'paid',
+                            'updated_at' => date('Y-m-d H:i:s')
+                        ]);
+                    }
+                }
+            }
+        }else{
+            $total_shipping = $defaultShippingCharge;
+            if($defaultShippingCharge > 0 && $cartCount != 0){
+                if($user_id != ''){
                     Cart::where('user_id', $user_id)->update([
+                        'shipping_cost' => $defaultShippingCharge / $cartCount,
+                        'shipping_type' => 'paid',
+                        'updated_at' => date('Y-m-d H:i:s')
+                    ]);
+                }else{
+                    Cart::where('temp_user_id', $temp_user_id)->update([
                         'shipping_cost' => $defaultShippingCharge / $cartCount,
                         'shipping_type' => 'paid',
                         'updated_at' => date('Y-m-d H:i:s')
                     ]);
                 }
             }
-        }else{
-            $total_shipping = $defaultShippingCharge;
-            if($user_id != '' && $defaultShippingCharge > 0 && $cartCount != 0){
-                Cart::where('user_id', $user_id)->update([
-                    'shipping_cost' => $defaultShippingCharge / $cartCount,
-                    'shipping_type' => 'paid',
-                    'updated_at' => date('Y-m-d H:i:s')
-                ]);
-            }
         }
+
+        $total_shipping = ($overall_subtotal != 0) ? $total_shipping : 0;
 
         $cart_total = ($overall_subtotal + $total_shipping + $total_tax) - ($total_discount + $cart_coupon_discount);
 
@@ -279,6 +366,7 @@ class CartController extends Controller
         $quantity       = $request->has('quantity') ? $request->quantity : 0;
 
         $userId = Auth::id();
+      
         $guestToken = $request->cookie('guest_token') ?? uniqid('guest_', true);
 
         if (auth()->user()) {
@@ -298,7 +386,7 @@ class CartController extends Controller
         }
 
         $variantProduct = ProductStock::leftJoin('products as p','p.id','=','product_stocks.product_id')
-                                    ->where('product_stocks.sku', $sku)
+                                    ->where('p.sku', $sku)
                                     ->where('p.slug', $product_slug)
                                     ->select('product_stocks.*')->first() ?? [];
 
@@ -307,23 +395,30 @@ class CartController extends Controller
             $product_stock_id   = $variantProduct['id'] ?? null;
           
             $current_Stock      = $variantProduct['qty'] ?? 0;
-            if ($current_Stock < $quantity) {
-                return response()->json([
-                    'status' => false,
-                    'message' => trans('messages.product_outofstock_msg').'!',
-                    'cart_count' => $this->cartCount()
-                ], 200);
-            }
-
+            
             $carts = Cart::where([
                 $users_id_type =>  ($users_id_type == 'user_id') ? $userId  : $guestToken,
                 'product_id' => $product_id,
                 'product_stock_id' => $product_stock_id
             ])->first();
 
+            // Calculate the total quantity to check against stock
+            $totalQuantityInCart = $quantity;
+
             $priceData = getProductPrice($variantProduct);
             $tax = 0;
             if ($carts) {
+
+                $totalQuantityInCart += $carts->quantity;
+
+                if ($current_Stock < $totalQuantityInCart) {
+                    return response()->json([
+                        'status' => false,
+                        'message' => trans('messages.product_outofstock_msg').'!',
+                        'cart_count' => $this->cartCount()
+                    ], 200);
+                }
+    
                 if($variantProduct->product->vat != 0){
                     $new_quantity = $carts->quantity + $quantity;
                     $tax = (($carts->offer_price * $new_quantity)/100) * $variantProduct->product->vat;
@@ -335,6 +430,14 @@ class CartController extends Controller
                 $carts->offer_tag       = $priceData['offer_tag'] ?? NULL;
                 $carts->save();
             }else {
+
+                if ($current_Stock < $quantity) {
+                    return response()->json([
+                        'status' => false,
+                        'message' => trans('messages.product_outofstock_msg').'!',
+                        'cart_count' => $this->cartCount()
+                    ], 200);
+                }
                
                 if($variantProduct->product->vat != 0){
                     $tax = (($priceData['discounted_price'] * ($quantity ?? 1))/100) * $variantProduct->product->vat;
@@ -373,7 +476,7 @@ class CartController extends Controller
         // echo '<pre>';
         // print_r($response);
         // die;
-        return view('frontend.cart',compact('response','lang'));
+        return view('pages.cart',compact('response','lang'));
     }
 
 
@@ -495,4 +598,6 @@ class CartController extends Controller
             ], 200);
         }
     }
+
+    
 }

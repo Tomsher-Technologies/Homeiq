@@ -22,16 +22,14 @@ class InvoiceController extends Controller
 
         set_time_limit(300);
 
-       
-
         $pdf = Pdf::loadView('backend.invoices.invoice', [
-            'order' => $order,
-            'font_family' => $font_family,
-            'direction' => $direction,
-            'text_align' => $text_align,
-            'not_text_align' => $not_text_align,
-            'imagePath' => asset('/admin_assets/assets/img/logo.svg')
-        ]);
+                    'order' => $order,
+                    'font_family' => $font_family,
+                    'direction' => $direction,
+                    'text_align' => $text_align,
+                    'not_text_align' => $not_text_align,
+                    'imagePath' => 'file://' . public_path('assets/img/logo.png')
+                ]);
         
         return $pdf->download('order-' . $order->code . '.pdf');
     }

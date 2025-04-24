@@ -45,7 +45,7 @@
                     </a>
                     <div class="dropdown-menu dropdown-menu-right dropdown-menu-animated dropdown-menu-lg py-0">
                         <div class="p-3 bg-light border-bottom">
-                            <h6 class="mb-0">{{  trans('messages.notifications') }}</h6>
+                            <h6 class="mb-0">Notifications</h6>
                         </div>
                         <div class="px-3 c-scrollbar-light overflow-auto " style="max-height:300px;">
                             <ul class="list-group list-group-flush">
@@ -53,29 +53,27 @@
                                     <li class="list-group-item d-flex justify-content-between align-items- py-3">
                                         <div class="media text-inherit">
                                             <div class="media-body">
-                                                @if($notification->type == 'App\Notifications\OrderNotification')
-                                                    <p class="mb-1 text-truncate-2">
-                                                        {{ trans('messages.order_code')}} {{$notification->data['order_code']}} {{  trans('messages.has_been '. ucfirst(str_replace('_', ' ', $notification->data['status'])))}}
-                                                    </p>
-                                                    <small class="text-muted">
-                                                        {{ date("F j Y, g:i a", strtotime($notification->created_at)) }}
-                                                    </small>
-                                                @endif
+                                                <p class="mb-1 text-truncate-2">
+                                                    {{ $notification->data['message'] ?? '' }}
+                                                </p>
+                                                <small class="text-muted">
+                                                    {{ date('F j Y, g:i a', strtotime($notification->created_at)) }}
+                                                </small>
                                             </div>
                                         </div>
                                     </li>
                                 @empty
                                     <li class="list-group-item">
                                         <div class="py-4 text-center fs-16">
-                                            {{  trans('messages.no_notification_found') }}
+                                            No notification found
                                         </div>
                                     </li>
                                 @endforelse
                             </ul>
                         </div>
                         <div class="text-center border-top">
-                            <a href="#" class="text-reset d-block py-2">
-                                {{ trans('messages.view_all_notifications')}}
+                            <a href="{{ route('admin.all-notification') }}" class="text-reset d-block py-2">
+                                View All Notifications
                             </a>
                         </div>
                     </div>

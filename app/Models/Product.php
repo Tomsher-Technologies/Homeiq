@@ -10,25 +10,7 @@ class Product extends Model
 {
 
     protected $fillable = [
-        'name',
-        'sku',
-        'added_by',
-        'user_id',
-        'category_id',
-        'brand_id',
-        'video_provider',
-        'video_link',
-        'description',
-        'unit_price',
-        'purchase_price',
-        'unit',
-        'slug',
-        'approved',
-        'colors',
-        'choice_options',
-        'variations',
-        'photos',
-        'thumbnail_img',
+        'type', 'name', 'sku', 'slug', 'published', 'category_id', 'brand_id', 'photos', 'thumbnail_img', 'product_type', 'added_by', 'user_id', 'vat', 'video_provider', 'video_link', 'unit_price', 'variant_product', 'attributes', 'choice_options', 'variations', 'cash_on_delivery', 'current_stock', 'unit', 'min_qty', 'low_stock_quantity', 'discount', 'discount_type', 'discount_start_date', 'discount_end_date', 'tax', 'tax_type', 'shipping_type', 'shipping_cost', 'est_shipping_days', 'num_of_sale', 'rating', 'return_refund'
     ];
 
     protected $with = ['product_translations','seo'];
@@ -79,11 +61,6 @@ class Product extends Model
     {
         return $this->hasMany(RecentlyViewedProduct::class);
     }
-    // public function getSeoTranslation($lang = "")
-    // {
-    //     $lang = $lang == "" ? App::getLocale() : $lang;
-    //     return $this->seo->where('lang', $lang)->first();
-    // }
 
     public function category()
     {
@@ -93,11 +70,6 @@ class Product extends Model
     public function brand()
     {
         return $this->belongsTo(Brand::class);
-    }
-
-    public function occasion()
-    {
-        return $this->belongsTo(Occasion::class);
     }
 
     public function user()
@@ -130,18 +102,4 @@ class Product extends Model
         return $this->stocks->min('price');
     }
 
-    public function flash_deal_product()
-    {
-        return $this->hasOne(FlashDealProduct::class);
-    }
-
-    public function bids()
-    {
-        return $this->hasMany(AuctionProductBid::class);
-    }
-
-    public function scopePhysical($query)
-    {
-        return $query->where('digital', 0);
-    }
 }

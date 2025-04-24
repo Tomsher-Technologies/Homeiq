@@ -9,33 +9,18 @@ use Illuminate\Http\Request;
 
 class HomeSliderController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+  
     public function index()
     {
-        $sliders = HomeSlider::paginate(15);
+        $sliders = HomeSlider::orderBy('sort_order', 'ASC')->paginate(15);
         return view('backend.home_sliders.index', compact('sliders'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
         return view('backend.home_sliders.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
 
@@ -70,35 +55,11 @@ class HomeSliderController extends Controller
         return redirect()->route('home-slider.index');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Frontend\HomeSlider  $homeSlider
-     * @return \Illuminate\Http\Response
-     */
-    public function show(HomeSlider $homeSlider)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Frontend\HomeSlider  $homeSlider
-     * @return \Illuminate\Http\Response
-     */
     public function edit(HomeSlider $homeSlider)
     {
         return view('backend.home_sliders.edit', compact('homeSlider'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\Request  $request
-     * @param  \App\Models\Frontend\HomeSlider  $homeSlider
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, HomeSlider $homeSlider)
     {
         $request->validate([
@@ -133,12 +94,7 @@ class HomeSliderController extends Controller
         return redirect()->route('home-slider.index');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Frontend\HomeSlider  $homeSlider
-     * @return \Illuminate\Http\Response
-     */
+   
     public function destroy($id)
     {
         HomeSlider::destroy($id);

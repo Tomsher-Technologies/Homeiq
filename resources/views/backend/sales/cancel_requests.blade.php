@@ -117,7 +117,7 @@
             </table>
 
             <div class="aiz-pagination">
-                {{ $orders->appends(request()->input())->links() }}
+                {{ $orders->appends(request()->input())->links('pagination::bootstrap-5') }}
             </div>
 
         </div>

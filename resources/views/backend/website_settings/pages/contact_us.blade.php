@@ -9,7 +9,7 @@
         </div>
     </div>
     <div class="card">
-        <ul class="nav nav-tabs nav-fill border-light">
+        {{-- <ul class="nav nav-tabs nav-fill border-light">
             @foreach (\App\Models\Language::all() as $key => $language)
                 <li class="nav-item">
                     <a class="nav-link text-reset @if ($language->code == $lang) active @else bg-soft-dark border-light border-left-0 @endif py-3" href="{{ route('custom-pages.edit', ['id'=>$page->type, 'lang'=> $language->code] ) }}">
@@ -18,7 +18,7 @@
                     </a>
                 </li>
             @endforeach
-        </ul>
+        </ul> --}}
 
         <form class="p-4" action="{{ route('custom-pages.update', $page->id) }}" method="POST"
             enctype="multipart/form-data">
@@ -35,8 +35,15 @@
                     <label class="col-sm-2 col-from-label" for="name">Title <span
                             class="text-danger">*</span> </label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control"  @if($lang == 'ae') dir="rtl" @endif  placeholder="Title" name="title"
-                            value="{{ $page->getTranslation('title', $lang) }}">
+                        <input type="text" class="form-control"  @if($lang == 'ae') dir="rtl" @endif  placeholder="Enter.." name="title" value="{{ $page->getTranslation('title', $lang) }}">
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-sm-2 col-from-label" for="heading1">Subtitle <span
+                            class="text-danger">*</span> </label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" placeholder="Enter.." name="sub_title" value="{{ $page->getTranslation('sub_title', $lang) }}" required>
                     </div>
                 </div>
 
@@ -45,7 +52,7 @@
                     <label class="col-sm-2 col-from-label" for="sub_heading1">Detials Heading <span
                             class="text-danger">*</span> </label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" placeholder="Detials Heading"  @if($lang == 'ae') dir="rtl" @endif name="heading2" value="{{ $page->getTranslation('heading2', $lang) }}">
+                        <input type="text" class="form-control" placeholder="Enter.." name="heading2" value="{{ $page->getTranslation('heading2', $lang) }}">
                     </div>
                 </div>
 
@@ -53,7 +60,7 @@
                     <label class="col-sm-2 col-from-label" for="content">Address <span
                             class="text-danger">*</span> </label>
                     <div class="col-sm-10">
-                        <textarea class="form-control"  @if($lang == 'ae') dir="rtl" @endif name="content">{!! $page->getTranslation('content', $lang) !!}</textarea>
+                        <textarea class="form-control" name="content">{!! $page->getTranslation('content', $lang) !!}</textarea>
                     </div>
                 </div>
 
@@ -61,8 +68,7 @@
                     <label class="col-sm-2 col-from-label" for="heading2">Phone <span
                             class="text-danger">*</span> </label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" placeholder="Phone"  @if($lang == 'ae') dir="rtl" @endif name="heading3"
-                            value="{{ $page->getTranslation('heading3', $lang) }}">
+                        <input type="text" class="form-control" placeholder="Enter.." name="heading3" value="{{ $page->getTranslation('heading3', $lang) }}">
                     </div>
                 </div>
 
@@ -70,41 +76,10 @@
                     <label class="col-sm-2 col-from-label" for="sub_heading2">Email <span
                             class="text-danger">*</span> </label>
                     <div class="col-sm-10">
-                        <input type="email" class="form-control" placeholder="Email"  @if($lang == 'ae') dir="rtl" @endif name="heading4"
-                            value="{{ $page->getTranslation('heading4', $lang) }}">
+                        <input type="email" class="form-control" placeholder="Enter.." name="heading4" value="{{ $page->getTranslation('heading4', $lang) }}">
                     </div>
                 </div>
 
-                <div class="form-group row">
-                    <label class="col-sm-2 col-from-label" for="heading1">Contact Form Heading <span
-                            class="text-danger">*</span> </label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" placeholder="Contact Form Heading"  @if($lang == 'ae') dir="rtl" @endif name="heading1" value="{{ $page->getTranslation('heading1', $lang) }}" required>
-                    </div>
-                </div>
-
-                <div class="form-group row @if ($lang != 'en') d-none @endif">
-                    <label class="col-md-2 col-form-label" for="signinSrEmail">{{ trans('messages.images') }}</label>
-                    <div class="col-md-10">
-                        <input type="file" name="image" class="form-control" accept="image/*">
-
-                        @if ($page->image)
-                            <div class="file-preview box sm">
-                                <div  class="d-flex justify-content-between align-items-center mt-2 file-preview-item">
-                                    <div
-                                        class="align-items-center align-self-stretch d-flex justify-content-center thumb">
-                                        <img src="{{ asset($page->image) }}" class="img-fit">
-                                    </div>
-                                    <div class="remove">
-                                        <button class="btn btn-link"
-                                            data-url="{{ $page->image }}" type="button">
-                                            </button>
-                                    </div>
-                                </div>
-                            </div>
-                        @endif
-                    </div>
-                </div>
                 
             </div>
 
@@ -116,22 +91,21 @@
                 <div class="form-group row">
                     <label class="col-sm-2 col-from-label" for="name">{{ trans('messages.meta_title') }}</label>
                     <div class="col-sm-10">
-                        <input type="text"  @if($lang == 'ae') dir="rtl" @endif  class="form-control" placeholder="{{ trans('messages.meta_title') }}" name="meta_title"
-                            value="{{ $page->getTranslation('meta_title', $lang) }}">
+                        <input type="text" class="form-control" placeholder="Enter.." name="meta_title" value="{{ $page->getTranslation('meta_title', $lang) }}">
                     </div>
                 </div>
 
                 <div class="form-group row">
                     <label class="col-sm-2 col-from-label" for="name">{{ trans('messages.meta_description') }}</label>
                     <div class="col-sm-10">
-                        <textarea  @if($lang == 'ae') dir="rtl" @endif class="resize-off form-control" placeholder="{{ trans('messages.meta_description') }}" name="meta_description">{!! $page->getTranslation('meta_description', $lang) !!}</textarea>
+                        <textarea  class="resize-off form-control" placeholder="Enter.." name="meta_description">{!! $page->getTranslation('meta_description', $lang) !!}</textarea>
                     </div>
                 </div>
 
                 <div class="form-group row">
                     <label class="col-sm-2 col-from-label" for="name">{{ trans('messages.meta_keywords') }}</label>
                     <div class="col-sm-10">
-                        <textarea  @if($lang == 'ae') dir="rtl" @endif class="resize-off form-control" placeholder="{{ trans('messages.meta_keywords')}}" name="keywords">{!! $page->getTranslation('keywords', $lang) !!}</textarea>
+                        <textarea class="resize-off form-control" placeholder="Enter.." name="keywords">{!! $page->getTranslation('keywords', $lang) !!}</textarea>
                         <small class="text-muted">Separate with coma</small>
                     </div>
                 </div>
@@ -140,15 +114,14 @@
                 <div class="form-group row">
                     <label class="col-sm-2 col-from-label" for="name">{{ trans('messages.og_title') }}</label>
                     <div class="col-sm-10">
-                        <input type="text"  @if($lang == 'ae') dir="rtl" @endif class="form-control" placeholder="{{ trans('messages.og_title') }}"
-                            name="og_title" value="{{ $page->getTranslation('og_title', $lang) }}">
+                        <input type="text" class="form-control" placeholder="Enter.." name="og_title" value="{{ $page->getTranslation('og_title', $lang) }}">
                     </div>
                 </div>
 
                 <div class="form-group row">
                     <label class="col-sm-2 col-from-label" for="name">{{ trans('messages.og_description') }}</label>
                     <div class="col-sm-10">
-                        <textarea  @if($lang == 'ae') dir="rtl" @endif class="resize-off form-control" placeholder="{{ trans('messages.og_description') }}" name="og_description">{!! $page->getTranslation('og_description', $lang) !!}</textarea>
+                        <textarea class="resize-off form-control" placeholder="Enter.." name="og_description">{!! $page->getTranslation('og_description', $lang) !!}</textarea>
                     </div>
                 </div>
 
@@ -156,26 +129,25 @@
                 <div class="form-group row">
                     <label class="col-sm-2 col-from-label" for="name">{{ trans('messages.twitter_title') }}</label>
                     <div class="col-sm-10">
-                        <input type="text"  @if($lang == 'ae') dir="rtl" @endif class="form-control" placeholder="{{ trans('messages.twitter_title') }}"
-                            name="twitter_title" value="{{ $page->getTranslation('twitter_title', $lang) }}">
+                        <input type="text" class="form-control" placeholder="Enter.." name="twitter_title" value="{{ $page->getTranslation('twitter_title', $lang) }}">
                     </div>
                 </div>
 
                 <div class="form-group row">
                     <label class="col-sm-2 col-from-label" for="name">{{ trans('messages.twitter_description') }}</label>
                     <div class="col-sm-10">
-                        <textarea  @if($lang == 'ae') dir="rtl" @endif class="resize-off form-control" placeholder="{{ trans('messages.twitter_description') }}"
-                            name="twitter_description">{!! $page->getTranslation('twitter_description', $lang) !!}</textarea>
+                        <textarea class="resize-off form-control" placeholder="Enter.." name="twitter_description">{!! $page->getTranslation('twitter_description', $lang) !!}</textarea>
                     </div>
                 </div>
 
-        
                 <div class="text-right">
                     <button type="submit" class="btn btn-primary">Update Page</button>
+                    <a href="{{ route('website.pages') }}" class="btn btn-cancel">Cancel</a>
                 </div>
             </div>
         </form>
     </div>
+    
 @endsection
 
 @section('script')

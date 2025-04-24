@@ -82,7 +82,7 @@
 
     @if (Auth::user()->user_type == 'admin' || (Auth::user()->user_type == 'staff' && in_array('1', json_decode(Auth::user()->staff->role->permissions))))
         <div class="row gutters-10">
-            <div class="col-md-6">
+            <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">
                         <h6 class="mb-0 fs-14">{{  trans('messages.category_wise_product_sale') }}</h6>
@@ -92,7 +92,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">
                         <h6 class="mb-0 fs-14">{{  trans('messages.category_wise_product_stock') }}</h6>

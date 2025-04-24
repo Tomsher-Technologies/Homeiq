@@ -6,6 +6,7 @@
 @endif
 
 <head>
+    <meta name="robots" content="noindex, nofollow">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="app-url" content="{{ getBaseURL() }}">
     <meta name="file-base-url" content="{{ getFileBaseURL() }}">
@@ -16,8 +17,7 @@
 
     <!-- Favicon -->
     <link rel="icon" type="image/svg" href="{{ asset('assets/img/favicon.ico') }}">
-    <title>{{ get_setting('website_name') . ' | ' . get_setting('site_motto') }}</title>
-
+    <title>@yield('title', env('APP_NAME'))</title>
     <!-- google font -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700">
 

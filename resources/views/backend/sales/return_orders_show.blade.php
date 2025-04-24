@@ -131,6 +131,7 @@
                                         $statusColor = '#03ff0338';
                                     }
                                     
+                                    $returnRequest = $orderDetail->returns()->latest()->first(); // Get the latest return request for the product
                                 @endphp
                                 <tr >
                                    
@@ -150,6 +151,21 @@
                                             {{-- </small> --}}
                                         @else
                                             <strong>Product Unavailable</strong>
+                                        @endif
+
+                                        @if ($order->delivery_status == 'delivered')
+                                            @if ($returnRequest)
+                                                <p><br><b>Return Status</b>: 
+                                                    <span class="badge badge-lg badge-inline 
+                                                        @if($returnRequest->status == 'pending') bg-warning
+                                                        @elseif($returnRequest->status == 'approved') bg-success
+                                                        @else bg-danger @endif">
+                                                        {{ ucfirst($returnRequest->status) }}
+                                                    </span>
+                                                </p>
+                                            @else
+                                                <br><p>No return request for this product.</p>
+                                            @endif
                                         @endif
                                     </td>
                                     <td class="text-center">{{ $orderDetail->quantity }}</td>

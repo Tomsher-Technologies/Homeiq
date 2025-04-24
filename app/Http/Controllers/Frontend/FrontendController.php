@@ -8,14 +8,15 @@ use App\Models\Category;
 use App\Models\Page;
 use App\Models\PageTranslations;
 use App\Models\PageSeos;
-use App\Models\Banner;
 use App\Models\Brand;
 use App\Models\HomeSlider;
-use App\Models\Occasion;
-use App\Models\Partners;
+use App\Models\Service;
 use App\Models\BusinessSetting;
 use App\Models\Subscriber;
 use App\Models\Contacts;
+use App\Models\Testimonials;
+use App\Models\FaqCategory;
+use App\Models\Blog;
 use App\Mail\ContactEnquiry;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
@@ -53,16 +54,18 @@ class FrontendController extends Controller
         OpenGraph::setDescription($model['og_description']);
         OpenGraph::setUrl(URL::full());
         OpenGraph::addProperty('locale', 'en_US');
+        OpenGraph::addProperty('type', $model['og_type'] ?? 'website');
+        OpenGraph::addImage($model['og_image'] ?? URL::to(asset('assets/img/logo.png')));
         
         JsonLd::setTitle($model['meta_title']);
         JsonLd::setDescription($model['meta_description']);
         JsonLd::setType('Page');
 
         TwitterCard::setTitle($model['twitter_title']);
-        TwitterCard::setSite("@aldourigroup");
+        TwitterCard::setSite("@homeiq");
         TwitterCard::setDescription($model['twitter_description']);
 
-        SEOTools::jsonLd()->addImage(URL::to(asset('assets/img/favicon.svg')));
+        SEOTools::jsonLd()->addImage(URL::to(asset('assets/img/favicon.ico')));
     }
 
     public function loadDynamicSEO($model)
@@ -85,13 +88,15 @@ class FrontendController extends Controller
         JsonLd::setType('Page');
 
         TwitterCard::setTitle($model->twitter_title);
-        TwitterCard::setSite("@aldourigroup");
+        TwitterCard::setSite("@homeiq");
         TwitterCard::setDescription($model->twitter_description);
 
-        SEOTools::jsonLd()->addImage(URL::to(asset('assets/img/favicon.svg')));
+        SEOTools::jsonLd()->addImage(URL::to(asset('assets/img/favicon.ico')));
     }
+
     public function home()
     {
+        setGuestToken();
         $page = Page::where('type','home')->first();
         $lang = getActiveLanguage();
         $seo = [
@@ -108,12 +113,12 @@ class FrontendController extends Controller
         $this->loadSEO($seo);
 
         $data['slider'] = Cache::rememberForever('homeSlider', function () {
-            $sliders = HomeSlider::where('status',1)->orderBy('sort_order')->get();
+            $sliders = HomeSlider::where('status',1)->orderBy('sort_order','asc')->get();
             return $sliders;
         });
 
-        $data['discover_categories'] = Cache::rememberForever('discover_categories', function () {
-            $categories = get_setting('discover_categories');
+        $data['home_categories'] = Cache::rememberForever('home_categories', function () {
+            $categories = get_setting('home_categories');
             if ($categories) {
                 $details = Category::whereIn('id', json_decode($categories))->where('is_active', 1)
                     ->get();
@@ -121,79 +126,44 @@ class FrontendController extends Controller
             }
         });
 
-       
-
-        $home_banners = BusinessSetting::whereIn('type', array('home_mid_section_banner','home_center_banner', 'home_mid_banner'))->get()->keyBy('type');
-        
-        $banners = [];
-        $all_banners = Banner::where('status', 1);
-        if(!empty($home_banners)){
-            foreach($home_banners as $key => $hb){
-                $bannerid = json_decode($hb->value);
-                
-                $bannerData = [];
-                if(!empty($bannerid)){
-                    $bannerData = Banner::where('status', 1)->whereIn('id', $bannerid)->get();
-                }
-                
-                if(!empty($bannerData)){
-                    foreach($bannerData as $bData){
-                        
-                        $banners[$key][] = array(
-                            'type' => $bData->link_type ?? '',
-                            'link' => $bData->link_type == 'external' ? $bData->link : $bData->getBannerLink(),
-                            'type_id' => $bData->link_ref_id,
-                            'image' => ($bData->getTranslation('image', $lang)) ? uploaded_asset($bData->getTranslation('image', $lang)) : '',
-                            'mob_image' => ($bData->getTranslation('mobile_image', $lang)) ? uploaded_asset($bData->getTranslation('mobile_image', $lang)) : '',
-                            'title' => $bData->getTranslation('title', $lang),
-                            'sub_title' => $bData->getTranslation('sub_title', $lang),
-                            'btn_text' => $bData->getTranslation('btn_text', $lang) 
-                        );
-                        
-                    }
-                }else{
-                    $banners[$key] = array();
-                }
-            }
-        }
-       
-       
-        $data['banners'] = $banners;
-
-        $data['new_arrival_products'] = Cache::remember('new_arrival_products', 3600, function () {
-            $product_ids = get_setting('new_arrival_products');
+        $data['home_products'] = Cache::remember('home_products', 3600, function () {
+            $product_ids = get_setting('home_products');
             if ($product_ids) {
                 $products =  Product::where('published', 1)->whereIn('id', json_decode($product_ids))->with('brand')->get();
                 return $products;
             }
         });
 
-        $data['home_occasions'] = [];
-
-        $data['special_products'] = Cache::remember('special_products', 3600, function () {
-            $product_ids = get_setting('special_products');
-            if ($product_ids) {
-                $products =  Product::where('published', 1)->whereIn('id', json_decode($product_ids))->with('brand')->get();
-                return $products;
+        $data['home_services'] = Cache::remember('home_services', 3600, function () {
+            $service_ids = get_setting('home_services');
+            if ($service_ids) {
+                $services =  Service::where('status', 1)->whereIn('id', json_decode($service_ids))->get();
+                return $services;
             }
         });
 
-        $data['shop_by_brands'] = Cache::rememberForever('shop_by_brands', function () {
-            $details = Brand::where('is_active', 1)->get();
+        $data['testimonials'] = Cache::rememberForever('home_testimonials', function () {
+            $testimonials = Testimonials::where('status', 1)->orderBy('sort_order', 'asc')->get();
+            return $testimonials;
+        });
+
+        $data['blogs'] = Cache::rememberForever('home_blogs', function () {
+            $details = Blog::where('status', 1)->orderBy('blog_date', 'desc')->limit(3)->get();
             return $details;
         });
 
-        $data['partners'] = Cache::rememberForever('partners', function () {
-            $details = Partners::where('status', 1)->get();
-            return $details;
-        });
+        // return view('frontend.home',compact('page','data','lang'));
 
-        // echo '<pre>';
-        // print_r($data);
-        // die;
-
-
-        return view('frontend.home',compact('page','data','lang'));
+        return view('pages.home', [
+            'slider' => $data['slider'],
+            'products' => $data['home_products'],
+            'services' => $data['home_services'],
+            'categories' => $data['home_categories'],
+            'testimonials' => $data['testimonials'],
+            'blogs' => $data['blogs'], 
+            'page' => $page,
+            'lang' => $lang
+        ]);
     }
 
     public function about()
@@ -212,7 +182,139 @@ class FrontendController extends Controller
         ];
         
         $this->loadSEO($seo);
-        return view('frontend.about',compact('page','lang'));
+        return view('pages.about-us',compact('page','lang'));
+    }
+
+    public function services(){
+        $page = Page::where('type','service_list')->first();
+        $lang = getActiveLanguage();
+        $seo = [
+            'title'                 => $page->getTranslation('title', $lang),
+            'meta_title'            => $page->getTranslation('meta_title', $lang),
+            'meta_description'      => $page->getTranslation('meta_description', $lang),
+            'keywords'              => $page->getTranslation('keywords', $lang),
+            'og_title'              => $page->getTranslation('og_title', $lang),
+            'og_description'        => $page->getTranslation('og_description', $lang),
+            'twitter_title'         => $page->getTranslation('twitter_title', $lang),
+            'twitter_description'   => $page->getTranslation('twitter_description', $lang),
+        ];
+        
+        $this->loadSEO($seo);
+        $services =  Service::where('status', 1)->orderBy('name','ASC')->paginate(6);
+
+        return view('pages.services',compact('page','lang','services'));
+    }
+
+    public function loadMoreService(Request $request)
+    {
+        if ($request->ajax()) {
+            // Get paginated results for the next page
+            $services = Service::where('status', 1)
+                                ->orderBy('name', 'ASC')
+                                ->paginate(6, ['*'], 'page', $request->page);
+    
+            // Check if services exist and render the partial view
+            if ($services->isEmpty()) {
+                return response()->json(['html' => '', 'hasMore' => false]);
+            }
+    
+            // Render the partial view and return it with a flag indicating if more pages are available
+            $html = view('pages.service_card', compact('services'))->render();
+    
+            return response()->json([
+                'html' => $html,
+                'hasMore' => $services->hasMorePages(),
+            ]);
+        }
+    
+        // Return a fallback if the request is not via AJAX
+        return response()->json(['error' => 'Invalid request'], 400);
+    }
+
+    public function showService($slug){
+        $lang = getActiveLanguage();
+        $services =  Service::where('status', 1)->where('slug', $slug)->first();
+
+        return view('pages.service-details', ['service' => $services, 'lang' => $lang]);
+    }
+
+    public function blogs(){
+        $page = Page::where('type','blogs')->first();
+        $lang = getActiveLanguage();
+        $seo = [
+            'title'                 => $page->getTranslation('title', $lang),
+            'meta_title'            => $page->getTranslation('meta_title', $lang),
+            'meta_description'      => $page->getTranslation('meta_description', $lang),
+            'keywords'              => $page->getTranslation('keywords', $lang),
+            'og_title'              => $page->getTranslation('og_title', $lang),
+            'og_description'        => $page->getTranslation('og_description', $lang),
+            'twitter_title'         => $page->getTranslation('twitter_title', $lang),
+            'twitter_description'   => $page->getTranslation('twitter_description', $lang),
+        ];
+        
+        $this->loadSEO($seo);
+        $blogs =  Blog::where('status', 1)->orderBy('blog_date','DESC')->paginate(6);
+
+        return view('pages.blog',compact('page','lang','blogs'));
+    }
+
+    public function loadMoreBlogs(Request $request)
+    {
+        if ($request->ajax()) {
+            // Get paginated results for the next page
+            $blogs = Blog::where('status', 1)
+                                ->orderBy('blog_date','DESC')
+                                ->paginate(6, ['*'], 'page', $request->page);
+    
+            // Check if services exist and render the partial view
+            if ($blogs->isEmpty()) {
+                return response()->json(['html' => '', 'hasMore' => false]);
+            }
+    
+            // Render the partial view and return it with a flag indicating if more pages are available
+            $html = view('pages.blog_card', compact('blogs'))->render();
+    
+            return response()->json([
+                'html' => $html,
+                'hasMore' => $blogs->hasMorePages(),
+            ]);
+        }
+    
+        // Return a fallback if the request is not via AJAX
+        return response()->json(['error' => 'Invalid request'], 400);
+    }
+
+    public function showBlog($slug){
+        $lang = getActiveLanguage();
+        $blogs =  Blog::where('status', 1)->where('slug', $slug)->first();
+
+        $seo = [
+            'title'                 => $blogs->name,
+            'meta_title'            => $blogs->meta_title,
+            'meta_description'      => $blogs->meta_description,
+            'keywords'              => $blogs->keywords,
+            'og_title'              => $blogs->og_title,
+            'og_description'        => $blogs->og_description,
+            'og_type'               => 'article',
+            'og_image'              => uploaded_asset(($blogs->image)),
+            'twitter_title'         => $blogs->twitter_title,
+            'twitter_description'   => $blogs->twitter_description,
+        ];
+        
+        $this->loadSEO($seo);
+        $recentBlogs = Blog::where('id', '!=', $blogs->id)->where('status', 1)
+                                    ->orderBy('blog_date', 'desc')
+                                    ->take(2)
+                                    ->get();
+        $previous = Blog::where('id', '<', $blogs->id)->where('status', 1)
+                        ->orderBy('blog_date', 'desc')
+                        ->first();
+                            
+        // Get Next Blog (Newer)
+        $next = Blog::where('id', '>', $blogs->id)->where('status', 1)
+                        ->orderBy('blog_date', 'asc')
+                        ->first();
+        return view('pages.blog-details', ['blog' => $blogs, 'lang' => $lang, 'recentBlogs' => $recentBlogs, 'previousBlog' => $previous, 'nextBlog' => $next]);
     }
 
     public function terms()
@@ -231,7 +333,7 @@ class FrontendController extends Controller
         ];
         
         $this->loadSEO($seo);
-        return view('frontend.terms',compact('page','lang'));
+        return view('pages.terms-conditions',compact('page','lang'));
     }
 
     public function privacy()
@@ -250,7 +352,26 @@ class FrontendController extends Controller
         ];
         
         $this->loadSEO($seo);
-        return view('frontend.privacy_policy',compact('page','lang'));
+        return view('pages.privacy-policy',compact('page','lang'));
+    }
+
+    public function returnPolicy()
+    {
+        $page = Page::where('type','return_policy')->first();
+        $lang = getActiveLanguage();
+        $seo = [
+            'title'                 => $page->getTranslation('title', $lang),
+            'meta_title'            => $page->getTranslation('meta_title', $lang),
+            'meta_description'      => $page->getTranslation('meta_description', $lang),
+            'keywords'              => $page->getTranslation('keywords', $lang),
+            'og_title'              => $page->getTranslation('og_title', $lang),
+            'og_description'        => $page->getTranslation('og_description', $lang),
+            'twitter_title'         => $page->getTranslation('twitter_title', $lang),
+            'twitter_description'   => $page->getTranslation('twitter_description', $lang),
+        ];
+        
+        $this->loadSEO($seo);
+        return view('pages.return-policy',compact('page','lang'));
     }
 
 
@@ -270,23 +391,22 @@ class FrontendController extends Controller
         ];
         
         $this->loadSEO($seo);
-        return view('frontend.contact_us', compact('page','lang'));
+        return view('pages.contact', compact('page','lang'));
     }
 
     public function submitContactForm(Request $request)
     {
         // Validate input
-        $validated = $request->validate([
-            'firstName' => 'required|string|max:255',
-            'lastName' => 'required|string|max:255',
+        $request->validate([
+            'name' => 'required|string|min:3|max:255',
             'email' => 'required|email|max:255',
-            'phone' => 'nullable|string|max:20',
-            'subject' => 'required|string',
-            'message' => 'required|string|max:5000',
+            'phone' => 'required|regex:/^[0-9\-\+\s\(\)]{10,15}$/',
+            'subject' => 'required|string|min:5|max:255',
+            'message' => 'required|string|min:10',
         ]);
 
         $con                = new Contacts;
-        $con->name          = $request->firstName.' '.$request->lastName;
+        $con->name          = $request->name;
         $con->email         = $request->email;
         $con->phone         = $request->phone;
         $con->subject       = $request->subject;
@@ -296,32 +416,68 @@ class FrontendController extends Controller
         // Send an email (optional)
         Mail::to(env('MAIL_ADMIN'))->queue(new ContactEnquiry($con));
 
-        session()->flash('message', trans('messages.contact_success_msg'));
-        session()->flash('alert-type', 'success');
-
-        return redirect()->back();
-    }
-
-    public function changeLanguage(Request $request)
-    {
-       
-        Session::put('locale', $request->locale);
-        App::setLocale($request->locale);
+        return back()->with('success', 'Your message has been sent successfully!');
     }
 
     public function subscribe(Request $request)
     {
         $request->validate([
-            'email' => 'required|email|unique:subscribers,email',
+            'newsletter_email' => 'required|email|unique:subscribers,email',
         ],[
-            'email.required' => trans('messages.enter_email'),
-            'email.email' => trans('messages.enter_valid_email'),
-            'email.unique' => trans('messages.email_already_subscribed'),
+            'newsletter_email.required' => trans('messages.enter_email'),
+            'newsletter_email.email' => trans('messages.enter_valid_email'),
+            'newsletter_email.unique' => trans('messages.email_already_subscribed'),
         ]);
 
-        Subscriber::create(['email' => $request->email]);
+        Subscriber::create(['email' => $request->newsletter_email]);
 
         return response()->json(['success' => trans('messages.newsletter_success')]);
+    }
+
+    public function brands()
+    {
+        $page = Page::where('type','brands_list')->first();
+        $lang = getActiveLanguage();
+        $seo = [
+            'title'                 => $page->getTranslation('title', $lang),
+            'meta_title'            => $page->getTranslation('meta_title', $lang),
+            'meta_description'      => $page->getTranslation('meta_description', $lang),
+            'keywords'              => $page->getTranslation('keywords', $lang),
+            'og_title'              => $page->getTranslation('og_title', $lang),
+            'og_description'        => $page->getTranslation('og_description', $lang),
+            'twitter_title'         => $page->getTranslation('twitter_title', $lang),
+            'twitter_description'   => $page->getTranslation('twitter_description', $lang),
+        ];
+        
+        $this->loadSEO($seo);
+
+        $brands = Brand::where('is_active', 1)->orderBy('name', 'ASC')->get();
+
+        return view('pages.brand-listing',compact('page','lang','brands'));
+    }
+
+    public function faq()
+    {
+        $page = Page::where('type','faq')->first();
+        $lang = getActiveLanguage();
+        $seo = [
+            'title'                 => $page->getTranslation('title', $lang),
+            'meta_title'            => $page->getTranslation('meta_title', $lang),
+            'meta_description'      => $page->getTranslation('meta_description', $lang),
+            'keywords'              => $page->getTranslation('keywords', $lang),
+            'og_title'              => $page->getTranslation('og_title', $lang),
+            'og_description'        => $page->getTranslation('og_description', $lang),
+            'twitter_title'         => $page->getTranslation('twitter_title', $lang),
+            'twitter_description'   => $page->getTranslation('twitter_description', $lang),
+        ];
+        
+        $this->loadSEO($seo);
+
+        $faq_categories = FaqCategory::with(['faq_list'])->where('is_active', 1)->orderBy('sort_order','asc')->get();
+        // echo '<pre>';
+        // print_r($faq_categories);
+        // die;
+        return view('pages.faq',compact('page','lang','faq_categories'));
     }
 
 }

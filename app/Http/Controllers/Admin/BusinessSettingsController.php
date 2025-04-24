@@ -9,6 +9,7 @@ use App\Models\BusinessSetting;
 use App\Models\Page;
 use App\Models\PageTranslation;
 use Artisan;
+use DB;
 // use CoreComponentRepository;
 
 class BusinessSettingsController extends Controller
@@ -76,6 +77,15 @@ class BusinessSettingsController extends Controller
                 $page_translation                           = PageTranslation::firstOrNew(['lang' => $request->lang, 'page_id' => $page->id]);
                 if($request->has('title')){
                     $page_translation->title                = $request->title;
+                }
+                if($request->has('title1')){
+                    $page_translation->title1               = $request->title1;
+                }
+                if($request->has('title2')){
+                    $page_translation->title2               = $request->title2;
+                }
+                if($request->has('title3')){
+                    $page_translation->title3               = $request->title3;
                 }
                 if($request->has('content')){
                     $page_translation->content              = $request->content;
@@ -154,6 +164,40 @@ class BusinessSettingsController extends Controller
                
                 $page_translation->save();
     
+                if($request->has('image1')) {
+                    $page->image1   = $request->image1; 
+                }
+
+                if($request->has('image2')) {
+                    $page->image2   = $request->image2; 
+                }
+
+                if($request->has('image3')) {
+                    $page->image3   = $request->image3; 
+                }
+                if($request->has('image4')) {
+                    $page->image4   = $request->image4; 
+                }
+                if($request->has('image5')) {
+                    $page->image5   = $request->image5; 
+                }
+                if($request->has('image6')) {
+                    $page->image6   = $request->image6; 
+                }
+                if($request->has('image7')) {
+                    $page->image7   = $request->image7; 
+                }
+                if($request->has('image8')) {
+                    $page->image8   = $request->image8; 
+                }
+                if($request->has('image9')) {
+                    $page->image9   = $request->image9; 
+                }
+                if($request->has('image10')) {
+                    $page->image   = $request->image10; 
+                }
+                
+                $page->save();
             }
 
             $photos = [];
@@ -178,6 +222,8 @@ class BusinessSettingsController extends Controller
                 $page->image = $photo;
                 $page->save();
             }
+
+           
         }
 
         Artisan::call('cache:clear');
@@ -189,13 +235,68 @@ class BusinessSettingsController extends Controller
     
 
     public function shipping_configuration(Request $request){
-        return view('backend.setup_configurations.shipping_configuration.index');
+        return view('backend.general_settings.settings');
     }
 
     public function shipping_configuration_update(Request $request){
         $business_settings = BusinessSetting::where('type', $request->type)->first();
         $business_settings->value = $request[$request->type];
         $business_settings->save();
+
+        Artisan::call('cache:clear');
+        return back();
+    }
+
+    public function freeshipping_settings(Request $request)
+    {
+       
+        BusinessSetting::updateOrCreate([
+            'type' => 'free_shipping_status'
+        ], [
+            'value' => $request->free_shipping_status ? 1 : 0
+        ]);
+
+        BusinessSetting::updateOrCreate([
+            'type' => 'free_shipping_min_amount'
+        ], [
+            'value' => $request->free_shipping_min_amount ?? 0
+        ]);
+
+        BusinessSetting::updateOrCreate([
+            'type' => 'default_shipping_amount'
+        ], [
+            'value' => $request->default_shipping_amount ?? 0
+        ]);
+
+        flash('Settings updated successfully')->success();
+
+        Artisan::call('cache:clear');
+        return back();
+    }
+
+    public function return_settings(Request $request)
+    {
+        BusinessSetting::updateOrCreate([
+            'type' => 'default_return_time'
+        ], [
+            'value' => $request->default_return_time ?? 0
+        ]);
+
+        flash('Settings updated successfully')->success();
+
+        Artisan::call('cache:clear');
+        return back();
+    }
+
+    public function service_settings(Request $request)
+    {
+        BusinessSetting::updateOrCreate([
+            'type' => 'default_service_whatsapp'
+        ], [
+            'value' => $request->default_service_whatsapp ?? NULL
+        ]);
+
+        flash('Settings updated successfully')->success();
 
         Artisan::call('cache:clear');
         return back();
