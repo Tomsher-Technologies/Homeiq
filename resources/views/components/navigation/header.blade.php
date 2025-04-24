@@ -17,7 +17,7 @@
                 </div>
             </form>
            <!-- Suggestion List -->
-           <ul id="suggestion-list" class="absolute left-0 top-full mt-16 w-full bg-white rounded-md shadow-lg z-50 hidden max-h-80 overflow-y-auto">
+           <ul id="suggestion-list" class="absolute left-0 top-full w-full bg-white rounded-md shadow-lg z-50 hidden max-h-80 overflow-y-auto">
            <!-- Dynamic results via JS -->
             </ul>
         </div>
