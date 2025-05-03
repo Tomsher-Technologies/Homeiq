@@ -91,7 +91,19 @@
                                 </select>
                             </div>
                         </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-3 col-form-label">Sort Order</label>
+                            <div class="col-md-9">
+                                <input type="number" name="sort_order" class="form-control" value="{{ old('sort_order',$service->sort_order) }}">
+                                @error('sort_order')
+                                    <div class="alert alert-danger mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
                     @endif
+
+                    
 
                     <h5 class="mb-0 h6">{{trans('messages.seo_section')}}</h5>
                     <hr>

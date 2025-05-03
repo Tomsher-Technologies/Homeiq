@@ -10,7 +10,7 @@ class Service extends Model
 
   protected $with = ['service_translations'];
 
-  protected $fillable = ['name', 'slug', 'image', 'status'];
+  protected $fillable = ['name', 'sort_order','slug', 'image', 'status'];
 
   public function getTranslation($field = '', $lang = false){
       $lang = $lang == false ? App::getLocale() : $lang;
