@@ -151,7 +151,7 @@ class ServiceController extends Controller
         $service_translation->save();
 
         flash(trans('messages.service').trans('messages.updated_msg'))->success();
-        return back();
+        return redirect()->route('service.index');
     }
 
     /**
