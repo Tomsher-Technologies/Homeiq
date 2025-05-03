@@ -100,7 +100,7 @@ class FrontendController extends Controller
         $page = Page::where('type','home')->first();
         $lang = getActiveLanguage();
         $seo = [
-            'title'                 => $page->getTranslation('title', $lang),
+            'title'                 => $page->getTranslation('meta_title', $lang),
             'meta_title'            => $page->getTranslation('meta_title', $lang),
             'meta_description'      => $page->getTranslation('meta_description', $lang),
             'keywords'              => $page->getTranslation('keywords', $lang),
@@ -171,7 +171,7 @@ class FrontendController extends Controller
         $page = Page::where('type','about_us')->first();
         $lang = getActiveLanguage();
         $seo = [
-            'title'                 => $page->getTranslation('title', $lang),
+            'title'                 => $page->getTranslation('meta_title', $lang),
             'meta_title'            => $page->getTranslation('meta_title', $lang),
             'meta_description'      => $page->getTranslation('meta_description', $lang),
             'keywords'              => $page->getTranslation('keywords', $lang),
@@ -189,7 +189,7 @@ class FrontendController extends Controller
         $page = Page::where('type','service_list')->first();
         $lang = getActiveLanguage();
         $seo = [
-            'title'                 => $page->getTranslation('title', $lang),
+            'title'                 => $page->getTranslation('meta_title', $lang),
             'meta_title'            => $page->getTranslation('meta_title', $lang),
             'meta_description'      => $page->getTranslation('meta_description', $lang),
             'keywords'              => $page->getTranslation('keywords', $lang),
@@ -242,7 +242,7 @@ class FrontendController extends Controller
         $page = Page::where('type','blogs')->first();
         $lang = getActiveLanguage();
         $seo = [
-            'title'                 => $page->getTranslation('title', $lang),
+            'title'                 => $page->getTranslation('meta_title', $lang),
             'meta_title'            => $page->getTranslation('meta_title', $lang),
             'meta_description'      => $page->getTranslation('meta_description', $lang),
             'keywords'              => $page->getTranslation('keywords', $lang),
@@ -322,7 +322,7 @@ class FrontendController extends Controller
         $page = Page::where('type','terms')->first();
         $lang = getActiveLanguage();
         $seo = [
-            'title'                 => $page->getTranslation('title', $lang),
+            'title'                 => $page->getTranslation('meta_title', $lang),
             'meta_title'            => $page->getTranslation('meta_title', $lang),
             'meta_description'      => $page->getTranslation('meta_description', $lang),
             'keywords'              => $page->getTranslation('keywords', $lang),
@@ -341,7 +341,7 @@ class FrontendController extends Controller
         $page = Page::where('type','privacy_policy')->first();
         $lang = getActiveLanguage();
         $seo = [
-            'title'                 => $page->getTranslation('title', $lang),
+            'title'                 => $page->getTranslation('meta_title', $lang),
             'meta_title'            => $page->getTranslation('meta_title', $lang),
             'meta_description'      => $page->getTranslation('meta_description', $lang),
             'keywords'              => $page->getTranslation('keywords', $lang),
@@ -360,7 +360,7 @@ class FrontendController extends Controller
         $page = Page::where('type','return_policy')->first();
         $lang = getActiveLanguage();
         $seo = [
-            'title'                 => $page->getTranslation('title', $lang),
+            'title'                 => $page->getTranslation('meta_title', $lang),
             'meta_title'            => $page->getTranslation('meta_title', $lang),
             'meta_description'      => $page->getTranslation('meta_description', $lang),
             'keywords'              => $page->getTranslation('keywords', $lang),
@@ -380,7 +380,7 @@ class FrontendController extends Controller
         $page = Page::where('type','contact_us')->first();
         $lang = getActiveLanguage();
         $seo = [
-            'title'                 => $page->getTranslation('title', $lang),
+            'title'                 => $page->getTranslation('meta_title', $lang),
             'meta_title'            => $page->getTranslation('meta_title', $lang),
             'meta_description'      => $page->getTranslation('meta_description', $lang),
             'keywords'              => $page->getTranslation('keywords', $lang),
@@ -439,7 +439,7 @@ class FrontendController extends Controller
         $page = Page::where('type','brands_list')->first();
         $lang = getActiveLanguage();
         $seo = [
-            'title'                 => $page->getTranslation('title', $lang),
+            'title'                 => $page->getTranslation('meta_title', $lang),
             'meta_title'            => $page->getTranslation('meta_title', $lang),
             'meta_description'      => $page->getTranslation('meta_description', $lang),
             'keywords'              => $page->getTranslation('keywords', $lang),
@@ -461,7 +461,7 @@ class FrontendController extends Controller
         $page = Page::where('type','faq')->first();
         $lang = getActiveLanguage();
         $seo = [
-            'title'                 => $page->getTranslation('title', $lang),
+            'title'                 => $page->getTranslation('meta_title', $lang),
             'meta_title'            => $page->getTranslation('meta_title', $lang),
             'meta_description'      => $page->getTranslation('meta_description', $lang),
             'keywords'              => $page->getTranslation('keywords', $lang),
