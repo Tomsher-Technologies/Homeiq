@@ -137,7 +137,7 @@ class FrontendController extends Controller
         $data['home_services'] = Cache::remember('home_services', 3600, function () {
             $service_ids = get_setting('home_services');
             if ($service_ids) {
-                $services =  Service::where('status', 1)->whereIn('id', json_decode($service_ids))->get();
+                $services =  Service::where('status', 1)->whereIn('id', json_decode($service_ids))->orderBy('sort_order', 'asc')->get();
                 return $services;
             }
         });
@@ -200,7 +200,7 @@ class FrontendController extends Controller
         ];
         
         $this->loadSEO($seo);
-        $services =  Service::where('status', 1)->orderBy('name','ASC')->paginate(6);
+        $services =  Service::where('status', 1)->orderBy('sort_order','ASC')->paginate(6);
 
         return view('pages.services',compact('page','lang','services'));
     }
@@ -210,7 +210,7 @@ class FrontendController extends Controller
         if ($request->ajax()) {
             // Get paginated results for the next page
             $services = Service::where('status', 1)
-                                ->orderBy('name', 'ASC')
+                                ->orderBy('sort_order', 'ASC')
                                 ->paginate(6, ['*'], 'page', $request->page);
     
             // Check if services exist and render the partial view

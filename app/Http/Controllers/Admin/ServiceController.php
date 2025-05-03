@@ -72,6 +72,7 @@ class ServiceController extends Controller
         $service->price         = $request->price;
         $service->image         = $request->image;
         $service->status        = $request->status;
+        $service->sort_order    = $request->sort_order;
         $service->save();
 
         $service_translation                        = ServiceTranslation::firstOrNew(['lang' => env('DEFAULT_LANGUAGE'), 'service_id' => $service->id]);
@@ -128,11 +129,12 @@ class ServiceController extends Controller
         }
 
         if ($request->lang == env("DEFAULT_LANGUAGE",'en')) {
-            $service->name      = $request->name;
-            $service->status    = $request->status;
-            $service->slug      = $slug;
+            $service->name          = $request->name;
+            $service->status        = $request->status;
+            $service->slug          = $slug;
             $service->price         = $request->price;
-            $service->image     = $request->image;
+            $service->image         = $request->image;
+            $service->sort_order    = $request->sort_order;
             $service->save();
         }
 
