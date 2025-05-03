@@ -74,7 +74,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group  row">
+                        <div class="form-group row">
                             <label class="col-md-2 col-form-label">{{ trans('messages.active_status') }}</label>
                             <div class="col-md-10">
                                 <select class="select2 form-control" name="status">
@@ -85,6 +85,16 @@
                                         {{ trans('messages.no') }}
                                     </option>
                                 </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-2 col-form-label">Sort Order</label>
+                            <div class="col-md-10">
+                                <input type="number" name="sort_order" class="form-control" value="{{ old('sort_order',0) }}">
+                                @error('sort_order')
+                                    <div class="alert alert-danger mt-1">{{ $message }}</div>
+                                @enderror
                             </div>
                         </div>
 
