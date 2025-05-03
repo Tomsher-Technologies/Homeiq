@@ -27,7 +27,7 @@ class ServiceController extends Controller
     public function index(Request $request)
     {
         $sort_search = null;
-        $services = Service::orderBy('id', 'desc');
+        $services = Service::orderBy('sort_order', 'asc');
         if ($request->has('search')) {
             $sort_search = $request->search;
             $services = $services->where('name', 'like', '%' . $sort_search . '%');
