@@ -40,6 +40,7 @@
                                 <th>{{ trans('messages.name') }}</th>
                                 <th>{{ trans('messages.price') }}</th>
                                 <th>{{ trans('messages.image') }}</th>
+                                <th class="text-center">Sort Order</th>
                                 <th class="text-center">{{ trans('messages.status') }}</th>
                                 <th class="text-center">{{ trans('messages.options') }}</th>
                             </tr>
@@ -53,6 +54,7 @@
                                     <td>
                                         <img src="{{ uploaded_asset($service->image) }}" alt="{{ trans('messages.service') }}" class="h-50px">
                                     </td>
+                                    <td class="text-center">{{ $service->sort_order  }}</td>
                                     <td class="text-center">
                                         <label class="aiz-switch aiz-switch-success mb-0">
                                             <input type="checkbox" onchange="update_status(this)" value="{{ $service->id }}"
