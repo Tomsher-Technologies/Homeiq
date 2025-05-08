@@ -109,7 +109,7 @@
         </div>
         
         <!-- Products Grid -->
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-[20px] gap-y-[30px] mt-[40px]" id="product-container">
+        <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5 2xl:grid-cols-5 gap-x-[20px] gap-y-[30px] mt-[40px]" id="product-container">
             @if(!empty($products[0]))
                 @foreach ($products as $product)
                     @php
@@ -118,7 +118,7 @@
                     <div class="relative group cursor-pointer bg-transparent transition duration-300 overflow-hidden rounded-lg">
                         <a href="{{ route('products.show',['slug' => $product->slug]) }}" class="block">
                             <div class="overflow-hidden rounded-lg">
-                                <img src="{{ get_product_image($product->thumbnail_img,'300') }}" alt="{{ $product->getTranslation('name', $lang) }}" class="w-full h-[300px] object-cover rounded-lg transition-transform duration-[400ms] ease-in-out group-hover:scale-[1.05]">
+                                <img src="{{ get_product_image($product->thumbnail_img,'300') }}" alt="{{ $product->getTranslation('name', $lang) }}" class="w-full object-cover rounded-lg transition-transform duration-[400ms] ease-in-out group-hover:scale-[1.05]">
                             </div>
                         </a>
 

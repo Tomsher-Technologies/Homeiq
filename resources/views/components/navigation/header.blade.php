@@ -4,7 +4,7 @@
         <a href="{{ route('home') }}" class="flex items-center">
             <img src="{{ asset('images/logo.svg') }}" alt="{{env('APP_NAME')}} Logo" class="h-[50px]">
         </a>
-        <div class="relative hidden md:flex w-[25%] flex-col">
+        <div class="relative hidden md:flex w-[25%] lg:flex  lg:w-[35%] xl:w-[18%] 2xl:w-[25%] flex-col">
             <!-- Search Bar -->
             <form class="search-popup__form w-full" action="{{ route('products.index') }}" method="get">
                 <div class="flex items-center bg-gray-100 px-2 py-1 rounded-full w-full shadow-sm hover:shadow-md transition-shadow duration-300">
@@ -22,7 +22,7 @@
             </ul>
         </div>
         <!-- Navigation Links -->
-        <nav class="hidden md:flex space-x-6 text-secondary font-medium ">
+        <nav class="hidden sm:hidden md:hidden lg:hidden xl:flex space-x-6 text-secondary font-medium ">
             <a href="{{ route('home') }}" class="{{ is_active('home') }} hover:text-primary transition-colors duration-300">Home</a>
 
 

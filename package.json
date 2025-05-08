@@ -19,6 +19,7 @@
         "@fontsource/poppins": "^5.1.1",
         "@tailwindcss/typography": "^0.5.16",
         "easyzoom": "^2.6.0",
+        "ez-plus": "^1.2.1",
         "jquery": "^3.7.1",
         "swiper": "^11.2.4",
         "toastr": "^2.1.4",

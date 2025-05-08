@@ -9,13 +9,16 @@
     <title>@yield('title', env('APP_NAME'))</title>
     {!! SEO::generate() !!}
     {{-- @vite(['resources/css/app.css','resources/js/app.js']) --}}
-      <link href="{{ asset('dist/assets/app-c52703d3.css') }}" rel="stylesheet">
+      <!-- <link href="{{ asset('dist/assets/app-c52703d3.css') }}" rel="stylesheet">
      <link href="{{ asset('dist/assets/app-afc193cb.css') }}" rel="stylesheet">
-    <script type="module" src="{{ asset('dist/assets/app-06b0ec71.js') }}"></script>  
+    <script type="module" src="{{ asset('dist/assets/app-06b0ec71.js') }}"></script>   -->
+
+    @vite(['resources/css/app.css','resources/js/app.js'])
 
     @yield('style')
     <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ez-plus@1.2.1/src/jquery.ez-plus.js"></script>
    
     <style>
         .menu-active{

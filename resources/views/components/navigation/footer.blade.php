@@ -171,7 +171,7 @@
 
            
             <!-- Resources & Company -->
-            <div>
+            <div class="pt-6 sm:pt-6 md:pt-6 lg:pt-0 xl:pt-0 lg:pt-0 xl:pt-0 2xl:pt-0">
                 <h3 class="text-gray-300 font-semibold text-sm">{{ get_setting('footer_category_title_3') }}</h3>
                 <ul class="text-gray-400 text-sm mt-3 space-y-2">
                     <li><a href="{{ route('faq') }}" class="hover:text-white">FAQ</a></li>
@@ -198,7 +198,7 @@
             <p class="text-center md:text-left">
                 {{ str_replace('{year}', date('Y'), get_setting('frontend_copyright_text', null, $lang)) }} | Website by
                 <a href="https://www.tomsher.com/" target="_blank">Tomsher</a></p>
-            <div class="flex flex-wrap justify-center md:justify-end space-x-4 md:space-x-6">
+            <div class="flex flex-wrap justify-center md:justify-end space-x-4 md:space-x-6 pt-2 xl:pt-0">
                 <a href="{{ route('privacy-policy') }}" class="hover:text-white">Privacy Policy</a>
                 <a href="{{ route('terms-conditions') }}" class="hover:text-white">Terms of Service</a>
                 <a href="{{ route('return-policy') }}" class="hover:text-white">Return Policy</a>
@@ -207,9 +207,13 @@
 
     </div>
 
+
+
+</footer>
+
     
     <!-- Mobile Bottom Navigation -->
-    <div class="hidden fixed z-30 bottom-0 bg-primary flex items-center justify-between w-full h-16 px-3 sm:px-10">
+    <div class="xl:hidden fixed z-30 bottom-0 bg-primary flex items-center justify-between w-full h-16 px-3 sm:px-10">
         <!-- Menu Icon -->
         <button id="menu-button" class="flex items-center justify-center h-auto relative focus:outline-none menu-icon">
         <span class="text-xl text-white">
@@ -254,7 +258,7 @@
     </div>
 
     <!-- Drawer Menu -->
-    <div id="drawer-menu" class="fixed hidden top-0 left-0 w-64 h-full bg-white shadow-xl z-50 p-5">
+    <div id="drawer-menu" class="fixed xl:hidden top-0 left-0 w-64 h-full bg-white shadow-xl z-50 p-5">
         <button id="close-menu" class="text-xl absolute top-5 right-5">
         <svg class="w-6 h-6 text-gray-700" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor"
             stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
@@ -262,13 +266,38 @@
         </svg>
         </button>
 
-        <!-- Insert menu here -->
+
+         <nav class=" flex flex-col space-y-6 text-secondary font-medium ">
+            <a href="{{ route('home') }}" class="{{ is_active('home') }} hover:text-primary transition-colors duration-300 mb-0">Home</a>
+
+
+            <!-- About Us Link -->
+            <a href="{{ route('about-us') }}" class="{{ is_active('about-us') }} hover:text-primary transition-colors duration-300">About Us</a>
+
+
+            <!-- Products Mega Menu -->
+            <div x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false" class="relative">
+                <a href="{{ route('products.index') }}" 
+                class="{{ is_active(['products.index','products.show']) }} hover:text-primary transition-colors duration-300 flex items-center space-x-2">
+                    <span>Products</span>
+                    <!-- <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path>
+                    </svg> -->
+                </a>
+
+            </div>
+
+
+            <a href="{{ route('services.index') }}" class="{{ is_active(['services.index','services.show']) }} hover:text-primary transition duration-300">Services</a>
+
+
+            <a href="{{ route('blog') }}" class="{{ is_active(['blog','blog.details']) }} hover:text-primary transition-colors duration-300">Blog</a>
+            <a href="{{ route('contact') }}" class="{{ is_active('contact') }} hover:text-primary transition-colors duration-300">Contact Us</a>
+        </nav>
 
     </div>
 
     <!-- Drawer Overlay -->
     <div id="drawer-overlay" class="fixed inset-0 bg-black opacity-50 z-40 hidden"></div>
-
-</footer>
 
  

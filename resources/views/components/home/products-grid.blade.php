@@ -92,11 +92,23 @@
 
 
         <!-- Products Grid -->
-        <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5 2xl:grid-cols-5 gap-x-[20px] gap-y-[30px] mt-[40px]">
-            @foreach ($products as $product)
+        <div class="swiper mySwiper mt-[40px]">
+    <div class="swiper-wrapper">
+        @foreach ($products as $product)
+            <div class="swiper-slide">
                 <x-product-card :product="$product" :lang="$lang" />
-            @endforeach
-        </div>
+            </div>
+        @endforeach
+    </div>
+
+
+        <!-- Optional navigation buttons -->
+        <div class="swiper-button-next"></div>
+    <div class="swiper-button-prev"></div>
+</div>
+
+
+
 
         <!-- View More Button -->
         <div class="mt-[40px] flex justify-center">

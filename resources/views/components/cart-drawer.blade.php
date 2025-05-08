@@ -13,7 +13,7 @@
     
 
     <!-- Drawer Content -->
-    <div id="cart-canvas-content" class="p-4 space-y-4">
+    <div id="cart-canvas-content" class="p-4 space-y-4 max-h-[500px] md:max-h-full overflow-scroll md:overflow-visible">
        
     </div>
 

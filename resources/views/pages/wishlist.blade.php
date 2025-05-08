@@ -13,7 +13,7 @@
         <!-- Products Grid -->
         <div class="">
             @if (!empty($result[0]))
-                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-[20px] gap-y-[30px] mt-[40px]">
+                <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5 2xl:grid-cols-5 gap-x-[20px] gap-y-[30px] mt-[40px]">
                     @foreach ($result as $res)
                         @php
                             $checkCartStatus = checkCartProduct($res['product']['sku'], $res['product']['slug']);
@@ -35,7 +35,7 @@
                                 </div>
                             </a>
 
-                            <div class="absolute bottom-[55px] left-[10px] right-[10px] flex justify-between items-center py-[6px] bg-transparent z-[1]">
+                            <div class="xl:absolute bottom-[55px] left-[10px] right-[10px] flex-wrap xl:flex-nowrap flex justify-between items-center py-[6px] bg-transparent z-[1]">
                                 <span
                                     class="text-[#41B6E8] py-[7px] px-[10px] rounded-full font-semibold text-sm shadow-sm bg-white/80 backdrop-blur-sm">
                                     {{ env('DEFAULT_CURRENCY').' '.$res['product']['main_price'] }}
