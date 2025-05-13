@@ -18,7 +18,7 @@
     </div>
 
     <!-- Fixed Bottom Section -->
-    <div class="absolute bottom-0 left-0 w-full bg-white p-4 border-t border-gray-200">
+    <div class="fixed bottom-0 left-0 w-full bg-white p-4 border-t border-gray-200">
         <div class="flex justify-between items-center mb-4">
             <span class="text-gray-800 font-semibold">Total:</span>
             <span class="text-primary font-bold text-lg">AED <span class="cart_sub_total ">0</span></span>

@@ -51,8 +51,8 @@
                                 Address</a>
 
                             <button type="button"
-                                class="w-[50px] h-[50px] flex justify-center items-center duration-200 group bg-[#41b6e8] hover:bg-[#41b6e8] delete-address-btn" data-address-id="{{ $address->id }}">
-                                <svg class="w-[25px] fill-[#fff] group-hover:fill-white" id="fi_3096673"
+                                class="w-[42px] h-[38px] flex justify-center items-center duration-200 group bg-[#41b6e8] hover:bg-[#41b6e8] delete-address-btn" data-address-id="{{ $address->id }}">
+                                <svg class="w-[18px] fill-[#fff] group-hover:fill-white" id="fi_3096673"
                                     enable-background="new 0 0 512 512" viewBox="0 0 512 512"
                                     xmlns="http://www.w3.org/2000/svg">
                                     <g>

@@ -7,11 +7,10 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="icon" type="image/svg" href="{{ asset('assets/img/favicon.ico') }}">
     {!! SEO::generate() !!}
-    {{-- @vite(['resources/css/app.css','resources/js/app.js']) --}}
-       <link href="{{ asset('dist/assets/app-97de3ed1.css') }}" rel="stylesheet">
-     <link href="{{ asset('dist/assets/app-afc193cb.css') }}" rel="stylesheet">
-    <script type="module" src="{{ asset('dist/assets/app-f10b86b9.js') }}"></script>   
 
+
+  @vite('resources/css/app.css')
+    @vite('resources/js/app.js') <!-- Include JS -->
 
     @yield('style')
     <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />

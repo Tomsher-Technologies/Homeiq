@@ -9,7 +9,7 @@
                 <div class="swiper-slide flex justify-center items-center">
                     <img src="{{ $image }}" 
                          alt="{{ $product['name'] }}" 
-                         class="max-w-full max-h-[500px] object-contain m-auto">
+                         class="max-w-full max-h-[500px] object-contain m-auto ">
                 </div>
             @endforeach
         </div>
