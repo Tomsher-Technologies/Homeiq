@@ -83,3 +83,21 @@
     width: 100%!important;
   }
   
+
+  .product-thumbs-swiper .swiper-slide-thumb-active {
+    border: 2px solid #41b6e8;
+    border-radius: 8px;
+}
+
+.product-thumbs-swiper .swiper-slide {
+width: 80px!important;
+}
+
+    /* Optional: Customize styles for the drawer and overlay */
+    #drawer-menu {
+        transition: transform 0.3s ease;
+        transform: translateX(-100%);
+      }
+      #drawer-menu.open {
+        transform: translateX(0);
+      }

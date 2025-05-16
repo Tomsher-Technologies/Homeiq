@@ -8,7 +8,7 @@
                 My Cart</span>
             </h2>
             <div class="mt-6 sm:mt-8 md:gap-6 xl:flex flex-wra lg:items-start xl:gap-8">
-                <div class="mx-auto w-full flex-none lg:max-w-2xl xl:max-w-4xl">
+                <div class="mx-auto w-full flex-none lg:max-w-2xl xl:max-w-3xl">
                     <div class="space-y-6">
 
                      <x-cart-items :items="$response"/>
@@ -16,7 +16,7 @@
                     </div>
                 </div>
 
-                <div class="mx-auto mt-6 max-w-4xl flex-1 space-y-6 lg:mt-0 lg:w-full">
+                <div class="mx-auto mt-6 max-w-4xl flex-1 space-y-6 lg:mt-0 lg:w-full lg:mt-4  xl:mt-0">
                      {{-- Apply coupon code --}}
                      <x-coupon-apply :response="$response"/>
                      

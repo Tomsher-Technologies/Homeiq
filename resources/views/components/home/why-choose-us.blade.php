@@ -28,8 +28,18 @@
                 @endphp
                 <div class="grid grid-cols-2 gap-4">
                     @foreach($images as $image)
-                        <div class="bg-gray-100 rounded-full overflow-hidden">
-                            <img src="{{ uploaded_asset($image) }}" class="w-full h-full object-cover" alt="Smart Home Feature">
+                        <div class="bg-gray-100 rounded-full overflow-hidden  h-[160px] w-[160px]
+         sm:h-[180px] sm:w-[180px]
+         md:h-[180px] md:w-[180px]
+         lg:h-[180px] lg:w-[180px]
+         xl:h-[230px] xl:w-[230px]
+         2xl:h-[248px] 2xl:w-[248px]">
+                            <img src="{{ uploaded_asset($image) }}" class="w-full h-full object-cover h-[160px] w-[160px]
+         sm:h-[180px] sm:w-[180px]
+         md:h-[180px] md:w-[180px]
+         lg:h-[180px] lg:w-[180px]
+         xl:h-[250px] xl:w-[230px]
+         2xl:h-[248px] 2xl:w-[248px]" alt="Smart Home Feature">
                         </div>
                     @endforeach
                 </div>

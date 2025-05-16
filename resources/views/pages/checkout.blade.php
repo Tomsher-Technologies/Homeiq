@@ -7,8 +7,8 @@
             <h2 class="text-3xl md:text-4xl text-left">
                 Checkout
             </h2>
-            <div class="mt-6 sm:mt-4 md:gap-6 lg:flex lg:items-start xl:gap-4">
-                <div class="mx-auto w-full flex-none lg:max-w-2xl xl:max-w-4xl ">
+            <div class="mt-6 sm:mt-4 md:gap-6 xl:flex lg:items-start xl:gap-4">
+                <div class="mx-auto w-full flex-none lg:max-w-4xl xl:max-w-2xl 2xl:max-w-4xl">
                     @if (auth()->check())
                         <div class="bg-white border rounded-lg p-2 lg:p-4 mb-5">
                             <div class="flex gap-3">
@@ -97,8 +97,8 @@
                                         @endif
                                     </div>
 
-                                    <div class="md:flex md:space-x-4">
-                                        <div class="w-full mb-4 md:w-1/3">
+                                    <div class="grid gap-4 grid-cols-2 md-grid-cols-2 md-grid-cols-2 xl-grid-cols23 xxl-grid-cols-2">
+                                        <div class="w-full mb-4">
                                             <label class="block mb-1 font-medium text-gray-800 capitalize">Town / City
                                                 *</label>
                                             <input type="text"  id="billing_city" name="billing_city" placeholder="{{trans('messages.town_city')}} *" class="w-full bg-gray-50 py-4 ps-6 rounded-lg border border-gray-300" value="{{ old('billing_city', $default_city) }}">
@@ -106,7 +106,7 @@
                                                 <div class="text-red-600 mt-2">{{ $errors->first('billing_city') }}</div>
                                             @endif
                                         </div>
-                                        <div class="w-full mb-4 md:w-1/3">
+                                        <div class="w-full mb-4">
                                             <label class="block mb-1 font-medium text-gray-800 capitalize">State *</label>
                                             <input type="text"  id="billing_state" name="billing_state" placeholder="Enter state *" class="w-full bg-gray-50 py-4 ps-6 rounded-lg border border-gray-300" value="{{ old('billing_state',$default_state) }}">
                                             @if ($errors->has('billing_state'))
@@ -114,7 +114,7 @@
                                             @endif
                                         </div>
 
-                                        <div class="w-full mb-4 md:w-1/3">
+                                        <div class="w-full mb-4 ">
                                             <label class="block mb-1 font-medium text-gray-800 capitalize">Country / Region
                                                 *</label>
                                             <input type="text"  id="billing_country" name="billing_country" placeholder="Enter coutry *" class="w-full bg-gray-50 py-4 ps-6 rounded-lg border border-gray-300" value="{{ old('billing_country','United Arab Emirates') }}">
@@ -124,14 +124,14 @@
                                         </div>
                                         
                                     </div>
-                                    <div class="md:flex md:space-x-4">
+                                    <div class="grid gap-4 grid-cols-2 md-grid-cols-2 md-grid-cols-2 xl-grid-cols23 xxl-grid-cols-2"">
                                         
-                                        <div class="w-full mb-4 md:w-1/3">
+                                        <div class="w-full mb-4 ">
                                             <label class="block mb-1 font-medium text-gray-800 capitalize">ZIP Code</label>
                                             <input type="text" placeholder="{{trans('messages.zip')}}"  id="billing_zipcode" name="billing_zipcode" class="w-full bg-gray-50 py-4 ps-6 rounded-lg border border-gray-300" value="{{ old('billing_zipcode',$default_zipcode) }}">
                                         </div>
 
-                                        <div class="w-full mb-4 md:w-1/3">
+                                        <div class="w-full mb-4 ">
                                             <label class="block mb-1 font-medium text-gray-800 capitalize">Phone *</label>
                                             <input type="tel" placeholder="{{trans('messages.phone')}} *"  id="billing_phone" name="billing_phone" maxlength="15" class="w-full bg-gray-50 py-4 ps-6 rounded-lg border border-gray-300" value="{{ old('billing_phone', $default_phone) }}">
                                             @if ($errors->has('billing_phone'))
@@ -139,7 +139,7 @@
                                             @endif
                                         </div>
 
-                                        <div class="w-full mb-4 md:w-1/3">
+                                        <div class="w-full mb-4">
                                         </div>
                                     </div>
                                 </div>
@@ -174,8 +174,8 @@
                                         @endif
                                     </div>
 
-                                    <div class="md:flex md:space-x-4">
-                                        <div class="w-full mb-4 md:w-1/3">
+                                    <div class="grid gap-4 grid-cols-2 md-grid-cols-2 md-grid-cols-2 xl-grid-cols23 xxl-grid-cols-2"">
+                                        <div class="w-full mb-4">
                                             <label class="block mb-1 font-medium text-gray-800 capitalize">Town / City
                                                 *</label>
                                             <input type="text"  id="shipping_city" name="shipping_city" placeholder="{{trans('messages.town_city')}} *" class="w-full bg-gray-50 py-4 ps-6 rounded-lg border border-gray-300" value="{{ old('shipping_city') }}" @if(old('same_as_billing') == 'on') readonly @endif>
@@ -183,7 +183,7 @@
                                                 <div class="text-red-600 mt-2">{{ $errors->first('shipping_city') }}</div>
                                             @endif
                                         </div>
-                                        <div class="w-full mb-4 md:w-1/3">
+                                        <div class="w-full mb-4">
                                             <label class="block mb-1 font-medium text-gray-800 capitalize">State *</label>
                                             <input type="text"  id="shipping_state" name="shipping_state" placeholder="Enter state *" class="w-full bg-gray-50 py-4 ps-6 rounded-lg border border-gray-300" value="{{ old('shipping_state') }}" @if(old('same_as_billing') == 'on') readonly @endif>
                                             @if ($errors->has('shipping_state'))
@@ -191,7 +191,7 @@
                                             @endif
                                         </div>
 
-                                        <div class="w-full mb-4 md:w-1/3">
+                                        <div class="w-full mb-4">
                                             <label class="block mb-1 font-medium text-gray-800 capitalize">Country / Region
                                                 *</label>
                                             <input type="text"  id="shipping_country" name="shipping_country" placeholder="Enter coutry *" class="w-full bg-gray-50 py-4 ps-6 rounded-lg border border-gray-300" value="{{ old('shipping_country','United Arab Emirates') }}" @if(old('same_as_billing') == 'on') readonly @endif>
@@ -201,14 +201,14 @@
                                         </div>
                                         
                                     </div>
-                                    <div class="md:flex md:space-x-4">
+                                    <div class="grid gap-4 grid-cols-2 md-grid-cols-2 md-grid-cols-2 xl-grid-cols23 xxl-grid-cols-2"">
                                         
-                                        <div class="w-full mb-4 md:w-1/3">
+                                        <div class="w-full mb-4">
                                             <label class="block mb-1 font-medium text-gray-800 capitalize">ZIP Code</label>
                                             <input type="text" placeholder="{{trans('messages.zip')}}"  id="shipping_zipcode" name="shipping_zipcode" class="w-full bg-gray-50 py-4 ps-6 rounded-lg border border-gray-300" value="{{ old('shipping_zipcode') }}" @if(old('same_as_billing') == 'on') readonly @endif>
                                         </div>
 
-                                        <div class="w-full mb-4 md:w-1/3">
+                                        <div class="w-full mb-4 ">
                                             <label class="block mb-1 font-medium text-gray-800 capitalize">Phone *</label>
                                             <input type="tel" placeholder="{{trans('messages.phone')}} *"  id="shipping_phone" name="shipping_phone" maxlength="15" class="w-full bg-gray-50 py-4 ps-6 rounded-lg border border-gray-300" value="{{ old('shipping_phone', auth()->user()?->phone) }}"  @if(old('same_as_billing') == 'on') readonly @endif>
                                             @if ($errors->has('shipping_phone'))
@@ -216,7 +216,7 @@
                                             @endif
                                         </div>
 
-                                        <div class="w-full mb-4 md:w-1/3">
+                                        <div class="w-full mb-4 ">
                                             <label class="block mb-1 font-medium text-gray-800 capitalize">Email *</label>
                                             <input type="text"  id="billing_email" name="billing_email" placeholder="{{trans('messages.email')}} *" class="w-full bg-gray-50 py-4 ps-6 rounded-lg border border-gray-300" value="{{ old('billing_email',auth()->user()?->email) }}">
                                             @if ($errors->has('billing_email'))

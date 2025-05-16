@@ -57,7 +57,7 @@
                     <input type="checkbox" class="mr-2"  name="remember" id="remember">
                     <span class="text-gray-700 text-sm">Remember me</span>
                 </label>
-                <a href="{{ route('forgot-password') }}" class="text-blue-500 text-sm font-medium hover:underline mt-2 xl:mt-0">Forgot password?</a>
+                <a href="{{ route('forgot-password') }}" class="text-blue-500 text-sm font-medium hover:underline mt-0 xl:mt-0">Forgot password?</a>
             </div>
             
             <button type="submit" class="w-full bg-primary text-white py-4 rounded-full hover:bg-[#3498db] transition-all duration-300 transform hover:scale-105 font-medium text-sm">Login</button>

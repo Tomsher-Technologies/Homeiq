@@ -56,7 +56,7 @@
         <!-- Previous and Next Blog Posts -->
 
         <!-- Previous and Next Blog Posts -->
-        <div class="mt-6 flex justify-between">
+        <div class="mt-6 flex justify-between gap-4">
             @if(isset($previousBlog))
                 <a href="{{ route('blog.details', ['slug' => $previousBlog->slug]) }}" class="flex items-center bg-gray-100 p-4 rounded-lg shadow-sm hover:bg-gray-200 transition-all">
                     <i class="fa fa-arrow-left mr-2 text-lg text-gray-500"></i> 
