@@ -9,9 +9,6 @@
     {!! SEO::generate() !!}
 
 
-    <!-- @vite('resources/css/app.css')
-    @vite('resources/js/app.js')  Include JS  -->
-
     <link href="{{ asset('dist/assets/app-76d10ea8.css') }}" rel="stylesheet">
     <link href="{{ asset('dist/assets/app-afc193cb.css') }}" rel="stylesheet">
     <link href="{{ asset('dist/assets/app-f10b86b9.js') }}" rel="stylesheet">
@@ -56,7 +53,7 @@
 
 
     @include('components.navigation.footer') 
-    <a href="https://wa.me/971504062668" class="whatsapp-float" target="_blank" rel="noopener">
+    <a href="https://wa.me/{{get_setting('default_service_whatsapp')}}" class="whatsapp-float" target="_blank" rel="noopener">
         <img src="{{ asset('assets/images/whatsapp.png') }}" alt="WhatsApp Chat" />
     </a>
       
