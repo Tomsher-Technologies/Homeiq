@@ -8,11 +8,13 @@
     <link rel="icon" type="image/svg" href="{{ asset('assets/img/favicon.ico') }}">
     {!! SEO::generate() !!}
 
-    <link href="{{ asset('dist/assets/app-0660b8cf.css') }}" rel="stylesheet">
-    <link href="{{ asset('dist/assets/app-0660b8cf.css') }}" rel="stylesheet">
-    <link href="{{ asset('dist/assets/app-0660b8cf.css') }}" rel="stylesheet">
-  {{-- @vite('resources/css/app.css')
-    @vite('resources/js/app.js') <!-- Include JS --> --}}
+
+    <!-- @vite('resources/css/app.css')
+    @vite('resources/js/app.js')  Include JS  -->
+
+    <link href="{{ asset('dist/assets/app-76d10ea8.css') }}" rel="stylesheet">
+    <link href="{{ asset('dist/assets/app-afc193cb.css') }}" rel="stylesheet">
+    <link href="{{ asset('dist/assets/app-f10b86b9.js') }}" rel="stylesheet">
 
     @yield('style')
     <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
